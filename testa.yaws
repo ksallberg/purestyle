@@ -1,0 +1,33 @@
+<html>
+
+<h1>Spellista - murvelsork</h1>
+
+<erl>
+
+-record(user, {name, age}).
+
+create_from(Xs) ->
+    "<ul>" ++ lists:concat(["<li>" ++ X#user.name ++ ", " ++
+    to_str(X#user.age) ++ "</li>" || X <- Xs]) ++ "</ul>".
+
+query_db(Ref) ->
+    dets:lookup(Ref, user).
+
+to_str(X) ->
+    lists:flatten(io_lib:format("~p", [X])).
+
+out(Arg) ->
+    {A1,A2,A3} = now(),
+    random:seed(A1, A2, A3),
+    Rand      = random:uniform(1000),
+    RandLs    = to_str(Rand),
+    Ab        = #user{name="timmi", age=Rand},
+    {ok, Ref} = dets:open_file(playlist, [{type, bag}]),
+    dets:insert(Ref, Ab),
+    Xy = query_db(Ref),
+    dets:close(Ref),
+    {html, "__<br>" ++ create_from(Xy)}.
+
+</erl>
+
+</html>
