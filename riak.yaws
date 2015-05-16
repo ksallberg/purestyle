@@ -5,14 +5,16 @@
 <erl>
 
 out(Arg) ->
-    {ok, Pid} = riakc_pb_socket:start_link("127.0.0.1", 8087),
-%    AnotherObject = riakc_obj:new(<<"my bucket">>, <<"my key">>, <<"my binary data">>),
-%    riakc_pb_socket:put(Pid, AnotherObject, [{w, 2}, {dw, 1}, return_body]),
-    %{ok, {riakc_obj, Bucket, Key, _A, _B, _,  _}} = riakc_pb_socket:get(Pid, <<"my bucket">>, <<"my key">>),
+    {ok, Pid}     = riakc_pb_socket:start_link("127.0.0.1", 8087),
+    AnotherObject = riakc_obj:new(<<"my bucket">>, <<"my key2">>, <<"my binary data">>),
+    riakc_pb_socket:put(Pid, AnotherObject, [{w, 2}, {dw, 1}, return_body]),
+    {ok, {riakc_obj, Bucket, Key, _Bin, [{_Riak, Value}], _, _}}
+        = riakc_pb_socket:get(Pid, <<"my bucket">>, <<"my key2">>),
     try
-    	XY = code:which(riakc_pb_socket),
-        io:format("jak!"),
-        {html, "ha" ++ XY ++ code:lib_dir()}
+        Content = "Bucket: " ++ binary_to_list(Bucket) ++ "<br/>" ++
+                  "Key: "    ++ binary_to_list(Key)    ++ "<br/>" ++
+                  "Value: "  ++ binary_to_list(Value)  ++ "<br/>",
+        {html, Content}
     catch x:y ->
 	{html, "hejawd"}
     end.
