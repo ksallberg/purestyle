@@ -1,0 +1,22 @@
+<html>
+
+<h1>Musiklistan - murvelsork</h1>
+
+<erl>
+
+out(Arg) ->
+    {ok, Pid} = riakc_pb_socket:start_link("127.0.0.1", 8087),
+%    AnotherObject = riakc_obj:new(<<"my bucket">>, <<"my key">>, <<"my binary data">>),
+%    riakc_pb_socket:put(Pid, AnotherObject, [{w, 2}, {dw, 1}, return_body]),
+    %{ok, {riakc_obj, Bucket, Key, _A, _B, _,  _}} = riakc_pb_socket:get(Pid, <<"my bucket">>, <<"my key">>),
+    try
+    	XY = code:which(riakc_pb_socket),
+        io:format("jak!"),
+        {html, "ha" ++ XY ++ code:lib_dir()}
+    catch x:y ->
+	{html, "hejawd"}
+    end.
+
+</erl>
+
+</html>
