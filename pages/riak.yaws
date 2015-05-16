@@ -5,40 +5,20 @@
 <erl>
 
 -define(b2l, binary_to_list).
--define(BUCKET, <<"my bucket">>).
 
 out(Arg) ->
-    {ok, Pid}     = riakc_pb_socket:start_link("127.0.0.1", 8087),
-
-    Object        = riakc_obj:new(?BUCKET,
-                                  <<"nyckel">>,
-                                  <<"lite data">>),
-    riakc_pb_socket:put(Pid, Object, [{w, 2}, {dw, 1}, return_body]),
-
-    AnotherObject = riakc_obj:new(?BUCKET,
-                                  <<"my key2">>,
-                                  <<"my binary data">>),
-    riakc_pb_socket:put(Pid, AnotherObject, [{w, 2}, {dw, 1}, return_body]),
-
-    {ok, {riakc_obj, Bucket, Key, _Bin, [{_Riak, Value}], _, _}}
-        = riakc_pb_socket:get(Pid, ?BUCKET, <<"my key2">>),
-
-    {ok, {riakc_obj, _, Key2, _, [{_, Value2}], _, _}}
-        = riakc_pb_socket:get(Pid, ?BUCKET, <<"nyckel">>),
-
-    try
-        Content = "Bucket: " ++ ?b2l(Bucket) ++ "<br/>" ++
-                  "Key: "    ++ ?b2l(Key)    ++ "<br/>" ++
-                  "Value: "  ++ ?b2l(Value)  ++ "<br/>" ++
-                  "</br>"    ++
-                  "Key2: "   ++ ?b2l(Key2)   ++ "<br/>" ++
-                  "Value2: " ++ ?b2l(Value2) ++ "<br/>",
-        {html, Content}
-
-    catch x:y ->
-        {html, "Error!"}
-
-    end.
+    Key  = <<"Hello">>,
+    Key2 = <<"Bye">>,
+    musiklistan:put_kv(Key, <<"The content">>),
+    musiklistan:put_kv(Key2, <<"Second content">>),
+    Value   = musiklistan:get_v(Key),
+    Value2  = musiklistan:get_v(Key2),
+    Content = "Key: "    ++ ?b2l(Key)    ++ "<br/>" ++
+              "Value: "  ++ ?b2l(Value)  ++ "<br/>" ++
+              "</br>"    ++
+              "Key2: "   ++ ?b2l(Key2)   ++ "<br/>" ++
+              "Value2: " ++ ?b2l(Value2) ++ "<br/>",
+    {html, Content}.
 
 </erl>
 
