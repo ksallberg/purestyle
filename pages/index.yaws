@@ -1,0 +1,11 @@
+<html>
+    <body>
+        Hello!
+        <br/>
+        <a href="dets.yaws">DETS test</a>
+        <br/>
+        <a href="riak.yaws">RIAK test</a>
+        <br/>
+        <a href="testa.yaws">Module test</a>
+    </body>
+</html>

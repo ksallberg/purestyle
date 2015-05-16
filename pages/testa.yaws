@@ -1,0 +1,12 @@
+<html>
+
+<h1>Erlang module test?</h1>
+
+<erl>
+
+out(Arg) ->
+    {html, test:hmm()}.
+
+</erl>
+
+</html>
