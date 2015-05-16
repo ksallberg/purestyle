@@ -1,8 +1,7 @@
-%% run as: application:start(rest_server)
 {application, musiklistan,
- [{description,  "Rest server"},
+ [{description,  "Music playlist YAWS app"},
   {vsn,          "1.0"},
-  {id,           "rest_server"},
+  {id,           "musiklistan"},
   {modules,      [musiklistan,
                   test]
   },
