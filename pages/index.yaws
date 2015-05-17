@@ -6,6 +6,8 @@
         <br/>
         <a href="riak.yaws">RIAK test</a>
         <br/>
+        <a href="riak2.yaws">RIAK test 2</a>
+        <br/>
         <a href="testa.yaws">Module test</a>
     </body>
 </html>
