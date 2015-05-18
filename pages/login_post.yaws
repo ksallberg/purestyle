@@ -1,12 +1,30 @@
 <html>
 
     <head>
+
         <title>Hello!</title>
+
     </head>
 
-
     <body>
-        <h1>Handle login post!</h1>
+
+        <erl>
+
+            out(A) ->
+                PostVars = yaws_api:parse_post(A),
+
+                {_, Username} = lists:keyfind("username", 1, PostVars),
+                {_, Password} = lists:keyfind("password", 1, PostVars),
+
+                case musiklistan:check_login(Username, Password) of
+                    login_fail ->
+                        {html, "Login gick inte bra..."};
+                    {login_ok, Cookie} ->
+                        [{redirect, "/playlists.yaws"}, Cookie]
+                end.
+
+        </erl>
+
     </body>
 
 </html>

@@ -1,29 +1,36 @@
 -module(musiklistan).
--export([put_kv/2, get_v/1]).
+-export([reg_user/2,
+         check_login/2
+        ]).
 
+-define(l2b, list_to_binary).
 -define(b2l, binary_to_list).
--define(BUCKET, <<"my bucket">>).
--define(localhost, "127.0.0.1").
--define(RIAK_PORT, 8087).
 
-riak_connect() ->
-    {ok, Pid} = riakc_pb_socket:start_link(?localhost, ?RIAK_PORT),
-    Pid.
+-record(usercookie, {username, times=0}).
 
-riak_disconnect(Pid) ->
-    riakc_pb_socket:stop(Pid).
+reg_user(Username, Password) ->
+    Bucket = <<"users">>,
+    case mldb:get_v(Bucket, ?l2b(Username)) of
+        no_such_key ->
+            mldb:put_kv(Bucket, ?l2b(Username), ?l2b(Password)),
+            user_registered;
+        _ ->
+            user_already_existing
+    end.
 
-put_kv(Key, Value) ->
-    Pid       = riak_connect(),
-    Object    = riakc_obj:new(?BUCKET,
-                              Key,
-                              Value),
-    riakc_pb_socket:put(Pid, Object, [{w, 2}, {dw, 1}, return_body]),
-    riak_disconnect(Pid).
-
-get_v(Key) ->
-    Pid = riak_connect(),
-    {ok, {riakc_obj, _Bucket, _Key, _Bin, [{_Riak, Value}], _, _}}
-        = riakc_pb_socket:get(Pid, ?BUCKET, Key),
-    riak_disconnect(Pid),
-    Value.
+check_login(Username, Password) ->
+    Bucket = <<"users">>,
+    case mldb:get_v(Bucket, ?l2b(Username)) of
+        no_such_key -> login_fail;
+        DBPassword  ->
+            case ?b2l(DBPassword) == Password of
+                false -> login_fail;
+                true  ->
+                    CookieRecord = #usercookie{username=Username},
+                    Cookie       = yaws_api:new_cookie_session(CookieRecord),
+                    C = yaws_api:set_cookie("usersession",
+                                            Cookie,
+                                            [{path, "/"}]),
+                    {login_ok, C}
+            end
+    end.

@@ -1,11 +1,6 @@
 <html>
-
-    <head>
-        <title>Hello!</title>
-    </head>
-
     <body>
-         <form method="post" action="login_post.yaws">
+        <form method="post" action="register_post.yaws">
             Avandarnamn:
             <br/>
             <input name="username" type="text"/>
@@ -17,5 +12,4 @@
             <input type="submit"/>
         </form>
     </body>
-
 </html>

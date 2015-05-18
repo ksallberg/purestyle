@@ -3,7 +3,9 @@
   {vsn,          "1.0"},
   {id,           "musiklistan"},
   {modules,      [musiklistan,
-                  test]
+                  test,
+                  mldb
+                 ]
   },
   {registered,   []},
   {applications, [kernel, stdlib]},

@@ -1,0 +1,21 @@
+<erl>
+
+-record(usercookie, {username, times=0}).
+
+out(A) ->
+    H = A#arg.headers,
+    C = H#headers.cookie,
+    io:format("Hmm: ~p~n", [C]),
+    case yaws_api:find_cookie_val("usersession", C) of
+        [] -> {html, "Logged out already"};
+        Cookie ->
+            case yaws_api:cookieval_to_opaque(Cookie) of
+                {ok, OP} ->
+                    yaws_api:delete_cookie_session(Cookie),
+                    {html, "You are logged OUT."};
+                {error, no_session} ->
+                    {html, "Logged out"}
+            end
+    end.
+
+</erl>

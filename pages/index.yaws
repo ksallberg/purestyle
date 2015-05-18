@@ -1,13 +1,10 @@
 <html>
     <body>
-        Hello!
+        Musiklistan!
         <br/>
-        <a href="dets.yaws">DETS test</a>
+        <a href="register.yaws">Registrera</a>
         <br/>
-        <a href="riak.yaws">RIAK test</a>
+        <a href="login.yaws">Logga in</a>
         <br/>
-        <a href="riak2.yaws">RIAK test 2</a>
-        <br/>
-        <a href="testa.yaws">Module test</a>
     </body>
 </html>
