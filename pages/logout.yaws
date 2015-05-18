@@ -5,7 +5,6 @@
 out(A) ->
     H = A#arg.headers,
     C = H#headers.cookie,
-    io:format("Hmm: ~p~n", [C]),
     case yaws_api:find_cookie_val("usersession", C) of
         [] -> {html, "Logged out already"};
         Cookie ->
