@@ -1,6 +1,8 @@
 <erl>
 
--record(usercookie, {username, times=0}).
+%-record(usercookie, {username, times=0}).
+-include("common.hrl").
+
 
 out(A) ->
     H = A#arg.headers,
