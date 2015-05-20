@@ -2,20 +2,16 @@
 
 -record(employee, {emp_no,
                    name,
-                   salary}
-       ).
+                   salary}).
 
 %% store usernames
 -record(user, {username,
-               password,
-               lists} %% List of listnames
-       ).
+               password}).
 
 %% link username <-> listname
 %% to keep track of all lists
 -record(user_lists, {username,
-                     listname}
-       ).
+                     listname}).
 
 %% Keep all URL'associated with a list
 -record(list, {listname,
