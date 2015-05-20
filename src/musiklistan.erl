@@ -1,8 +1,7 @@
 -module(musiklistan).
 
--export([arg_rewrite/1]).
-
--export([reg_user/2,
+-export([start/0,
+         reg_user/2,
          check_login/2,
          playlist_create/2,
          playlists_get/1
@@ -10,12 +9,11 @@
 
 -include("common.hrl").
 
-arg_rewrite(A) ->
-    io:format("XYXYXYXYXY"),
+start() ->
+    io:format("starting mnesia"),
     mntest:test(),
     mntest:test2(),
-    mntest:test3(),
-    A.
+    mntest:test3().
 
 %% Database schema used for this app:
 %%
