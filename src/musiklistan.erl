@@ -1,7 +1,9 @@
 -module(musiklistan).
 
 -export([reg_user/2,
-         check_login/2
+         check_login/2,
+         playlist_create/2,
+         playlists_get/1
         ]).
 
 -include("common.hrl").
@@ -56,4 +58,17 @@ check_login(Username, Password) ->
                                             [{path, "/"}]),
                     {login_ok, C}
             end
+    end.
+
+playlist_create(Username, Playlist) ->
+    Bucket = ?l2b("user_lists"),
+    mldb:put_kv(Bucket,
+                ?l2b(Username), %%TODO: Better id...
+                ?l2b(Playlist)).
+
+playlists_get(Username) ->
+    Bucket = ?l2b("user_lists"),
+    case mldb:get_v(Bucket, ?l2b(Username)) of
+        no_such_key -> [];
+        Ls -> ?b2l(Ls)
     end.

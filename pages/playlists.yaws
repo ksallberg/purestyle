@@ -1,8 +1,9 @@
+<html>
+
 <erl>
 
 %-record(usercookie, {username, times=0}).
 -include("common.hrl").
-
 
 out(A) ->
     H = A#arg.headers,
@@ -13,7 +14,14 @@ out(A) ->
             case yaws_api:cookieval_to_opaque(Cookie) of
                 {ok, OP} ->
                     Username = OP#usercookie.username,
-                    {html, Username ++ ", you are logged in."};
+                    Lists    = musiklistan:playlists_get(Username),
+                    io:format("Lists: ~s~n", [Lists]),
+%                    FLists = lists:foldl(fun(List, Acc) ->
+%                                             Acc ++ ?b2l(List) ++ "<br/>"
+%                                         end,
+%                                         "",
+%                                         Lists),
+                    {html, Username ++ ", you are logged in." ++ Lists};
                 {error, no_session} ->
                     {html, "Not logged in..."}
             end
@@ -21,4 +29,16 @@ out(A) ->
 
 </erl>
 
+<body>
+     <form method="post" action="playlists_post.yaws">
+        Playlist name:
+        <br/>
+        <input name="playlist_name" type="text"/>
+        <br/>
+        <input type="submit"/>
+    </form>
+</body>
+
 <a href="logout.yaws">Logga ut...</a>
+
+</html>
