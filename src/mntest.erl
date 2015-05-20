@@ -5,6 +5,16 @@
                    salary
                   }).
 
+%% store usernames
+-record(user, {username,
+               password,
+               lists} %% List of listnames
+       ).
+
+%% Keep all URL'associated with a list
+-record(list, {listname,
+               url}).
+
 -export([test/0, test2/0, test3/0]).
 
 test() ->
@@ -13,6 +23,12 @@ test() ->
     mnesia:start(),
     mnesia:create_table(employee,
                         [{attributes, record_info(fields, employee)},
+                         {disc_copies, NodeList}]),
+    mnesia:create_table(user,
+                        [{attributes, record_info(fields, user)},
+                         {disc_copies, NodeList}]),
+    mnesia:create_table(list,
+                        [{attributes, record_info(fields, list)},
                          {disc_copies, NodeList}]).
 
 test2() ->
