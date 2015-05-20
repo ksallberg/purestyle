@@ -2,13 +2,19 @@
 
 -record(employee, {emp_no,
                    name,
-                   salary
-                  }).
+                   salary}
+       ).
 
 %% store usernames
 -record(user, {username,
                password,
                lists} %% List of listnames
+       ).
+
+%% link username <-> listname
+%% to keep track of all lists
+-record(user_lists, {username,
+                     listname}
        ).
 
 %% Keep all URL'associated with a list
@@ -26,6 +32,9 @@ test() ->
                          {disc_copies, NodeList}]),
     mnesia:create_table(user,
                         [{attributes, record_info(fields, user)},
+                         {disc_copies, NodeList}]),
+    mnesia:create_table(user_lists,
+                        [{attributes, record_info(fields, user_lists)},
                          {disc_copies, NodeList}]),
     mnesia:create_table(list,
                         [{attributes, record_info(fields, list)},
