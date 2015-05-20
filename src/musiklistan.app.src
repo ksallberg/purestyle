@@ -1,0 +1,8 @@
+{application, musiklistan,
+ [{description,"Yaws applications handler"},
+  {vsn, "1"},
+  {modules,[]},
+  {registered, [yapp_handler]},
+  {mod,{musiklistan,[]}},
+  {env, []},
+  {applications,[kernel, stdlib, yaws]}]}.

@@ -1,5 +1,7 @@
 -module(musiklistan).
 
+-export([arg_rewrite/1]).
+
 -export([reg_user/2,
          check_login/2,
          playlist_create/2,
@@ -7,6 +9,13 @@
         ]).
 
 -include("common.hrl").
+
+arg_rewrite(A) ->
+    io:format("XYXYXYXYXY"),
+    mntest:test(),
+    mntest:test2(),
+    mntest:test3(),
+    A.
 
 %% Database schema used for this app:
 %%
