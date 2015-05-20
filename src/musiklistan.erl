@@ -30,11 +30,11 @@
                      listnames}).
 
 %% 3) Actual list (associated with a user) bucket: user2_list_rock
-%% ----------------------------------------------------------
-%% | username | listname | urls                             |
-%% ----------------------------------------------------------
-%% | someuser | rock     | [http://www.youtube.com/jwdaijd] |
-%% ----------------------------------------------------------
+%% --------------------------------------------------------
+%% | username_listname | urls                             |
+%% --------------------------------------------------------
+%% | someuser_rock     | [http://www.youtube.com/jwdaijd] |
+%% --------------------------------------------------------
 -record(list, {username_listname,
                urls}).
 
@@ -56,13 +56,6 @@ start() ->
                         [{attributes, record_info(fields, list)},
                          {disc_copies, NodeList}]),
     io:format("starting mnesia").
-
-%% 3) Actual list (associated with a user) bucket: user2_list_rock
-%% ---------------------------------------
-%% | id | URL                            |
-%% ---------------------------------------
-%% | 1  | http://www.youtube.com/jwdaijd |
-%% ---------------------------------------
 
 get_user(Username) ->
     F = fun() ->
