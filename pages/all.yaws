@@ -2,7 +2,7 @@
 
 format_playlist(Ls) ->
     lists:foldl(fun(Song, Acc) ->
-                   Acc ++ "<a href=\"" ++ Song ++ "\">" ++ Song ++ "</a>"
+                   Acc ++ "<a href=\"" ++ Song ++ "\">" ++ Song ++ "</a><br/>"
                 end,
                 "",
                 Ls).
