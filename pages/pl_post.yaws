@@ -1,0 +1,25 @@
+<erl>
+
+-include("common.hrl").
+out(A) ->
+    PostVars = yaws_api:parse_post(A),
+
+    H = A#arg.headers,
+    C = H#headers.cookie,
+
+    case yaws_api:find_cookie_val("usersession", C) of
+        [] -> {html, "You need to log in!"};
+        Cookie ->
+            case yaws_api:cookieval_to_opaque(Cookie) of
+                {ok, OP} ->
+                    Username = OP#usercookie.username,
+                    {_, Playlist} = lists:keyfind("playlist", 1, PostVars),
+                    {_, Songname} = lists:keyfind("song_name", 1, PostVars),
+                    musiklistan:add_song(Username, Playlist, Songname),
+                    {redirect, "pl.yaws?list=" ++ Playlist};
+                {error, no_session} ->
+                    {html, "Not logged in..."}
+            end
+    end.
+
+</erl>

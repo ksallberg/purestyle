@@ -6,7 +6,7 @@
 -include("common.hrl").
 
 add_link(Link) ->
-    "<a href=\"playlist.yaws?list="++Link++"\">" ++ Link ++ "</a>".
+    "<a href=\"pl.yaws?list="++Link++"\">" ++ Link ++ "</a>".
 
 out(A) ->
     H = A#arg.headers,

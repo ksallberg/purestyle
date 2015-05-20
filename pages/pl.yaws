@@ -1,0 +1,59 @@
+<erl>
+
+-include("common.hrl").
+
+add_link(Link) ->
+    "<a href=\""++Link++"\">" ++ Link ++ "</a>".
+
+out(A) ->
+    PostVars = yaws_api:parse_post(A),
+
+    Query = A#arg.querydata,
+    H = A#arg.headers,
+    C = H#headers.cookie,
+    io:format("okok ~p~n", [Query]),
+
+    case yaws_api:find_cookie_val("usersession", C) of
+        [] -> {html, "You need to log in!"};
+        Cookie ->
+            case yaws_api:cookieval_to_opaque(Cookie) of
+                {ok, OP} ->
+                    Username = OP#usercookie.username,
+                    Listname = lists:nthtail(5, Query),
+                    Songs    = musiklistan:playlist_get(Username, Listname),
+                    FLists = lists:foldl(fun(List, Acc) ->
+                                             Acc ++ add_link(List) ++ "<br/>"
+                                         end,
+                                         "",
+                                         Songs),
+                    {html, "<h1>Songs</h1><br/>" ++ FLists};
+                {error, no_session} ->
+                    {html, "Not logged in..."}
+            end
+    end.
+
+</erl>
+
+<body>
+
+     <form method="post" action="pl_post.yaws">
+
+     <erl>
+        out(A) ->
+            Query = A#arg.querydata,
+            Listname = lists:nthtail(5, Query),
+            {html, "<input type=\"hidden\" name=\"playlist\" value=\""
+                   ++ Listname ++ "\"/>"}.
+
+     </erl>
+
+     <h1>Add song to playlist</h1>
+        Song name:
+        <br/>
+        <input name="song_name" type="text"/>
+        <br/>
+        <input type="submit"/>
+    </form>
+</body>
+
+<a href="playlists.yaws">Tillbaka...</a>

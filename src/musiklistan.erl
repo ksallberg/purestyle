@@ -4,21 +4,39 @@
          reg_user/2,
          check_login/2,
          playlist_create/2,
-         playlists_get/1
+         playlists_get/1,
+         playlist_get/2,
+         add_song/3
         ]).
 
-%% store usernames
+%%% 1) All users bucket
+%% -----------------------
+%% | username | password |
+%% -----------------------
+%% | someuser | ******   |
+%% | user2    | ***      |
+%% -----------------------
 -record(user, {username,
                password}).
 
-%% link username <-> listname
-%% to keep track of all lists
+%%% 2) All lists of a user: (example bucket name: user2_lists)
+%% ----------------------------
+%% | username | listnames     |
+%% ----------------------------
+%% | user2  | [rock]          |
+%% | user2  | [techno, house] |
+%% ----------------------------
 -record(user_lists, {username,
-                     listname}).
+                     listnames}).
 
-%% Keep all URL'associated with a list
--record(list, {listname,
-               url}).
+%% 3) Actual list (associated with a user) bucket: user2_list_rock
+%% ----------------------------------------------------------
+%% | username | listname | urls                             |
+%% ----------------------------------------------------------
+%% | someuser | rock     | [http://www.youtube.com/jwdaijd] |
+%% ----------------------------------------------------------
+-record(list, {username_listname,
+               urls}).
 
 -export([get_user/1]).
 
@@ -39,24 +57,6 @@ start() ->
                          {disc_copies, NodeList}]),
     io:format("starting mnesia").
 
-%% Database schema used for this app:
-%%
-%% 1) All users bucket
-%% -----------------------
-%% | username | password |
-%% -----------------------
-%% | someuser | ******   |
-%% | user2    | ***      |
-%% -----------------------
-%%
-%% 2) All lists of a user: (example bucket name: user2_lists)
-%% -----------------
-%% | id | listname |
-%% -----------------
-%% | 1  | rock     |
-%% | 2  | techno   |
-%% -----------------
-%%
 %% 3) Actual list (associated with a user) bucket: user2_list_rock
 %% ---------------------------------------
 %% | id | URL                            |
@@ -108,14 +108,14 @@ check_login(Username, Password) ->
 
 playlist_create(Username, Playlist) ->
     PrevLists = playlists_get(Username),
-    List = #user_lists{username = Username,
-                       listname = PrevLists ++ [Playlist]},
+    List = #user_lists{username  = Username,
+                       listnames = PrevLists ++ [Playlist]},
     put_obj(List).
 
 playlists_get(Username) ->
     F = fun() ->
-            mnesia:select(user_lists, [{#user_lists{username = '$1',
-                                                    listname = '$2'},
+            mnesia:select(user_lists, [{#user_lists{username  = '$1',
+                                                    listnames = '$2'},
                                        [{'==', '$1', Username}],
                                        ['$2']
                                       }])
@@ -124,3 +124,22 @@ playlists_get(Username) ->
         {atomic, []}   -> [];
         {atomic, [Ls]} -> Ls
     end.
+
+playlist_get(Username, Playlist) ->
+    F = fun() ->
+            mnesia:select(list, [{#list{username_listname = '$1',
+                                        urls = '$2'},
+                                 [{'==', '$1', Username ++ Playlist}],
+                                 ['$2']
+                                }])
+        end,
+    case mnesia:transaction(F) of
+        {atomic, []}   -> [];
+        {atomic, [Ls]} -> Ls
+    end.
+
+add_song(Username, Playlist, Song) ->
+    PrevSongs = playlist_get(Username, Playlist),
+    List = #list{username_listname=Username ++ Playlist,
+                 urls=PrevSongs++[Song]},
+    put_obj(List).
