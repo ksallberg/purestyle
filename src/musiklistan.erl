@@ -6,7 +6,8 @@
          playlist_create/2,
          playlists_get/1,
          playlist_get/2,
-         add_song/3
+         add_song/3,
+         get_users/0
         ]).
 
 %%% 1) All users bucket
@@ -56,6 +57,16 @@ start() ->
                         [{attributes, record_info(fields, list)},
                          {disc_copies, NodeList}]),
     io:format("starting mnesia").
+
+get_users() ->
+    F = fun() ->
+            mnesia:select(user, [{#user{username = '$1',
+                                        _ = '_'},
+                                 [],
+                                 ['$1']
+                                }])
+        end,
+    mnesia:transaction(F).
 
 get_user(Username) ->
     F = fun() ->

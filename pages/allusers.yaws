@@ -1,0 +1,11 @@
+<erl>
+
+out(A) ->
+    {atomic, Users} = musiklistan:get_users(),
+    FLists = lists:foldl(fun(Name, Acc) ->
+                             Acc ++ Name ++ "</br>"
+                         end,
+                         "",
+                         Users),
+    {html, "<h1>All users: </h1>" ++ FLists}.
+</erl>
