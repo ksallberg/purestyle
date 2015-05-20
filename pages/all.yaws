@@ -1,0 +1,23 @@
+<erl>
+
+format_playlist(Ls) ->
+    lists:foldl(fun(Song, Acc) ->
+                   Acc ++ "<a href=\"" ++ Song ++ "\">" ++ Song ++ "</a>"
+                end,
+                "",
+                Ls).
+
+out(A) ->
+    Query    = A#arg.querydata,
+    Username = lists:nthtail(5, Query),
+    Lists    = musiklistan:playlists_get(Username),
+    Songs = [{Listname, musiklistan:playlist_get(Username, Listname)}
+                || Listname <- Lists],
+    FLists = lists:foldl(fun({Name, Ls}, Acc) ->
+                             Acc ++ "<h1>" ++ Name ++ "</h1>" ++
+                             format_playlist(Ls) ++ "<br/>"
+                         end,
+                         "",
+                         Songs),
+    {html, "<h1>All playlists of " ++ Username ++ "</h1>" ++ FLists}.
+</erl>
