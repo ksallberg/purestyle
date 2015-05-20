@@ -1,9 +1,3 @@
-<erl>
-    out(_) ->
-	R = io_lib:format("~p",[mnesia:system_info()]),
-	{html, R}.
-</erl>
-
 <html>
     <body>
         Musiklistan!

@@ -5,6 +5,9 @@
 %-record(usercookie, {username, times=0}).
 -include("common.hrl").
 
+add_link(Link) ->
+    "<a href=\"playlist.yaws?list="++Link++"\">" ++ Link ++ "</a>".
+
 out(A) ->
     H = A#arg.headers,
     C = H#headers.cookie,
@@ -16,12 +19,13 @@ out(A) ->
                     Username = OP#usercookie.username,
                     Lists    = musiklistan:playlists_get(Username),
                     io:format("Lists: ~s~n", [Lists]),
-%                    FLists = lists:foldl(fun(List, Acc) ->
-%                                             Acc ++ ?b2l(List) ++ "<br/>"
-%                                         end,
-%                                         "",
-%                                         Lists),
-                    {html, Username ++ ", you are logged in." ++ Lists};
+                    FLists = lists:foldl(fun(List, Acc) ->
+                                             Acc ++ add_link(List) ++ "<br/>"
+                                         end,
+                                         "",
+                                         Lists),
+                    {html, Username ++ ", you are logged in.<br/>" ++
+                           "<h1>Lists:</h1>" ++ FLists};
                 {error, no_session} ->
                     {html, "Not logged in..."}
             end
@@ -31,6 +35,7 @@ out(A) ->
 
 <body>
      <form method="post" action="playlists_post.yaws">
+     <h1>Add list</h1>
         Playlist name:
         <br/>
         <input name="playlist_name" type="text"/>

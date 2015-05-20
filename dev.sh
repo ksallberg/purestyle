@@ -1,1 +1,0 @@
-yaws --mnesiadir mnesia

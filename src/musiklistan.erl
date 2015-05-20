@@ -7,13 +7,37 @@
          playlists_get/1
         ]).
 
+%% store usernames
+-record(user, {username,
+               password}).
+
+%% link username <-> listname
+%% to keep track of all lists
+-record(user_lists, {username,
+                     listname}).
+
+%% Keep all URL'associated with a list
+-record(list, {listname,
+               url}).
+
+-export([get_user/1]).
+
 -include("common.hrl").
 
 start() ->
-    io:format("starting mnesia"),
-    mntest:test(),
-    mntest:test2(),
-    mntest:test3().
+    NodeList = [node()],
+    mnesia:create_schema(NodeList),
+    mnesia:start(),
+    mnesia:create_table(user,
+                        [{attributes, record_info(fields, user)},
+                         {disc_copies, NodeList}]),
+    mnesia:create_table(user_lists,
+                        [{attributes, record_info(fields, user_lists)},
+                         {disc_copies, NodeList}]),
+    mnesia:create_table(list,
+                        [{attributes, record_info(fields, list)},
+                         {disc_copies, NodeList}]),
+    io:format("starting mnesia").
 
 %% Database schema used for this app:
 %%
@@ -40,22 +64,37 @@ start() ->
 %% | 1  | http://www.youtube.com/jwdaijd |
 %% ---------------------------------------
 
+get_user(Username) ->
+    F = fun() ->
+            mnesia:select(user, [{#user{username = '$1',
+                                        password = '$2'},
+                                 [{'==', '$1', Username}],
+                                 ['$2']
+                                }])
+        end,
+    mnesia:transaction(F).
+
+put_obj(Obj) ->
+    Fun = fun() ->
+              mnesia:write(Obj)
+          end,
+    mnesia:transaction(Fun).
+
 reg_user(Username, Password) ->
-    Bucket = <<"users">>,
-    case mldb:get_v(Bucket, ?l2b(Username)) of
-        no_such_key ->
-            mldb:put_kv(Bucket, ?l2b(Username), ?l2b(Password)),
+    User = #user{username=Username, password=Password},
+    case get_user(Username) of
+        {atomic, []} ->
+            put_obj(User),
             user_registered;
         _ ->
             user_already_existing
     end.
 
 check_login(Username, Password) ->
-    Bucket = <<"users">>,
-    case mldb:get_v(Bucket, ?l2b(Username)) of
-        no_such_key -> login_fail;
-        DBPassword  ->
-            case ?b2l(DBPassword) == Password of
+    case get_user(Username) of
+        {atomic, []} -> login_fail;
+        {atomic, [DBPassword]}  ->
+            case Password == DBPassword of
                 false -> login_fail;
                 true  ->
                     CookieRecord = #usercookie{username = Username},
@@ -68,14 +107,20 @@ check_login(Username, Password) ->
     end.
 
 playlist_create(Username, Playlist) ->
-    Bucket = ?l2b("user_lists"),
-    mldb:put_kv(Bucket,
-                ?l2b(Username), %%TODO: Better id...
-                ?l2b(Playlist)).
+    PrevLists = playlists_get(Username),
+    List = #user_lists{username = Username,
+                       listname = PrevLists ++ [Playlist]},
+    put_obj(List).
 
 playlists_get(Username) ->
-    Bucket = ?l2b("user_lists"),
-    case mldb:get_v(Bucket, ?l2b(Username)) of
-        no_such_key -> [];
-        Ls -> ?b2l(Ls)
+    F = fun() ->
+            mnesia:select(user_lists, [{#user_lists{username = '$1',
+                                                    listname = '$2'},
+                                       [{'==', '$1', Username}],
+                                       ['$2']
+                                      }])
+        end,
+    case mnesia:transaction(F) of
+        {atomic, []}   -> [];
+        {atomic, [Ls]} -> Ls
     end.

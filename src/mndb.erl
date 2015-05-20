@@ -1,4 +1,4 @@
--module(mntest).
+-module(mndb).
 
 -record(employee, {emp_no,
                    name,
@@ -17,15 +17,13 @@
 -record(list, {listname,
                url}).
 
+-export([get_user/1]).
 -export([test/0, test2/0, test3/0]).
 
 test() ->
     NodeList = [node()],
     mnesia:create_schema(NodeList),
     mnesia:start(),
-    mnesia:create_table(employee,
-                        [{attributes, record_info(fields, employee)},
-                         {disc_copies, NodeList}]),
     mnesia:create_table(user,
                         [{attributes, record_info(fields, user)},
                          {disc_copies, NodeList}]),
@@ -35,6 +33,19 @@ test() ->
     mnesia:create_table(list,
                         [{attributes, record_info(fields, list)},
                          {disc_copies, NodeList}]).
+
+
+get_user(_UserName) ->
+    F = fun() ->
+            mnesia:select(user, [{#user{username = '$1',
+                                        password = '$2'},
+                                 [],
+                                 ['$1']
+                                }])
+        end,
+    mnesia:transaction(F).
+
+
 
 test2() ->
     Emp1 = #employee{emp_no=12, name="kristian", salary=100},
