@@ -7,12 +7,9 @@ add_link(Link) ->
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
-
     Query = A#arg.querydata,
     H = A#arg.headers,
     C = H#headers.cookie,
-    io:format("okok ~p~n", [Query]),
-
     case yaws_api:find_cookie_val("usersession", C) of
         [] -> {html, "You need to log in!"};
         Cookie ->

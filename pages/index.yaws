@@ -5,6 +5,28 @@
         <a href="register.yaws">Registrera</a>
         <br/>
         <a href="login.yaws">Logga in</a>
+
+        <erl>
+
+            %-record(usercookie, {username, times=0}).
+            -include("common.hrl").
+
+            out(A) ->
+                H = A#arg.headers,
+                C = H#headers.cookie,
+                case yaws_api:find_cookie_val("usersession", C) of
+                    [] -> {html, "<--"};
+                    Cookie ->
+                        case yaws_api:cookieval_to_opaque(Cookie) of
+                            {ok, OP} ->
+                                {redirect, "playlists.yaws"};
+                            {error, no_session} ->
+                                {html, "Not logged in..."}
+                        end
+                end.
+
+        </erl>
+
         <br/>
     </body>
 </html>

@@ -18,7 +18,6 @@ out(A) ->
                 {ok, OP} ->
                     Username = OP#usercookie.username,
                     Lists    = musiklistan:playlists_get(Username),
-                    io:format("Lists: ~s~n", [Lists]),
                     FLists = lists:foldl(fun(List, Acc) ->
                                              Acc ++ add_link(List) ++ "<br/>"
                                          end,
