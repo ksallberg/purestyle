@@ -1,3 +1,10 @@
+<head>
+     <link href="hacker.css" rel="stylesheet">
+</head>
+
+
+<body>
+
 <erl>
 
 -include("common.hrl").
@@ -52,7 +59,6 @@ out(A) ->
 
 </erl>
 
-<body>
 
     <form method="post" action="pl_post.yaws">
 
@@ -66,7 +72,7 @@ out(A) ->
         </erl>
 
         <h1>Add track to playlist</h1>
-        track name:
+        track URL:
         <br/>
         <input name="track_name" type="text"/>
         <br/>

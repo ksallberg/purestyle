@@ -1,10 +1,24 @@
 <html>
+    <head>
+        <link href="hacker.css" rel="stylesheet">
+    </head>
     <body>
-        Musiklistan!
+        <img src="fluffy_cat.jpg"/>
+        <h1>Musiklistan!</h1>
+
+         <form method="post" action="login_post.yaws">
+            Avandarnamn:
+            <br/>
+            <input name="username" type="text"/>
+            <br/>
+            Losenord:
+            <br/>
+            <input name="password" type="password"/>
+            <br/>
+            <input type="submit"/>
+        </form>
         <br/>
         <a href="register.yaws">Registrera</a>
-        <br/>
-        <a href="login.yaws">Logga in</a>
 
         <erl>
 

@@ -1,5 +1,14 @@
 <html>
 
+<head>
+     <link href="hacker.css" rel="stylesheet">
+</head>
+
+<body>
+
+<img src="piano_cat.jpg" width="40%" height="40%"/>
+<br/>
+
 <erl>
 
 %-record(usercookie, {username, times=0}).
@@ -32,7 +41,6 @@ out(A) ->
 
 </erl>
 
-<body>
      <form method="post" action="playlists_post.yaws">
      <h1>Add list</h1>
         Playlist name:
