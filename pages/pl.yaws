@@ -2,8 +2,27 @@
 
 -include("common.hrl").
 
+embed_soundcloud(Track) ->
+    "<iframe width=\"100% \" height=\"150\" scrolling=\"no\"" ++
+    "frameborder=\"no\" src=\"https://w.soundcloud.com/player/?url=https%3A" ++
+    "//api.soundcloud.com/tracks/" ++ Track#track.id ++
+    "&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;" ++
+    "show_user=true&amp;show_reposts=false&amp;visual=true\"></iframe>".
+
+embed_youtube(Track) ->
+    "<iframe width=\"560\" height=\"50\" src=\"https://www.youtube.com" ++
+    "/embed/" ++ Track#track.id ++ "\" frameborder=\"0\" allowfullscreen>" ++
+    "</iframe>".
+
 add_link(Track) ->
     "<a href=\"" ++ Track#track.url ++ "\">" ++ Track#track.title ++ "</a>".
+
+format_link(Track) when Track#track.source == youtube ->
+    embed_youtube(Track);
+format_link(Track) when Track#track.source == soundcloud ->
+    embed_soundcloud(Track);
+format_link(Track) ->
+    add_link(Track).
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
@@ -18,11 +37,13 @@ out(A) ->
                     Username = OP#usercookie.username,
                     Listname = lists:nthtail(5, Query),
                     Songs    = musiklistan:playlist_get(Username, Listname),
-                    FLists = lists:foldl(fun(List, Acc) ->
-                                             Acc ++ add_link(List) ++ "<br/>"
-                                         end,
-                                         "",
-                                         Songs),
+                    FLists   =
+                        lists:foldl(fun(Track, Acc) ->
+                                        Acc ++ Track#track.title ++ "<br/>" ++
+                                        format_link(Track) ++ "<br/>"
+                                    end,
+                                    "",
+                                    Songs),
                     {html, "<h1>Songs</h1><br/>" ++ FLists};
                 {error, no_session} ->
                     {html, "Not logged in..."}
@@ -44,7 +65,7 @@ out(A) ->
 
         </erl>
 
-        <h1>Add tracl to playlist</h1>
+        <h1>Add track to playlist</h1>
         track name:
         <br/>
         <input name="track_name" type="text"/>

@@ -87,7 +87,7 @@ put_obj(Obj) ->
     mnesia:transaction(Fun).
 
 reg_user(Username, Password) ->
-    User = #user{username=Username, password=Password},
+    User = #user{username = Username, password = Password},
     case get_user(Username) of
         {atomic, []} ->
             put_obj(User),
@@ -131,42 +131,72 @@ playlists_get(Username) ->
         {atomic, [Ls]} -> Ls
     end.
 
-get_title(Link) ->
+determine_source(Link) ->
     Youtube    = string:str(Link, "youtube.com") > 0,
     SoundCloud = string:str(Link, "soundcloud.com") > 0,
-    if Youtube ->
+    if
+        Youtube    -> youtube;
+        SoundCloud -> soundcloud;
+        true       -> other
+    end.
+
+get_title(Link) ->
+    case determine_source(Link) of
+        youtube ->
            try
                youtube_title(Link)
            catch _:Error ->
                io:format("Parsing youtube error: ~p", [Error]),
                Link
            end;
-       SoundCloud ->
+       soundcloud ->
            try
                soundcloud_title(Link)
            catch _:Error ->
                io:format("Parsing soundcloud error: ~p", [Error]),
                Link
            end;
-       true ->
+       other ->
            Link
     end.
 
 soundcloud_title(Link) ->
+    APIKey    = os:getenv("SOUNDCLOUD"),
     QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
-                "&client_id=YOUR_CLIENT_ID",
+                "&client_id=" ++ APIKey,
     {ok, {_HTTPVer, _Headers, Response}}
         = httpc:request(get, {QueryLink, []}, [], []),
     [_, TitleEtc] = re:split(Response, "title\":\""),
     [Title | _]   = re:split(?b2l(TitleEtc), "\","),
     ?b2l(Title).
 
+get_id(Link) ->
+    case determine_source(Link) of
+        youtube    -> youtube_id(Link);
+        soundcloud -> soundcloud_id(Link);
+        other      -> "no_id"
+    end.
+
+youtube_id(Link) ->
+    [_, VIDEtc] = re:split(Link, "v="),
+    [VID | _]   = re:split(?b2l(VIDEtc), "&"),
+    ?b2l(VID).
+
+soundcloud_id(Link) ->
+    APIKey    = os:getenv("SOUNDCLOUD"),
+    QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
+                "&client_id=" ++ APIKey,
+    {ok, {_HTTPVer, _Headers, Response}}
+        = httpc:request(get, {QueryLink, []}, [], []),
+    [_, IdEtc | _] = re:split(Response, "id\":"),
+    [Id | _]       = re:split(?b2l(IdEtc), ","),
+    ?b2l(Id).
+
 %% Take a link, extract the title that youtube associates with
 %% the title, return both the link and the title
 youtube_title(Link) ->
-    [_, VIDEtc] = re:split(Link, "v="),
-    [VID | _]   = re:split(?b2l(VIDEtc), "&"),
-    QueryLink   = "http://youtube.com/get_video_info?video_id=" ++ ?b2l(VID),
+    VID       = youtube_id(Link),
+    QueryLink = "http://youtube.com/get_video_info?video_id=" ++ VID,
     {ok, {_HTTPVer, _Headers, Response}}
         = httpc:request(get, {QueryLink, []}, [], []),
     [_, TitleEtc] = re:split(Response, "title="),
@@ -198,7 +228,10 @@ playlist_get(Username, Playlist) ->
 
 add_track(Username, Playlist, URL) ->
     PrevTracks = playlist_get(Username, Playlist),
-    NewTrack   = #track{url = URL, title = get_title(URL)},
+    NewTrack   = #track{source = determine_source(URL),
+                        id     = get_id(URL),
+                        url    = URL,
+                        title  = get_title(URL)},
     List = #list{username_listname = Username   ++ Playlist,
                  tracks            = PrevTracks ++ [NewTrack]},
     put_obj(List).

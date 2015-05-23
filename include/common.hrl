@@ -3,4 +3,4 @@
 
 -record(usercookie, {username, times = 0}).
 
--record(track, {url="no url", title="No title"}).
+-record(track, {source=other, id="no_id", url="no_url", title="no_title"}).
