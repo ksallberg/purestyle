@@ -2,8 +2,8 @@
 
 -include("common.hrl").
 
-add_link({URL, LinkName}) ->
-    "<a href=\""++URL++"\">" ++ LinkName ++ "</a>".
+add_link(Track) ->
+    "<a href=\"" ++ Track#track.url ++ "\">" ++ Track#track.title ++ "</a>".
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
@@ -44,10 +44,10 @@ out(A) ->
 
         </erl>
 
-        <h1>Add song to playlist</h1>
-        Song name:
+        <h1>Add tracl to playlist</h1>
+        track name:
         <br/>
-        <input name="song_name" type="text"/>
+        <input name="track_name" type="text"/>
         <br/>
         <input type="submit"/>
     </form>

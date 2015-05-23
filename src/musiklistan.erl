@@ -6,7 +6,7 @@
          playlist_create/2,
          playlists_get/1,
          playlist_get/2,
-         add_song/3,
+         add_track/3,
          get_users/0
         ]).
 
@@ -31,13 +31,13 @@
                      listnames}).
 
 %% 3) Actual list (associated with a user) bucket: user2_list_rock
-%% --------------------------------------------------------
-%% | username_listname | urls                             |
-%% --------------------------------------------------------
-%% | someuser_rock     | [http://www.youtube.com/jwdaijd] |
-%% --------------------------------------------------------
+%% ---------------------------------------------
+%% | username_listname | tracks                |
+%% ---------------------------------------------
+%% | someuser_rock     | [Track, AnotherTrack] |
+%% ---------------------------------------------
 -record(list, {username_listname,
-               urls}).
+               tracks}).
 
 -export([get_user/1]).
 
@@ -131,15 +131,20 @@ playlists_get(Username) ->
         {atomic, [Ls]} -> Ls
     end.
 
-expand_link(Link) ->
+get_title(Link) ->
     case string:str(Link, "youtube.com") of
-        0 -> {Link, Link};
-        _ -> youtube_expand(Link)
+        0 -> Link;
+        _ -> try
+                youtube_title(Link)
+             catch _:Error ->
+                io:format("Parsing youtube error: ~p", [Error]),
+                Link
+             end
     end.
 
 %% Take a link, extract the title that youtube associates with
 %% the title, return both the link and the title
-youtube_expand(Link) ->
+youtube_title(Link) ->
     [_, VIDEtc] = re:split(Link, "v="),
     [VID | _]   = re:split(?b2l(VIDEtc), "&"),
     QueryLink   = "http://youtube.com/get_video_info?video_id=" ++ ?b2l(VID),
@@ -147,24 +152,34 @@ youtube_expand(Link) ->
         = httpc:request(get, {QueryLink, []}, [], []),
     [_, TitleEtc] = re:split(Response, "title="),
     [Title | _]   = re:split(?b2l(TitleEtc), "&"),
-    TitleReplaced = re:replace(?b2l(Title), "\\+", " ", [global,{return,list}]),
-    {Link, TitleReplaced}.
+    lists:foldl(fun({Old, New}, Acc) ->
+                    re:replace(Acc, Old, New, [global,{return,list}])
+                end,
+                ?b2l(Title),
+                [{"\\+", " "}, %% Rules for how to remove html encoded
+                 {"%28", "("},
+                 {"%29", ")"},
+                 {"%C3%A4", "ä"},
+                 {"%C3%B6", "ö"},
+                 {"%2B", "+"}
+                ]).
 
 playlist_get(Username, Playlist) ->
     F = fun() ->
             mnesia:select(list, [{#list{username_listname = '$1',
-                                        urls = '$2'},
+                                        tracks = '$2'},
                                  [{'==', '$1', Username ++ Playlist}],
                                  ['$2']
                                 }])
         end,
     case mnesia:transaction(F) of
         {atomic, []}   -> [];
-        {atomic, [Ls]} -> lists:map(fun expand_link/1, Ls)
+        {atomic, [Ls]} -> Ls
     end.
 
-add_song(Username, Playlist, Song) ->
-    PrevSongs = playlist_get(Username, Playlist),
-    List = #list{username_listname = Username  ++ Playlist,
-                 urls              = PrevSongs ++ [{Song, Song}]},
+add_track(Username, Playlist, URL) ->
+    PrevTracks = playlist_get(Username, Playlist),
+    NewTrack   = #track{url = URL, title = get_title(URL)},
+    List = #list{username_listname = Username   ++ Playlist,
+                 tracks            = PrevTracks ++ [NewTrack]},
     put_obj(List).

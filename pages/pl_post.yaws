@@ -14,8 +14,8 @@ out(A) ->
                 {ok, OP} ->
                     Username = OP#usercookie.username,
                     {_, Playlist} = lists:keyfind("playlist", 1, PostVars),
-                    {_, Songname} = lists:keyfind("song_name", 1, PostVars),
-                    musiklistan:add_song(Username, Playlist, Songname),
+                    {_, Songname} = lists:keyfind("track_name", 1, PostVars),
+                    musiklistan:add_track(Username, Playlist, Songname),
                     {redirect, "pl.yaws?list=" ++ Playlist};
                 {error, no_session} ->
                     {html, "Not logged in..."}

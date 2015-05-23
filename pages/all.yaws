@@ -1,9 +1,9 @@
 <erl>
 
 format_playlist(Ls) ->
-    lists:foldl(fun({URL, SongName}, Acc) ->
-                   Acc ++ "<a href=\"" ++ URL ++ "\">" ++
-                   SongName ++ "</a><br/>"
+    lists:foldl(fun(Track, Acc) ->
+                   Acc ++ "<a href=\"" ++ Track#track.url ++ "\">" ++
+                   Track#track.title ++ "</a><br/>"
                 end,
                 "",
                 Ls).
