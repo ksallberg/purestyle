@@ -44,6 +44,7 @@
 -include("common.hrl").
 
 start() ->
+    io:format("Starting mnesia..."),
     NodeList = [node()],
     mnesia:create_schema(NodeList),
     mnesia:start(),
@@ -56,7 +57,8 @@ start() ->
     mnesia:create_table(list,
                         [{attributes, record_info(fields, list)},
                          {disc_copies, NodeList}]),
-    io:format("starting mnesia").
+    io:format("Starting inets..."),
+    inets:start().
 
 get_users() ->
     F = fun() ->
@@ -129,6 +131,25 @@ playlists_get(Username) ->
         {atomic, [Ls]} -> Ls
     end.
 
+expand_link(Link) ->
+    case string:str(Link, "youtube.com") of
+        0 -> {Link, Link};
+        _ -> youtube_expand(Link)
+    end.
+
+%% Take a link, extract the title that youtube associates with
+%% the title, return both the link and the title
+youtube_expand(Link) ->
+    [_, VIDEtc] = re:split(Link, "v="),
+    [VID | _]   = re:split(?b2l(VIDEtc), "&"),
+    QueryLink   = "http://youtube.com/get_video_info?video_id=" ++ ?b2l(VID),
+    {ok, {_HTTPVer, _Headers, Response}}
+        = httpc:request(get, {QueryLink, []}, [], []),
+    [_, TitleEtc] = re:split(Response, "title="),
+    [Title | _]   = re:split(?b2l(TitleEtc), "&"),
+    TitleReplaced = re:replace(?b2l(Title), "\\+", " ", [global,{return,list}]),
+    {Link, TitleReplaced}.
+
 playlist_get(Username, Playlist) ->
     F = fun() ->
             mnesia:select(list, [{#list{username_listname = '$1',
@@ -139,11 +160,11 @@ playlist_get(Username, Playlist) ->
         end,
     case mnesia:transaction(F) of
         {atomic, []}   -> [];
-        {atomic, [Ls]} -> Ls
+        {atomic, [Ls]} -> lists:map(fun expand_link/1, Ls)
     end.
 
 add_song(Username, Playlist, Song) ->
     PrevSongs = playlist_get(Username, Playlist),
-    List = #list{username_listname=Username ++ Playlist,
-                 urls=PrevSongs++[Song]},
+    List = #list{username_listname = Username  ++ Playlist,
+                 urls              = PrevSongs ++ [{Song, Song}]},
     put_obj(List).

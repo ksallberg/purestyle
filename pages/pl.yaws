@@ -2,8 +2,8 @@
 
 -include("common.hrl").
 
-add_link(Link) ->
-    "<a href=\""++Link++"\">" ++ Link ++ "</a>".
+add_link({URL, LinkName}) ->
+    "<a href=\""++URL++"\">" ++ LinkName ++ "</a>".
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
@@ -33,18 +33,18 @@ out(A) ->
 
 <body>
 
-     <form method="post" action="pl_post.yaws">
+    <form method="post" action="pl_post.yaws">
 
-     <erl>
-        out(A) ->
-            Query = A#arg.querydata,
-            Listname = lists:nthtail(5, Query),
-            {html, "<input type=\"hidden\" name=\"playlist\" value=\""
-                   ++ Listname ++ "\"/>"}.
+        <erl>
+            out(A) ->
+                Query    = A#arg.querydata,
+                Listname = lists:nthtail(5, Query),
+                {html, "<input type=\"hidden\" name=\"playlist\" value=\""
+                       ++ Listname ++ "\"/>"}.
 
-     </erl>
+        </erl>
 
-     <h1>Add song to playlist</h1>
+        <h1>Add song to playlist</h1>
         Song name:
         <br/>
         <input name="song_name" type="text"/>
