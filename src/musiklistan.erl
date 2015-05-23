@@ -132,15 +132,34 @@ playlists_get(Username) ->
     end.
 
 get_title(Link) ->
-    case string:str(Link, "youtube.com") of
-        0 -> Link;
-        _ -> try
-                youtube_title(Link)
-             catch _:Error ->
-                io:format("Parsing youtube error: ~p", [Error]),
-                Link
-             end
+    Youtube    = string:str(Link, "youtube.com") > 0,
+    SoundCloud = string:str(Link, "soundcloud.com") > 0,
+    if Youtube ->
+           try
+               youtube_title(Link)
+           catch _:Error ->
+               io:format("Parsing youtube error: ~p", [Error]),
+               Link
+           end;
+       SoundCloud ->
+           try
+               soundcloud_title(Link)
+           catch _:Error ->
+               io:format("Parsing soundcloud error: ~p", [Error]),
+               Link
+           end;
+       true ->
+           Link
     end.
+
+soundcloud_title(Link) ->
+    QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
+                "&client_id=YOUR_CLIENT_ID",
+    {ok, {_HTTPVer, _Headers, Response}}
+        = httpc:request(get, {QueryLink, []}, [], []),
+    [_, TitleEtc] = re:split(Response, "title\":\""),
+    [Title | _]   = re:split(?b2l(TitleEtc), "\","),
+    ?b2l(Title).
 
 %% Take a link, extract the title that youtube associates with
 %% the title, return both the link and the title
