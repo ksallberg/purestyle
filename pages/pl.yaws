@@ -42,15 +42,16 @@ out(A) ->
             case yaws_api:cookieval_to_opaque(Cookie) of
                 {ok, OP} ->
                     Username = OP#usercookie.username,
-                    Listname = lists:nthtail(5, Query),
-                    Songs    = musiklistan:playlist_get(Username, Listname),
+                    ListId   = lists:nthtail(5, Query),
+                    Playlist = musiklistan:playlist_get(ListId),
+                    Tracks   = Playlist#playlist.tracks,
                     FLists   =
                         lists:foldl(fun(Track, Acc) ->
                                         Acc ++ Track#track.title ++ "<br/>" ++
                                         format_link(Track) ++ "<br/>"
                                     end,
                                     "",
-                                    Songs),
+                                    Tracks),
                     {html, "<h1>Songs</h1><br/>" ++ FLists};
                 {error, no_session} ->
                     {html, "Not logged in..."}

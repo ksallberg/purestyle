@@ -1,0 +1,29 @@
+<head>
+     <link href="hacker.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <h1>Share playlist</h1>
+
+    <form method="post" action="share_pl_post.yaws">
+
+        <erl>
+            -include("common.hrl").
+            out(A) ->
+                Query    = A#arg.querydata,
+                Listname = lists:nthtail(5, Query),
+                {html, "<input type=\"hidden\" name=\"playlist\" value=\""
+                       ++ Listname ++ "\"/>"}.
+
+        </erl>
+
+        Username to share to:
+        <br/>
+        <input name="user_name" type="text"/>
+        <br/>
+        <input type="submit"/>
+    </form>
+</body>
+
+<a href="playlists.yaws">Tillbaka...</a>

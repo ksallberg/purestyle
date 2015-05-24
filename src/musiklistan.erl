@@ -5,41 +5,11 @@
          check_login/2,
          playlist_create/2,
          playlists_get/1,
-         playlist_get/2,
-         add_track/3,
-         get_users/0
+         playlist_get/1,
+         add_track/2,
+         get_users/0,
+         add_playlist_to_user/2
         ]).
-
-%%% 1) All users bucket
-%% -----------------------
-%% | username | password |
-%% -----------------------
-%% | someuser | ******   |
-%% | user2    | ***      |
-%% -----------------------
--record(user, {username,
-               password}).
-
-%%% 2) All lists of a user: (example bucket name: user2_lists)
-%% ----------------------------
-%% | username | listnames     |
-%% ----------------------------
-%% | user2  | [rock]          |
-%% | user2  | [techno, house] |
-%% ----------------------------
--record(user_lists, {username,
-                     listnames}).
-
-%% 3) Actual list (associated with a user) bucket: user2_list_rock
-%% ---------------------------------------------
-%% | username_listname | tracks                |
-%% ---------------------------------------------
-%% | someuser_rock     | [Track, AnotherTrack] |
-%% ---------------------------------------------
--record(list, {username_listname,
-               tracks}).
-
--export([get_user/1]).
 
 -include("common.hrl").
 
@@ -51,11 +21,8 @@ start() ->
     mnesia:create_table(user,
                         [{attributes, record_info(fields, user)},
                          {disc_copies, NodeList}]),
-    mnesia:create_table(user_lists,
-                        [{attributes, record_info(fields, user_lists)},
-                         {disc_copies, NodeList}]),
-    mnesia:create_table(list,
-                        [{attributes, record_info(fields, list)},
+    mnesia:create_table(playlist,
+                        [{attributes, record_info(fields, playlist)},
                          {disc_copies, NodeList}]),
     io:format("Starting inets..."),
     inets:start().
@@ -72,11 +39,7 @@ get_users() ->
 
 get_user(Username) ->
     F = fun() ->
-            mnesia:select(user, [{#user{username = '$1',
-                                        password = '$2'},
-                                 [{'==', '$1', Username}],
-                                 ['$2']
-                                }])
+            mnesia:read(user, Username)
         end,
     mnesia:transaction(F).
 
@@ -87,7 +50,9 @@ put_obj(Obj) ->
     mnesia:transaction(Fun).
 
 reg_user(Username, Password) ->
-    User = #user{username = Username, password = Password},
+    User = #user{username = Username,
+                 info     = #userinfo{password  = Password,
+                                      playlists = []}},
     case get_user(Username) of
         {atomic, []} ->
             put_obj(User),
@@ -99,7 +64,7 @@ reg_user(Username, Password) ->
 check_login(Username, Password) ->
     case get_user(Username) of
         {atomic, []} -> login_fail;
-        {atomic, [DBPassword]}  ->
+        {atomic, [#user{info = #userinfo{password = DBPassword}}]}  ->
             case Password == DBPassword of
                 false -> login_fail;
                 true  ->
@@ -112,23 +77,44 @@ check_login(Username, Password) ->
             end
     end.
 
-playlist_create(Username, Playlist) ->
-    PrevLists = playlists_get(Username),
-    List = #user_lists{username  = Username,
-                       listnames = PrevLists ++ [Playlist]},
-    put_obj(List).
+add_playlist_to_user(PlaylistId, Username) ->
+    {atomic, [User]} = get_user(Username),
+    UserInfo         = User#user.info,
+    Playlists        = UserInfo#userinfo.playlists, %% Old playlists
+    ModUserInfo      = UserInfo#userinfo{playlists = Playlists ++ [PlaylistId]},
+    put_obj(User#user{info=ModUserInfo}).
+
+playlist_create(Username, PlaylistName) ->
+    %% Add the new playlist to an mnesia table
+    PlaylistId = uuid:uuid_to_string(uuid:get_v4()),
+    NewList = #playlist{id     = PlaylistId,
+                        name   = PlaylistName,
+                        tracks = []},
+    put_obj(NewList),
+    %% Add this id to the user
+    add_playlist_to_user(PlaylistId, Username).
+
+%% Get name from playlist id
+name_from_plid(Plid) ->
+    F = fun() ->
+            mnesia:read(playlist, Plid)
+        end,
+    {atomic, [Playlist]} = mnesia:transaction(F),
+    Playlist#playlist.name.
 
 playlists_get(Username) ->
     F = fun() ->
-            mnesia:select(user_lists, [{#user_lists{username  = '$1',
-                                                    listnames = '$2'},
-                                       [{'==', '$1', Username}],
-                                       ['$2']
-                                      }])
+            mnesia:select(user, [{#user{username = '$1',
+                                        info     = '$2'},
+                                 [{'==', '$1', Username}],
+                                 ['$2']
+                                }])
         end,
     case mnesia:transaction(F) of
         {atomic, []}   -> [];
-        {atomic, [Ls]} -> Ls
+        {atomic, [UserInfo]} ->
+            [{Plid, name_from_plid(Plid)} ||
+                Plid <- UserInfo#userinfo.playlists]
     end.
 
 determine_source(Link) ->
@@ -213,25 +199,21 @@ youtube_title(Link) ->
                  {"%2B", "+"}
                 ]).
 
-playlist_get(Username, Playlist) ->
+playlist_get(PlaylistId) ->
     F = fun() ->
-            mnesia:select(list, [{#list{username_listname = '$1',
-                                        tracks = '$2'},
-                                 [{'==', '$1', Username ++ Playlist}],
-                                 ['$2']
-                                }])
+            mnesia:read(playlist, PlaylistId)
         end,
     case mnesia:transaction(F) of
         {atomic, []}   -> [];
-        {atomic, [Ls]} -> Ls
+        {atomic, [Playlist]} -> Playlist
     end.
 
-add_track(Username, Playlist, URL) ->
-    PrevTracks = playlist_get(Username, Playlist),
+add_track(PlaylistId, URL) ->
+    PlayList   = playlist_get(PlaylistId),
+    PrevTracks = PlayList#playlist.tracks,
     NewTrack   = #track{source = determine_source(URL),
                         id     = get_id(URL),
                         url    = URL,
                         title  = get_title(URL)},
-    List = #list{username_listname = Username   ++ Playlist,
-                 tracks            = PrevTracks ++ [NewTrack]},
-    put_obj(List).
+    ModList    = PlayList#playlist{tracks = PrevTracks ++ [NewTrack]},
+    put_obj(ModList).

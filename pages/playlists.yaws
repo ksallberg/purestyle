@@ -14,8 +14,10 @@
 %-record(usercookie, {username, times=0}).
 -include("common.hrl").
 
-add_link(Link) ->
-    "<a href=\"pl.yaws?list="++Link++"\">" ++ Link ++ "</a>".
+add_link({Id, Name}) ->
+    "<a href=\"pl.yaws?list="++Id++"\">" ++ Name ++ "</a>"
+    ++ "_____" ++
+    "<a href=\"share_pl.yaws?list="++Id++"\">Dela listan</a>".
 
 out(A) ->
     H = A#arg.headers,

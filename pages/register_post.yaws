@@ -9,7 +9,13 @@
         Result = musiklistan:reg_user(Username, Password),
         case Result of
             user_registered ->
-                {html, "Anvandaren ar registrerad!"};
+                case musiklistan:check_login(Username, Password) of
+                    login_fail ->
+                        {html, "Registrering gick okej, men login" ++
+                               "gick inte bra..."};
+                    {login_ok, Cookie} ->
+                        [{redirect, "/playlists.yaws"}, Cookie]
+                end;
             user_already_existing ->
                 {html, "Anvandaren upptagen"}
         end.

@@ -12,11 +12,11 @@ out(A) ->
         Cookie ->
             case yaws_api:cookieval_to_opaque(Cookie) of
                 {ok, OP} ->
-                    Username = OP#usercookie.username,
-                    {_, Playlist} = lists:keyfind("playlist_name",
+                    Username    = OP#usercookie.username,
+                    {_, PlaylistName} = lists:keyfind("playlist_name",
                                                   1,
                                                   PostVars),
-                    musiklistan:playlist_create(Username, Playlist),
+                    musiklistan:playlist_create(Username, PlaylistName),
                     {redirect, "playlists.yaws"};
                 {error, no_session} ->
                     {html, "Not logged in..."}

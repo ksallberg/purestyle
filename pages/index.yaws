@@ -3,7 +3,7 @@
         <link href="hacker.css" rel="stylesheet">
     </head>
     <body>
-        <img src="fluffy_cat.jpg"/>
+        <img src="fluffy_cat.jpg" width="50%" height="50%"/>
         <h1>Musiklistan!</h1>
 
          <form method="post" action="login_post.yaws">
