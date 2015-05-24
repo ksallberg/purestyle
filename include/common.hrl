@@ -1,29 +1,31 @@
 -define(l2b, list_to_binary).
 -define(b2l, binary_to_list).
 
+-record(usercookie, {username :: string(),
+                     times = 0}).
+
 %%% 1) All users bucket
-%% -----------------------
-%% | username | password |
-%% -----------------------
-%% | someuser | ******   |
-%% | user2    | ***      |
-%% -----------------------
+%% -------------------
+%% | username | info |
+%% -------------------
+%% | someuser | a    |
+%% | user2    | b    |
+%% -------------------
 -record(user, {username :: string(),
                info     :: userinfo}).
 
-%%% 2) All lists of a user: (example bucket name: user2_lists)
-%% ----------------------------
-%% | id     | playlists       |
-%% ----------------------------
-%% | 34433  | [rock, house]   |
-%% ----------------------------
+-record(userinfo, {password :: string(),
+                   playlists :: [playlist]}).
+
+%%% 2) All playlists: (example bucket name: user2_lists)
+%% --------------------------
+%% | id     | name | tracks |
+%% --------------------------
+%% | 34433  | hest | [a, b] |
+%% --------------------------
 -record(playlist, {id     :: string(),
                    name   :: string(),
                    tracks :: [track]}).
-
--record(usercookie, {username, times = 0}).
-
--record(userinfo, {password, playlists :: [string()]}).
 
 -record(track, {source=other,
                 id="no_id",
