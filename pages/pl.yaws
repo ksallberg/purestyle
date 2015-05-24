@@ -52,7 +52,8 @@ out(A) ->
                                     end,
                                     "",
                                     Tracks),
-                    {html, "<h1>Songs</h1><br/>" ++ FLists};
+                    {html, "<h1>" ++ Playlist#playlist.name ++
+                           "</h1><br/>" ++ FLists};
                 {error, no_session} ->
                     {html, "Not logged in..."}
             end
@@ -60,15 +61,14 @@ out(A) ->
 
 </erl>
 
-
     <form method="post" action="pl_post.yaws">
 
         <erl>
             out(A) ->
                 Query    = A#arg.querydata,
-                Listname = lists:nthtail(5, Query),
+                ListId = lists:nthtail(5, Query),
                 {html, "<input type=\"hidden\" name=\"playlist\" value=\""
-                       ++ Listname ++ "\"/>"}.
+                       ++ ListId ++ "\"/>"}.
 
         </erl>
 
