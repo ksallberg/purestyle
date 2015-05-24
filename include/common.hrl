@@ -14,7 +14,7 @@
 -record(user, {username :: string(),
                info     :: userinfo}).
 
--record(userinfo, {password :: string(),
+-record(userinfo, {password  :: string(),
                    playlists :: [playlist]}).
 
 %%% 2) All playlists: (example bucket name: user2_lists)
@@ -27,7 +27,7 @@
                    name   :: string(),
                    tracks :: [track]}).
 
--record(track, {source=other,
-                id="no_id",
-                url="no_url",
-                title="no_title"}).
+-record(track, {source = other,
+                id     = "no_id",
+                url    = "no_url",
+                title  = "no_title"}).
