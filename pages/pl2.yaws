@@ -1,0 +1,69 @@
+<head>
+     <link href="hacker.css" rel="stylesheet">
+     <script src="playlist.js"></script>
+</head>
+
+
+<body>
+
+<erl>
+
+-include("common.hrl").
+
+add_link(Track) ->
+    "<a href=\"" ++ Track#track.url ++ "\">" ++ "<---" ++ "</a>".
+
+format_link(Track) ->
+    add_link(Track).
+
+out(A) ->
+    PostVars = yaws_api:parse_post(A),
+    Query = A#arg.querydata,
+    H = A#arg.headers,
+    C = H#headers.cookie,
+    case yaws_api:find_cookie_val("usersession", C) of
+        [] -> {html, "You need to log in!"};
+        Cookie ->
+            case yaws_api:cookieval_to_opaque(Cookie) of
+                {ok, OP} ->
+                    Username = OP#usercookie.username,
+                    ListId   = lists:nthtail(5, Query),
+                    Playlist = musiklistan:playlist_get(ListId),
+                    Tracks   = Playlist#playlist.tracks,
+                    FLists   =
+                        lists:foldl(fun(Track, Acc) ->
+                                        Acc ++ Track#track.title ++
+                                        format_link(Track) ++ "<br/>"
+                                    end,
+                                    "",
+                                    Tracks),
+                    {html, "<h1>" ++ Playlist#playlist.name ++
+                           "</h1><br/>" ++ FLists};
+                {error, no_session} ->
+                    {html, "Not logged in..."}
+            end
+    end.
+
+</erl>
+
+    <form method="post" action="pl_post.yaws">
+
+        <erl>
+            out(A) ->
+                Query    = A#arg.querydata,
+                ListId = lists:nthtail(5, Query),
+                {html, "<input type=\"hidden\" name=\"playlist\" value=\""
+                       ++ ListId ++ "\"/>"}.
+
+        </erl>
+
+        <h1>Add track to playlist</h1>
+        track URL:
+        <br/>
+        <input name="track_name" type="text"/>
+        <br/>
+        <input type="submit"/>
+    </form>
+</body>
+
+<a href="playlists.yaws">Tillbaka...</a>
