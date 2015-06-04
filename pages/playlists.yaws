@@ -15,9 +15,11 @@
 -include("common.hrl").
 
 add_link({Id, Name}) ->
-    "<a href=\"pl.yaws?list="++Id++"\">" ++ Name ++ "</a>"
-    ++ "_____" ++
-    "<a href=\"share_pl.yaws?list="++Id++"\">Dela listan</a>".
+    "<tr>" ++
+    "<td><a href=\"pl.yaws?list="++Id++"\">" ++ Name ++ "</a></td>" ++
+    "<td><a href=\"pl2.yaws?list="++Id++"\">Simpel vy</a></td>" ++
+    "<td><a href=\"share_pl.yaws?list="++Id++"\">Dela listan</a></td>"
+    ++ "</tr>".
 
 out(A) ->
     H = A#arg.headers,
@@ -32,10 +34,10 @@ out(A) ->
                     FLists = lists:foldl(fun(List, Acc) ->
                                              Acc ++ add_link(List) ++ "<br/>"
                                          end,
-                                         "",
+                                         "<table>",
                                          Lists),
                     {html, Username ++ ", you are logged in.<br/>" ++
-                           "<h1>Lists:</h1>" ++ FLists};
+                           "<h1>Lists:</h1>" ++ FLists ++ "</table>"};
                 {error, no_session} ->
                     {html, "Not logged in..."}
             end

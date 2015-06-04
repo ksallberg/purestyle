@@ -53,7 +53,10 @@ out(A) ->
                 Query    = A#arg.querydata,
                 ListId = lists:nthtail(5, Query),
                 {html, "<input type=\"hidden\" name=\"playlist\" value=\""
-                       ++ ListId ++ "\"/>"}.
+                       ++ ListId ++ "\"/>" ++
+                       "<input type=\"hidden\" name=\"redirect\" value=\"" ++
+                       "pl2.yaws\"/>"
+                }.
 
         </erl>
 
