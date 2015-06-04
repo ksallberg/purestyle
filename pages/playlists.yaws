@@ -32,7 +32,7 @@ out(A) ->
                     Username = OP#usercookie.username,
                     Lists    = musiklistan:playlists_get(Username),
                     FLists = lists:foldl(fun(List, Acc) ->
-                                             Acc ++ add_link(List) ++ "<br/>"
+                                             Acc ++ add_link(List)
                                          end,
                                          "<table>",
                                          Lists),
