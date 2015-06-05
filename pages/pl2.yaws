@@ -58,6 +58,19 @@
             emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
         }
 
+        function goto(trackid) {
+            currentTrack = trackid;
+            for(var i = 0; i < tracks.length; i ++) {
+                document.getElementById(tracks[i].id)
+                        .style.backgroundColor = 'transparent';
+            }
+
+            document.getElementById(tracks[currentTrack].id)
+                    .style.backgroundColor = 'blue';
+
+            emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
+        }
+
         function onPlayerReady(event) {
             event.target.playVideo();
         }
@@ -141,10 +154,10 @@
 
 -include("common.hrl").
 
-add_link(Track) ->
-    "<div id=\""   ++ Track#track.id ++ "\"><a onclick='emit_player(\"" ++
-    Track#track.id ++ "\", \"" ++ atom_to_list(Track#track.source)      ++
-    "\")'>" ++ Track#track.title ++ "</a></div>".
+add_link({Track, Place}) ->
+    PlaceStr = lists:flatten(io_lib:format("~p", [Place])),
+    "<div id=\"" ++ Track#track.id ++ "\"><a onclick='goto("
+    ++ PlaceStr ++ ");'>" ++ Track#track.title ++ "</a></div>".
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
@@ -159,7 +172,11 @@ out(A) ->
                     Username = OP#usercookie.username,
                     ListId   = lists:nthtail(5, Query),
                     Playlist = musiklistan:playlist_get(ListId),
-                    Tracks   = Playlist#playlist.tracks,
+                    Tracks   =
+                        lists:zip(Playlist#playlist.tracks,
+                                  lists:seq(0,
+                                            length(Playlist#playlist.tracks) - 1
+                                           )),
                     FLists   =
                         lists:foldl(fun(Track, Acc) ->
                                         Acc ++ add_link(Track)
