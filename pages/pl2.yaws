@@ -1,6 +1,7 @@
 <head>
     <link href="hacker.css" rel="stylesheet">
     <script src="playlist.js"></script>
+    <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="http://www.youtube.com/player_api"></script>
     <script type="text/javascript">
 
@@ -68,12 +69,31 @@
         }
 
         function getSoundcloud(id) {
-            return "<iframe width=\"100% \" height=\"150\" scrolling=\"no\"" +
-                   "frameborder=\"no\" src=\"https://w.soundcloud.com/player/" +
-                   "?url=https%3A//api.soundcloud.com/tracks/" + id +
-                   "&amp;auto_play=true&amp;hide_related=false&amp;" +
-                   "show_comments=true&amp;show_user=true&amp;show_reposts="+
-                   "false&amp;visual=true\"></iframe>";
+
+            // Remove whatever is in the container
+            var frame = document.getElementById("container");
+            frame.parentNode.removeChild(frame);
+
+            // And create a new container
+            var newDiv = document.createElement('div');
+            newDiv.id = 'container';
+            document.getElementsByTagName('body')[0].appendChild(newDiv);
+
+            var t = "<iframe id=\"sound\" width=\"50% \" height=\"300\" scrolling=\"no\"" +
+                    "frameborder=\"no\" src=\"https://w.soundcloud.com/player/" +
+                    "?url=https%3A//api.soundcloud.com/tracks/" + id +
+                    "&amp;auto_play=true&amp;hide_related=false&amp;" +
+                    "show_comments=true&amp;show_user=true&amp;show_reposts="+
+                    "false&amp;visual=true\"></iframe>";
+
+
+            document.getElementById("container").innerHTML = t;
+
+            //Apply for song finished event
+            var widget = SC.Widget("sound");
+            widget.bind(SC.Widget.Events.FINISH, function(eventData) {
+                nextTrack();
+            });
         }
 
         function emit_player(text, source) {
@@ -84,6 +104,7 @@
                     = getSoundcloud(text);
         }
     </script>
+
 </head>
 
 
