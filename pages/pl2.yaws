@@ -1,29 +1,84 @@
 <head>
     <link href="hacker.css" rel="stylesheet">
     <script src="playlist.js"></script>
-
+    <script src="http://www.youtube.com/player_api"></script>
     <script type="text/javascript">
 
+        <erl>
+
+            -include("common.hrl").
+            out(A) ->
+                Query    = A#arg.querydata,
+                ListId   = lists:nthtail(5, Query),
+                Playlist = musiklistan:playlist_get(ListId),
+                Tracks   = Playlist#playlist.tracks,
+                FLists   =
+                    lists:foldl(fun(Track, Acc) ->
+                                    Acc ++
+                                    "{\"id\": \"" ++ Track#track.id ++ "\", " ++
+                                    "source: \""++
+                                    atom_to_list(Track#track.source) ++
+                                    "\"},"
+                                end,
+                                "var tracks = [",
+                                Tracks),
+                {html, FLists ++ "];"}.
+        </erl>
+
+        var currentTrack = -1;
+        var youtubePlayer;
+
+        function nextTrack() {
+            console.log("next");
+            currentTrack ++;
+            console.log(tracks[currentTrack].id);
+            emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+
+        function onPlayerStateChange(event) {
+            console.log(event);
+            if(event.data == 0)
+                nextTrack();
+        }
+
         function getYoutube(id) {
-            return "<iframe width=\"560\" height=\"50\" src=\"" +
-                   "https://www.youtube.com/embed/" + id +
-                   "\" frameborder=\"0\" allowfullscreen>" +
-                   "</iframe>";
+            // Remove whatever is in the container
+            var frame = document.getElementById("container");
+            frame.parentNode.removeChild(frame);
+
+            // And create a new container
+            var newDiv = document.createElement('div');
+            newDiv.id = 'container';
+            document.getElementsByTagName('body')[0].appendChild(newDiv);
+
+            //Finally, add the youtube player
+            player = new YT.Player('container', {
+                height: '390',
+                width: '640',
+                videoId: id,
+                events: {
+                    'onReady':       onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
         }
 
         function getSoundcloud(id) {
             return "<iframe width=\"100% \" height=\"150\" scrolling=\"no\"" +
                    "frameborder=\"no\" src=\"https://w.soundcloud.com/player/" +
                    "?url=https%3A//api.soundcloud.com/tracks/" + id +
-                   "&amp;auto_play=false&amp;hide_related=false&amp;" +
+                   "&amp;auto_play=true&amp;hide_related=false&amp;" +
                    "show_comments=true&amp;show_user=true&amp;show_reposts="+
                    "false&amp;visual=true\"></iframe>";
         }
 
         function emit_player(text, source) {
             if(source == "youtube")
-                document.getElementById("container").innerHTML
-                    = getYoutube(text);
+                getYoutube(text);
             if(source == "soundcloud")
                 document.getElementById("container").innerHTML
                     = getSoundcloud(text);
@@ -32,7 +87,9 @@
 </head>
 
 
-<body>
+<body onload="nextTrack();">
+
+<div id='container'></div>
 
 <erl>
 
@@ -47,7 +104,6 @@ out(A) ->
     Query = A#arg.querydata,
     H = A#arg.headers,
     C = H#headers.cookie,
-    Container = "<div id='container'>Press song to load player.</div>",
     case yaws_api:find_cookie_val("usersession", C) of
         [] -> {html, "You need to log in!"};
         Cookie ->
@@ -64,7 +120,7 @@ out(A) ->
                                     end,
                                     "",
                                     Tracks),
-                    {html, Container ++ "<h1>" ++ Playlist#playlist.name ++
+                    {html, "<h1>" ++ Playlist#playlist.name ++
                            "</h1><br/>" ++ FLists};
                 {error, no_session} ->
                     {html, "Not logged in..."}
