@@ -1,6 +1,34 @@
 <head>
-     <link href="hacker.css" rel="stylesheet">
-     <script src="playlist.js"></script>
+    <link href="hacker.css" rel="stylesheet">
+    <script src="playlist.js"></script>
+
+    <script type="text/javascript">
+
+        function getYoutube(id) {
+            return "<iframe width=\"560\" height=\"50\" src=\"" +
+                   "https://www.youtube.com/embed/" + id +
+                   "\" frameborder=\"0\" allowfullscreen>" +
+                   "</iframe>";
+        }
+
+        function getSoundcloud(id) {
+            return "<iframe width=\"100% \" height=\"150\" scrolling=\"no\"" +
+                   "frameborder=\"no\" src=\"https://w.soundcloud.com/player/" +
+                   "?url=https%3A//api.soundcloud.com/tracks/" + id +
+                   "&amp;auto_play=false&amp;hide_related=false&amp;" +
+                   "show_comments=true&amp;show_user=true&amp;show_reposts="+
+                   "false&amp;visual=true\"></iframe>";
+        }
+
+        function emit_player(text, source) {
+            if(source == "youtube")
+                document.getElementById("container").innerHTML
+                    = getYoutube(text);
+            if(source == "soundcloud")
+                document.getElementById("container").innerHTML
+                    = getSoundcloud(text);
+        }
+    </script>
 </head>
 
 
@@ -11,16 +39,15 @@
 -include("common.hrl").
 
 add_link(Track) ->
-    "<a href=\"" ++ Track#track.url ++ "\">" ++ "<---" ++ "</a>".
-
-format_link(Track) ->
-    add_link(Track).
+    "<a onclick='emit_player(\"" ++ Track#track.id ++ "\", \"" ++
+    atom_to_list(Track#track.source) ++ "\")'>" ++ "<---" ++ "</a>".
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
     Query = A#arg.querydata,
     H = A#arg.headers,
     C = H#headers.cookie,
+    Container = "<div id='container'>Press song to load player.</div>",
     case yaws_api:find_cookie_val("usersession", C) of
         [] -> {html, "You need to log in!"};
         Cookie ->
@@ -33,11 +60,11 @@ out(A) ->
                     FLists   =
                         lists:foldl(fun(Track, Acc) ->
                                         Acc ++ Track#track.title ++
-                                        format_link(Track) ++ "<br/>"
+                                        add_link(Track) ++ "<br/>"
                                     end,
                                     "",
                                     Tracks),
-                    {html, "<h1>" ++ Playlist#playlist.name ++
+                    {html, Container ++ "<h1>" ++ Playlist#playlist.name ++
                            "</h1><br/>" ++ FLists};
                 {error, no_session} ->
                     {html, "Not logged in..."}
