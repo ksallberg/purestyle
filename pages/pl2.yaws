@@ -30,9 +30,12 @@
         var youtubePlayer;
 
         function nextTrack() {
-            console.log("next");
             currentTrack ++;
-            console.log(tracks[currentTrack].id);
+            var before = document.getElementById(tracks[currentTrack].id)
+                         .innerHTML;
+            var after = "<strong>" + before + "</strong>";
+            document.getElementById(tracks[currentTrack].id).innerHTML = after;
+
             emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
         }
 
@@ -117,8 +120,9 @@
 -include("common.hrl").
 
 add_link(Track) ->
-    "<a onclick='emit_player(\"" ++ Track#track.id ++ "\", \"" ++
-    atom_to_list(Track#track.source) ++ "\")'>" ++ "<---" ++ "</a>".
+    "<div id=\""   ++ Track#track.id ++ "\"><a onclick='emit_player(\"" ++
+    Track#track.id ++ "\", \"" ++ atom_to_list(Track#track.source)      ++
+    "\")'>" ++ Track#track.title ++ "</a></div>".
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
@@ -136,8 +140,7 @@ out(A) ->
                     Tracks   = Playlist#playlist.tracks,
                     FLists   =
                         lists:foldl(fun(Track, Acc) ->
-                                        Acc ++ Track#track.title ++
-                                        add_link(Track) ++ "<br/>"
+                                        Acc ++ add_link(Track)
                                     end,
                                     "",
                                     Tracks),
