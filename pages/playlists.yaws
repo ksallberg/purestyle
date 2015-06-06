@@ -2,6 +2,13 @@
 
 <head>
      <link href="hacker.css" rel="stylesheet">
+
+     <style>
+         table.test td {
+             margin: 0px 20px 0px 0px;
+             padding: 0px 20px 0px 0px;
+         }
+     </style>
 </head>
 
 <body>
@@ -16,9 +23,9 @@
 
 add_link({Id, Name}) ->
     "<tr>" ++
-    "<td><a href=\"pl2.yaws?list="++Id++"\">" ++ Name ++ "____</a></td>" ++
-    "<td><a href=\"share_pl.yaws?list="++Id++"\">Dela listan</a></td>"
-    ++ "</tr>".
+    "<td><a href=\"pl2.yaws?list="++Id++"\">" ++ Name ++ "</a></td>" ++
+    "<td><a href=\"share_pl.yaws?list="++Id++"\">Dela listan</a></td>" ++
+    "<td><a href=\"leave.yaws?list="++Id++"\">Lamna listan</a></td>" ++ "</tr>".
 
 out(A) ->
     H = A#arg.headers,
@@ -33,7 +40,7 @@ out(A) ->
                     FLists = lists:foldl(fun(List, Acc) ->
                                              Acc ++ add_link(List)
                                          end,
-                                         "<table>",
+                                         "<table class=\"test\">",
                                          Lists),
                     {html, Username ++ ", you are logged in.<br/>" ++
                            "<h1>Lists:</h1>" ++ FLists ++ "</table>"};
@@ -45,8 +52,8 @@ out(A) ->
 </erl>
 
      <form method="post" action="playlists_post.yaws">
-     <h1>Add list</h1>
-        Playlist name:
+     <h1>Skapa lista</h1>
+        Spellistans namn:
         <br/>
         <input name="playlist_name" type="text"/>
         <br/>

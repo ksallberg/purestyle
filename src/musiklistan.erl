@@ -8,7 +8,8 @@
          playlist_get/1,
          add_track/2,
          get_users/0,
-         add_playlist_to_user/2
+         add_playlist_to_user/2,
+         leave_list/2
         ]).
 
 -include("common.hrl").
@@ -217,3 +218,11 @@ add_track(PlaylistId, URL) ->
                         title  = get_title(URL)},
     ModList    = PlayList#playlist{tracks = PrevTracks ++ [NewTrack]},
     put_obj(ModList).
+
+leave_list(Username, ListId) ->
+    {atomic, [User]} = get_user(Username),
+    UserInfo         = User#user.info,
+    Playlists        = UserInfo#userinfo.playlists,
+    FilteredLists    = [X || X <- Playlists, X /= ListId],
+    ModUserInfo      = UserInfo#userinfo{playlists = FilteredLists},
+    put_obj(User#user{info=ModUserInfo}).

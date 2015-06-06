@@ -18,6 +18,8 @@
                    playlists :: [playlist]}).
 
 %%% 2) All playlists: (example bucket name: user2_lists)
+%% tracks is a list of strings (id) that corresponds
+%% to track.id
 %% --------------------------
 %% | id     | name | tracks |
 %% --------------------------
@@ -25,7 +27,7 @@
 %% --------------------------
 -record(playlist, {id     :: string(),
                    name   :: string(),
-                   tracks :: [track]}).
+                   tracks :: [string()]}).
 
 -record(track, {source = other,
                 id     = "no_id",

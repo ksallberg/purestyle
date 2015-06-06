@@ -1,5 +1,6 @@
 {application,musiklistan,
-             [{description,"Yaws applications handler"},
+             [{registered,[]},
+              {description,"Yaws applications handler"},
               {vsn,"1"},
               {modules,[mldb,mndb,mntest,musiklistan,test]},
               {mod,{musiklistan,[]}},
