@@ -1,6 +1,5 @@
 <head>
     <link href="hacker.css" rel="stylesheet">
-    <script src="playlist.js"></script>
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="http://www.youtube.com/player_api"></script>
     <script type="text/javascript">
@@ -26,129 +25,12 @@
                 {html, FLists ++ "];"}.
         </erl>
 
-        var currentTrack = -1;
-        var youtubePlayer;
-
-        function nextTrack() {
-
-            currentTrack ++;
-
-            for(var i = 0; i < tracks.length; i ++) {
-                document.getElementById(tracks[i].id)
-                        .style.backgroundColor = 'transparent';
-            }
-
-            document.getElementById(tracks[currentTrack].id)
-                    .style.backgroundColor = 'blue';
-
-            emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
-        }
-
-        function prevTrack() {
-
-            currentTrack --;
-            for(var i = 0; i < tracks.length; i ++) {
-                document.getElementById(tracks[i].id)
-                        .style.backgroundColor = 'transparent';
-            }
-
-            document.getElementById(tracks[currentTrack].id)
-                    .style.backgroundColor = 'blue';
-
-            emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
-        }
-
-        function goto(trackid) {
-            currentTrack = trackid;
-            for(var i = 0; i < tracks.length; i ++) {
-                document.getElementById(tracks[i].id)
-                        .style.backgroundColor = 'transparent';
-            }
-
-            document.getElementById(tracks[currentTrack].id)
-                    .style.backgroundColor = 'blue';
-
-            emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
-        }
-
-        function onPlayerReady(event) {
-            event.target.playVideo();
-        }
-
-        function onPlayerStateChange(event) {
-            console.log(event);
-            if(event.data == 0)
-                nextTrack();
-        }
-
-        function getYoutube(id) {
-            // Remove whatever is in the container
-            var frame = document.getElementById("container");
-            frame.parentNode.removeChild(frame);
-
-            // And create a new container
-            var newDiv = document.createElement('div');
-            newDiv.id = 'container';
-            document.getElementsByTagName('body')[0].appendChild(newDiv);
-
-            //Finally, add the youtube player
-            player = new YT.Player('container', {
-                height: '390',
-                width: '640',
-                videoId: id,
-                events: {
-                    'onReady':       onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
-        function getSoundcloud(id) {
-
-            // Remove whatever is in the container
-            var frame = document.getElementById("container");
-            frame.parentNode.removeChild(frame);
-
-            // And create a new container
-            var newDiv = document.createElement('div');
-            newDiv.id = 'container';
-            document.getElementsByTagName('body')[0].appendChild(newDiv);
-
-            var t = "<iframe id=\"sound\" width=\"50% \" height=\"300\" " +
-                    "scrolling=\"no\"" +
-                    "frameborder=\"no\" src=\"https://w.soundcloud.com/player/"
-                    + "?url=https%3A//api.soundcloud.com/tracks/" + id +
-                    "&amp;auto_play=true&amp;hide_related=false&amp;" +
-                    "show_comments=true&amp;show_user=true&amp;show_reposts="+
-                    "false&amp;visual=true\"></iframe>";
-
-
-            document.getElementById("container").innerHTML = t;
-
-            //Apply for song finished event
-            var widget = SC.Widget("sound");
-            widget.bind(SC.Widget.Events.FINISH, function(eventData) {
-                nextTrack();
-            });
-        }
-
-        function emit_player(text, source) {
-            if(source == "youtube")
-                getYoutube(text);
-            if(source == "soundcloud")
-                document.getElementById("container").innerHTML
-                    = getSoundcloud(text);
-        }
     </script>
-
+    <script src="playlist.js"></script>
 </head>
 
 
 <body onload="nextTrack();">
-
-<a onclick="prevTrack();"><<</a> | <a onclick="nextTrack();">>></a>
-
-<div id='container'></div>
 
 <erl>
 
@@ -156,8 +38,10 @@
 
 add_link({Track, Place}) ->
     PlaceStr = lists:flatten(io_lib:format("~p", [Place])),
-    "<div id=\"" ++ Track#track.id ++ "\"><a onclick='goto("
-    ++ PlaceStr ++ ");'>" ++ Track#track.title ++ "</a></div>".
+    PlaceOut = lists:flatten(io_lib:format("~p", [Place + 1])),
+    "<tr><td width=\"30px\">" ++ PlaceOut ++ ". " ++ "</td><td><div id=\"" ++
+    Track#track.id ++ "\"><a onclick='goto(" ++
+    PlaceStr ++");'>" ++ Track#track.title ++ "</a></div><td></tr>".
 
 out(A) ->
     PostVars = yaws_api:parse_post(A),
@@ -177,14 +61,19 @@ out(A) ->
                                   lists:seq(0,
                                             length(Playlist#playlist.tracks) - 1
                                            )),
+                    Buttons  = "<a onclick=\"prevTrack();\"><<</a> " ++
+                               "| <a onclick=\"nextTrack();\">>></a>",
+                    Holder   = "<div id=\"holder\"><div id=\"container\">" ++
+                               "</div></div>",
                     FLists   =
                         lists:foldl(fun(Track, Acc) ->
                                         Acc ++ add_link(Track)
                                     end,
-                                    "",
+                                    "<table width=\"100%\">",
                                     Tracks),
                     {html, "<h1>" ++ Playlist#playlist.name ++
-                           "</h1><br/>" ++ FLists};
+                           "</br>" ++ Buttons ++ "</br>" ++ Holder ++
+                           "</h1><br/>" ++ FLists ++ "</table>"};
                 {error, no_session} ->
                     {html, "Not logged in..."}
             end
@@ -206,13 +95,13 @@ out(A) ->
 
         </erl>
 
-        <h1>Add track to playlist</h1>
-        track URL:
+        <h1>Lagg till track :)</h1>
+        track URL (youtube eller soundcloud):
         <br/>
         <input name="track_name" type="text"/>
         <br/>
-        <input type="submit"/>
+        <input type="submit" value="Adda"/>
     </form>
-</body>
 
-<a href="playlists.yaws">Tillbaka...</a>
+    <a href="playlists.yaws">Tillbaka...</a>
+</body>
