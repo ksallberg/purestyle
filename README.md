@@ -6,14 +6,15 @@ Compile with:<br/>
 rebar compile
 <br/>
 Append yaws.conf with: <br/>
-include_dir = /home/xxx/yyy/musiklistan/include <br/>
-<br/>
-ebin_dir = /home/xxx/yyy/erlang/musiklistan/ebin <br/>
-ebin_dir = /home/xxx/yyy/uuid/ebin <br/>
-ebin_dir = /home/xxx/yyy/uuid/deps/quickrand/ebin <br/>
-runmod = musiklistan <br/>
-<br/>
+```
+include_dir = /home/xxx/yyy/musiklistan/include
+ebin_dir = /home/xxx/yyy/erlang/musiklistan/ebin
+ebin_dir = /home/xxx/yyy/uuid/ebin
+ebin_dir = /home/xxx/yyy/uuid/deps/quickrand/ebin
+runmod = musiklistan
+```
 
+Virtual server:
 ```
 <server localhost>
     port = 8000
