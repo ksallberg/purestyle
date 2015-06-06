@@ -26,6 +26,7 @@ start() ->
                         [{attributes, record_info(fields, playlist)},
                          {disc_copies, NodeList}]),
     io:format("Starting inets..."),
+    ssl:start(),
     inets:start().
 
 get_users() ->
