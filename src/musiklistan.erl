@@ -9,10 +9,7 @@
          add_track/2,
          get_users/0,
          add_playlist_to_user/2,
-         leave_list/2,
-         hash_salt/1,
-         get_user/1,
-         put_obj/1
+         leave_list/2
         ]).
 
 -include("common.hrl").
