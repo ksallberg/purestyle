@@ -55,7 +55,7 @@ put_obj(Obj) ->
     mnesia:transaction(Fun).
 
 hash_salt(String) ->
-    {ok, [{appsecret, Appsecret}]} = file:consult("src/appsecret.txt"),
+    {ok, [{appsecret, Appsecret}]} = file:consult("appsecret.txt"),
     crypto:hash(sha512, String++Appsecret).
 
 reg_user(Username, PlainPassword) ->
