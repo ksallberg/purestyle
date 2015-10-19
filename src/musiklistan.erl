@@ -9,7 +9,10 @@
          add_track/2,
          get_users/0,
          add_playlist_to_user/2,
-         leave_list/2
+         leave_list/2,
+         hash_salt/1,
+         get_user/1,
+         put_obj/1
         ]).
 
 -include("common.hrl").
@@ -51,7 +54,12 @@ put_obj(Obj) ->
           end,
     mnesia:transaction(Fun).
 
-reg_user(Username, Password) ->
+hash_salt(String) ->
+    {ok, [{appsecret, Appsecret}]} = file:consult("src/appsecret.txt"),
+    crypto:hash(sha512, String++Appsecret).
+
+reg_user(Username, PlainPassword) ->
+    Password = hash_salt(PlainPassword),
     User = #user{username = Username,
                  info     = #userinfo{password  = Password,
                                       playlists = []}},
@@ -63,7 +71,8 @@ reg_user(Username, Password) ->
             user_already_existing
     end.
 
-check_login(Username, Password) ->
+check_login(Username, PlainPassword) ->
+    Password = hash_salt(PlainPassword),
     case get_user(Username) of
         {atomic, []} -> login_fail;
         {atomic, [#user{info = #userinfo{password = DBPassword}}]}  ->
@@ -72,9 +81,9 @@ check_login(Username, Password) ->
                 true  ->
                     CookieRecord = #usercookie{username = Username},
                     Cookie       = yaws_api:new_cookie_session(CookieRecord),
-                    C = yaws_api:set_cookie("usersession",
-                                            Cookie,
-                                            [{path, "/"}]),
+                    C            = yaws_api:set_cookie("usersession",
+                                                       Cookie,
+                                                       [{path, "/"}]),
                     {login_ok, C}
             end
     end.
