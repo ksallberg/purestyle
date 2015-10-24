@@ -24,5 +24,3 @@ Virtual server:
     appmods = <cgi-bin, yaws_appmod_cgi>
 </server>
 ```
-
-Testing Jenkins...
