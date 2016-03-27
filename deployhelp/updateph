@@ -1,0 +1,4 @@
+rm -rf /home/ubuntu/bookingsystemkt
+cp -r /var/lib/jenkins/workspace/planninghive /home/ubuntu/bookingsystemkt
+service planninghive stop
+service planninghive start
