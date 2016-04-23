@@ -29,9 +29,6 @@
     <script src="playlist.js"></script>
 </head>
 
-
-<body onload="nextTrack();">
-
 <erl>
 
 -include("common.hrl").
