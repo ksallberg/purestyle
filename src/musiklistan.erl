@@ -76,8 +76,10 @@ check_login(Username, PlainPassword) ->
             case Password == DBPassword of
                 false -> login_fail;
                 true  ->
+                    Week         = 604800,
                     CookieRecord = #usercookie{username = Username},
-                    Cookie       = yaws_api:new_cookie_session(CookieRecord),
+                    Cookie       = yaws_api:new_cookie_session(CookieRecord,
+                                                               Week*2),
                     C            = yaws_api:set_cookie("usersession",
                                                        Cookie,
                                                        [{path, "/"}]),
