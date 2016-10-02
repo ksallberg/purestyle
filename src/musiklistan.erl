@@ -35,8 +35,6 @@
 
 -include("common.hrl").
 
--define(KEY, <<"abcdefghabcdefgh">>).
--define(IV, <<"12345678abcdefgh">>).
 -define(DB, login_tracker).
 
 init() ->
@@ -109,6 +107,7 @@ handle_js(_, _, _) ->
 
 handle_allusers(_Data, _Parameters, _Headers) ->
     {atomic, Users} = musiklistan:get_users(),
+    io:format("hej~p~n", [Users]),
     {ok, Module} = erlydtl:compile_file("pages/allusers.dtl", allusers),
     {ok, Binary} = Module:render([{users, Users}]),
     Binary.
@@ -296,8 +295,8 @@ put_obj(Obj) ->
     mnesia:transaction(Fun).
 
 hash_salt(String) ->
-    Appsecret = appsecret:get(),
-    crypto:hash(sha512, String++Appsecret).
+    Appsecret = get_appsecret(),
+    crypto:hash(sha512, String ++ Appsecret).
 
 reg_user(Username, PlainPassword) ->
     Password = hash_salt(PlainPassword),
@@ -313,10 +312,12 @@ reg_user(Username, PlainPassword) ->
     end.
 
 check_login(Username, PlainPassword) ->
+    io:format("Username ~p pass ~p", [Username, PlainPassword]),
     Password = hash_salt(PlainPassword),
     case get_user(Username) of
         {atomic, []} -> login_fail;
         {atomic, [#user{info = #userinfo{password = DBPassword}}]} ->
+            io:format("DBPassword: ~p ~p~n", [Password, DBPassword]),
             case Password == DBPassword of
                 false -> login_fail;
                 true  ->
@@ -526,12 +527,28 @@ delete_from_active_users(Username) ->
     end.
 
 encrypt(PlainText) ->
-    En = crypto:block_encrypt(aes_cfb128, ?KEY, ?IV, PlainText),
+    Key = get_cryptkey(),
+    Iv = get_initvec(),
+    En = crypto:block_encrypt(aes_cfb128, Key, Iv, PlainText),
     B64 = base64:encode(En),
     http_uri:encode(binary_to_list(B64)).
 
 decrypt(HtmlEncode) ->
+    Key = get_cryptkey(),
+    Iv = get_initvec(),
     HtmlUnencode = list_to_binary(http_uri:decode(HtmlEncode)),
     UnB64 = base64:decode(HtmlUnencode),
-    Dec = crypto:block_decrypt(aes_cfb128, ?KEY, ?IV, UnB64),
+    Dec = crypto:block_decrypt(aes_cfb128, Key, Iv, UnB64),
     binary_to_list(Dec).
+
+get_appsecret() ->
+    {ok, [#{appsecret := X}]} = file:consult("keys.txt"),
+    X.
+
+get_cryptkey() ->
+    {ok, [#{cryptkey := X}]} = file:consult("keys.txt"),
+    X.
+
+get_initvec() ->
+    {ok, [#{initvec := X}]} = file:consult("keys.txt"),
+    X.

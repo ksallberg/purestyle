@@ -1,0 +1,4 @@
+#{appsecret => "Replace this with your own appsecret",
+  cryptkey  => <<"abcdefghabcdefgh">>,
+  initvec   => <<"12345678abcdefgh">>
+ }.
