@@ -3,5 +3,5 @@
                 "Using Youtube and Soundcloud APIs"},
   {vsn, "1.1"},
   {modules,[]},
-  {mod,{musiklistan,[]}},
+  {mod,{musiklistan_app,[]}},
   {applications,[kernel, stdlib]}]}.
