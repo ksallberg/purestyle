@@ -27,19 +27,11 @@
 
 -behaviour(http_handler).
 
--export([reg_user/2,
-         playlist_create/2,
-         playlists_get/1,
-         playlist_get/1,
-         add_track/2,
-         get_users/0,
-         add_playlist_to_user/2,
-         leave_list/2
-        ]).
-
 -export([ init/0
         , routes/0
         ]).
+
+-compile(export_all).
 
 -include("common.hrl").
 
@@ -116,7 +108,9 @@ handle_js(_, _, _) ->
     Binary.
 
 handle_allusers(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    {atomic, Users} = musiklistan:get_users(),
+    {ok, Module} = erlydtl:compile_file("pages/allusers.dtl", allusers),
+    {ok, Binary} = Module:render([{users, Users}]),
     Binary.
 
 handle_index(_Data, _Parameters, _Headers) ->
@@ -124,9 +118,16 @@ handle_index(_Data, _Parameters, _Headers) ->
     {ok, Binary} = Module:render([{header, <<"Login example">>}]),
     Binary.
 
-handle_leave(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+handle_leave(_Data, Parameters, Headers) ->
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        Username ->
+            {"list", ListId} = lists:keyfind("list", 1, Parameters),
+            musiklistan:leave_list(Username, ListId),
+            #{response      => <<"">>,
+              extra_headers => "Refresh: 0; url=/playlists\r\n"}
+    end.
 
 handle_logout(_, _, Headers) ->
     case is_logged_in(Headers) of
