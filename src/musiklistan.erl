@@ -170,8 +170,7 @@ handle_playlists(_Data, _Parameters, Headers) ->
         false ->
             <<"Not logged in.">>;
         Username ->
-            Lists    = musiklistan:playlists_get(Username),
-
+            Lists = musiklistan:playlists_get(Username),
             {ok, Module} = erlydtl:compile_file("pages/playlists.dtl",
                                                 playlists),
             {ok, Binary} = Module:render([{content, Lists},
@@ -184,9 +183,16 @@ handle_register(_Data, _Parameters, _Headers) ->
     {ok, Binary} = Module:render([]),
     Binary.
 
-handle_share_pl(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+handle_share_pl(_Data, Parameters, Headers) ->
+    {"list", ListId} = lists:keyfind("list", 1, Parameters),
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        _Username ->
+            {ok, Module} = erlydtl:compile_file("pages/share_pl.dtl", share_pl),
+            {ok, Binary} = Module:render([{listid, ListId}]),
+            Binary
+    end.
 
 %% ---- POST handlers
 
@@ -232,9 +238,18 @@ handle_register_post(Data, _Parameters, _Headers) ->
             <<"Anvandaren upptagen">>
     end.
 
-handle_share_pl_post(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+handle_share_pl_post(Data, _Parameters, Headers) ->
+    PostParameters = http_parser:parameters(Data),
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        _MyUsername ->
+            {_, Playlist} = lists:keyfind("playlist",  1, PostParameters),
+            {_, Username} = lists:keyfind("user_name", 1, PostParameters),
+            musiklistan:add_playlist_to_user(Playlist, Username),
+            #{response      => <<"">>,
+              extra_headers => "Refresh: 0; url=playlists\r\n"}
+    end.
 
 handle_pl_post(Data, _Parameters, Headers) ->
     case is_logged_in(Headers) of
@@ -426,12 +441,12 @@ youtube_title(Link) ->
                     re:replace(Acc, Old, New, [global,{return,list}])
                 end,
                 ?b2l(Title),
-                [{"\\+", " "}, %% Rules for how to remove html encoded
-                 {"%28", "("},
-                 {"%29", ")"},
+                [{"\\+",    " "}, %% Rules for how to remove html encoded
+                 {"%28",    "("},
+                 {"%29",    ")"},
                  {"%C3%A4", "ä"},
                  {"%C3%B6", "ö"},
-                 {"%2B", "+"}
+                 {"%2B",    "+"}
                 ]).
 
 playlist_get(PlaylistId) ->
