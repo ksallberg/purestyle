@@ -1,8 +1,7 @@
 {application, musiklistan,
- [{description,"Yaws applications handler"},
-  {vsn, "1"},
+ [{description, "Musiklistan, audio link collector."
+                "Using Youtube and Soundcloud APIs"},
+  {vsn, "1.1"},
   {modules,[]},
   {mod,{musiklistan,[]}},
-  {env, [{yapp_appmods,[{"musiklistan","musiklistan"}]}
-        ]},
-  {applications,[kernel, stdlib, yaws]}]}.
+  {applications,[kernel, stdlib]}]}.
