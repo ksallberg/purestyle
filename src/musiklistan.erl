@@ -69,7 +69,7 @@ routes() ->
     , {html, get,  "/",               fun handle_index/3}
     , {html, get,  "/leave",          fun handle_leave/3}
     , {html, get,  "/logout",         fun handle_logout/3}
-    , {html, get,  "/pl2",            fun handle_pl2/3}
+    , {html, get,  "/playlist",       fun handle_playlist/3}
     , {html, get,  "/playlists",      fun handle_playlists/3}
     , {html, get,  "/register",       fun handle_register/3}
     , {html, get,  "/share_pl",       fun handle_share_pl/3}
@@ -138,7 +138,7 @@ handle_logout(_, _, Headers) ->
                        "Refresh: 0; url=/\r\n"}.
 
 
-handle_pl2(_Data, Parameters, Headers) ->
+handle_playlist(_Data, Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
             <<"Not logged in.">>;
@@ -152,14 +152,15 @@ handle_pl2(_Data, Parameters, Headers) ->
                                     length(Playlist#playlist.tracks) - 1
                                    )),
             Tracks3 =
-                [{Track#track.title, Track#track.id, Id} || {Track, Id} <- Tracks2],
-            %% RecInfo = {record_info, [{playlist, record_info(fields, playlist)}]},
-            {ok, Module} = erlydtl:compile_file("pages/pl2.dtl", pl2),
+                [{Track#track.title, Track#track.id, Id}
+                 || {Track, Id} <- Tracks2],
+            {ok, Module} = erlydtl:compile_file("pages/playlist.dtl", playlist),
             {ok, Binary} = Module:render([{playlist, Playlist},
                                           {tracks,  Tracks},
                                           {tracks3, Tracks3},
                                           {listid, ListId},
-                                          {playlist_name, Playlist#playlist.name}
+                                          {playlist_name,
+                                           Playlist#playlist.name}
                                          ]),
             Binary
     end.
@@ -263,7 +264,7 @@ handle_pl_post(Data, _Parameters, Headers) ->
 
             musiklistan:add_track(Playlist, Songname),
             #{response      => <<"">>,
-              extra_headers => "Refresh: 0; url=pl2" ++
+              extra_headers => "Refresh: 0; url=playlist" ++
                               "?list=" ++ Playlist++"\r\n"}
     end.
 
