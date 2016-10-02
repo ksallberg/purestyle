@@ -1,0 +1,33 @@
+<html>
+
+  <head>
+    <link href="hacker.css" rel="stylesheet">
+
+    <style>
+      table.test td {
+      margin: 0px 20px 0px 0px;
+      padding: 0px 20px 0px 0px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <img src="piano_cat.jpg" width="40%" height="40%"/>
+    <br/>
+
+    {{content}}
+
+    <form method="post" action="playlists_post">
+      <h1>Skapa lista</h1>
+      Spellistans namn:
+      <br/>
+      <input name="playlist_name" type="text"/>
+      <br/>
+      <input type="submit"/>
+    </form>
+  </body>
+
+  <a href="logout">Logga ut...</a>
+
+</html>

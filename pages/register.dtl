@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <link href="hacker.css" rel="stylesheet">
+  </head>
+  <body>
+    <form method="post" action="register_post">
+      Avandarnamn:
+      <br/>
+      <input name="username" type="text"/>
+      <br/>
+      Losenord:
+      <br/>
+      <input name="password" type="password"/>
+      <br/>
+      <input type="submit"/>
+    </form>
+  </body>
+</html>

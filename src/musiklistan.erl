@@ -28,7 +28,6 @@
 -behaviour(http_handler).
 
 -export([reg_user/2,
-         %% check_login/2,
          playlist_create/2,
          playlists_get/1,
          playlist_get/1,
@@ -42,8 +41,6 @@
         , routes/0
         ]).
 
--compile(export_all).
-
 -include("common.hrl").
 
 -define(KEY, <<"abcdefghabcdefgh">>).
@@ -51,6 +48,12 @@
 -define(DB, login_tracker).
 
 init() ->
+    io:format("Starting ets..."),
+
+    ets:new(?DB, [public, set, named_table]),
+    ets:delete_all_objects(?DB),
+    ets:insert(?DB, {active_users, []}),
+
     io:format("Starting mnesia..."),
     NodeList = [node()],
     mnesia:create_schema(NodeList),
@@ -73,7 +76,7 @@ routes() ->
     , {file, get,  "/playlist.js",    fun handle_js/3}
 
     , {html, get,  "/allusers",       fun handle_allusers/3}
-    , {html, get,  "/index",          fun handle_index/3}
+    , {html, get,  "/",               fun handle_index/3}
     , {html, get,  "/leave",          fun handle_leave/3}
     , {html, get,  "/logout",         fun handle_logout/3}
     , {html, get,  "/pl2",            fun handle_pl2/3}
@@ -89,26 +92,26 @@ routes() ->
     , {'*',                           fun handle_wildcard/3}
     ].
 
-%% ---- handlers:
+%% ---- GET handlers:
 
 handle_icon(_, _, _) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
     Binary.
 
 handle_fluffy_cat(_, _, _) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    {ok, Binary} = file:read_file("pages/fluffy_cat.jpg"),
     Binary.
 
 handle_piano_cat(_, _, _) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    {ok, Binary} = file:read_file("pages/piano_cat.jpg"),
     Binary.
 
 handle_css(_, _, _) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    {ok, Binary} = file:read_file("pages/hacker.css"),
     Binary.
 
 handle_js(_, _, _) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    {ok, Binary} = file:read_file("pages/playlist.js"),
     Binary.
 
 handle_allusers(_Data, _Parameters, _Headers) ->
@@ -116,44 +119,106 @@ handle_allusers(_Data, _Parameters, _Headers) ->
     Binary.
 
 handle_index(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    {ok, Module} = erlydtl:compile_file("pages/index.dtl", index),
+    {ok, Binary} = Module:render([{header, <<"Login example">>}]),
     Binary.
 
 handle_leave(_Data, _Parameters, _Headers) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
     Binary.
 
-handle_logout(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+handle_logout(_, _, Headers) ->
+    case is_logged_in(Headers) of
+        false -> ok;
+        Username ->  delete_from_active_users(Username)
+    end,
+    #{response      => <<"">>,
+      extra_headers => "Set-Cookie: username=\r\n"
+                       "Refresh: 0; url=/\r\n"}.
 
 handle_pl2(_Data, _Parameters, _Headers) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
     Binary.
 
-handle_playlists(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+handle_playlists(_Data, _Parameters, Headers) ->
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        Username ->
+            Lists    = musiklistan:playlists_get(Username),
+
+            FLists = lists:foldl(fun(List, Acc) ->
+                                         Acc ++ add_link(List)
+                                 end,
+                                 "<table class=\"test\">",
+                                 Lists),
+            _ = ", you are logged in.<br/>" ++
+                   "<h1>Lists:</h1>" ++ FLists ++ "</table>",
+
+            {ok, Module} = erlydtl:compile_file("pages/playlists.dtl",
+                                                playlists),
+            {ok, Binary} = Module:render([{content, Lists}]),
+            Binary
+    end.
+
+add_link({Id, Name}) ->
+    "<tr>" ++
+    "<td><a href=\"pl2.yaws?list="++Id++"\">" ++ Name ++ "</a></td>" ++
+    "<td><a href=\"share_pl.yaws?list="++Id++"\">Dela listan</a></td>" ++
+    "<td><a href=\"leave.yaws?list="++Id++"\">Lamna listan</a></td>" ++ "</tr>".
 
 handle_register(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    {ok, Module} = erlydtl:compile_file("pages/register.dtl", register),
+    {ok, Binary} = Module:render([]),
     Binary.
 
 handle_share_pl(_Data, _Parameters, _Headers) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
     Binary.
 
-handle_login_post(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+%% ---- POST handlers
 
-handle_playlists_post(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+handle_login_post(Data, _Parameters, _Headers) ->
+    PostParameters = http_parser:parameters(Data),
+    {"username", Username} = lists:keyfind("username", 1, PostParameters),
+    {"password", Password} = lists:keyfind("password", 1, PostParameters),
+    case check_login(Username, Password) of
+        login_fail ->
+            <<"Login failed...">>;
+        {login_ok, Cookie} ->
+            #{response      => <<"">>,
+              extra_headers => Cookie ++
+                  "Refresh: 0; url=playlists\r\n"}
+    end.
 
-handle_register_post(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+handle_playlists_post(Data, _Parameters, Headers) ->
+    PostParameters = http_parser:parameters(Data),
+    Username = is_logged_in(Headers),
+    {_, PlaylistName} = lists:keyfind("playlist_name",
+                                      1,
+                                      PostParameters),
+    playlist_create(Username, PlaylistName),
+    #{response      => <<"">>,
+      extra_headers => "Refresh: 0; url=playlists\r\n"}.
+
+handle_register_post(Data, _Parameters, _Headers) ->
+    PostParameters = http_parser:parameters(Data),
+    {"username", Username} = lists:keyfind("username", 1, PostParameters),
+    {"password", Password} = lists:keyfind("password", 1, PostParameters),
+    Result   = reg_user(Username, Password),
+    case Result of
+        user_registered ->
+            case check_login(Username, Password) of
+                login_fail ->
+                    <<"Registrering gick okej, men login gick inte bra...">>;
+                {login_ok, Cookie} ->
+                    #{response      => <<"">>,
+                      extra_headers => Cookie ++
+                                       "Refresh: 0; url=playlists\r\n"}
+            end;
+        user_already_existing ->
+            <<"Anvandaren upptagen">>
+    end.
 
 handle_share_pl_post(_Data, _Parameters, _Headers) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
@@ -203,24 +268,20 @@ reg_user(Username, PlainPassword) ->
             user_already_existing
     end.
 
-%% check_login(Username, PlainPassword) ->
-%%     Password = hash_salt(PlainPassword),
-%%     case get_user(Username) of
-%%         {atomic, []} -> login_fail;
-%%         {atomic, [#user{info = #userinfo{password = DBPassword}}]} ->
-%%             case Password == DBPassword of
-%%                 false -> login_fail;
-%%                 true  ->
-%%                     Week         = 604800,
-%%                     CookieRecord = #usercookie{username = Username},
-%%                     Cookie       = yaws_api:new_cookie_session(CookieRecord,
-%%                                                                Week*2),
-%%                     C            = yaws_api:set_cookie("usersession",
-%%                                                        Cookie,
-%%                                                        [{path, "/"}]),
-%%                     {login_ok, C}
-%%             end
-%%     end.
+check_login(Username, PlainPassword) ->
+    Password = hash_salt(PlainPassword),
+    case get_user(Username) of
+        {atomic, []} -> login_fail;
+        {atomic, [#user{info = #userinfo{password = DBPassword}}]} ->
+            case Password == DBPassword of
+                false -> login_fail;
+                true  ->
+                    add_to_active_users(Username),
+                    HtmlEncode = encrypt(Username),
+                    C = "Set-Cookie: username=" ++ HtmlEncode ++ "\r\n",
+                    {login_ok, C}
+            end
+    end.
 
 add_playlist_to_user(PlaylistId, Username) ->
     {atomic, [User]} = get_user(Username),
@@ -371,38 +432,6 @@ leave_list(Username, ListId) ->
     ModUserInfo      = UserInfo#userinfo{playlists = FilteredLists},
     put_obj(User#user{info=ModUserInfo}).
 
-set_cookie(_Data, _Parameters, _Headers) ->
-    #{response      => <<"Cookie set!">>,
-      extra_headers => "Set-Cookie: theme=dark\r\n"
-                       "Set-Cookie: user=alice\r\n"}.
-
-has_cookie(_Data, _Parameters, Headers) ->
-    Cookies = [Cookies || {"Cookie", Cookies} <- Headers],
-    Return = case Cookies of
-                 [] ->
-                     <<"No cookie set.">>;
-                 _ ->
-                     list_to_binary("Following cookies are set: " ++ Cookies)
-             end,
-    Return.
-
-login_get(_Data, _Parameters, Headers) ->
-    case is_logged_in(Headers) of
-        false ->
-            {ok, Module} = erlydtl:compile_file("static/login.dtl",
-                                                template_name),
-            {ok, Binary} = Module:render([{header, <<"Login example">>}]),
-            Binary;
-        Username ->
-            {ok, Module} = erlydtl:compile_file("static/welcome.dtl",
-                                                template_name),
-            {ok, Binary}
-                = Module:render([ {text, <<"Some text">>}
-                                , {username, Username}]),
-            Binary
-    end.
-
-
 is_logged_in(Headers) ->
     case [Cookies || {"Cookie", Cookies} <- Headers] of
         [] ->
@@ -460,32 +489,5 @@ encrypt(PlainText) ->
 decrypt(HtmlEncode) ->
     HtmlUnencode = list_to_binary(http_uri:decode(HtmlEncode)),
     UnB64 = base64:decode(HtmlUnencode),
-    crypto:block_decrypt(aes_cfb128, ?KEY, ?IV, UnB64).
-
-login_post(Data, _Parameters, _Headers) ->
-    PostParameters = http_parser:parameters(Data),
-    Username = lists:keyfind("username", 1, PostParameters),
-    Password = lists:keyfind("password", 1, PostParameters),
-    case Username == {"username", "bob"} andalso
-         Password == {"password", "alice"} of
-        true ->
-            PlainText  = <<"bob">>,
-            add_to_active_users(PlainText),
-            HtmlEncode = encrypt(PlainText),
-            #{response      => <<"">>,
-              extra_headers => "Set-Cookie: username=" ++ HtmlEncode ++ "\r\n"
-                               "Refresh: 0; url=/login\r\n"};
-        false ->
-            <<"login failed">>
-    end.
-
-logout(_, _, Headers) ->
-    case is_logged_in(Headers) of
-        false -> ok;
-        Username ->  delete_from_active_users(Username)
-    end,
-    {ok, Module} = erlydtl:compile_file("static/logout_complete.dtl",
-                                        template_name),
-    {ok, Binary} = Module:render([{text, <<"Some text">>}]),
-    #{response      => Binary,
-      extra_headers => "Set-Cookie: username=\r\n"}.
+    Dec = crypto:block_decrypt(aes_cfb128, ?KEY, ?IV, UnB64),
+    binary_to_list(Dec).

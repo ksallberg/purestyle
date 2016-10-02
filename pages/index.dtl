@@ -1,9 +1,12 @@
 <html>
     <head>
-         <link href="hacker.css" rel="stylesheet">
+        <link href="hacker.css" rel="stylesheet">
     </head>
     <body>
-        <form method="post" action="register_post.yaws">
+        <img src="fluffy_cat.jpg" width="50%" height="50%"/>
+        <h1>Musiklistan!</h1>
+
+         <form method="post" action="login_post">
             Avandarnamn:
             <br/>
             <input name="username" type="text"/>
@@ -14,5 +17,8 @@
             <br/>
             <input type="submit"/>
         </form>
+        <br/>
+        <a href="register">Register</a>
+        <br/>
     </body>
 </html>
