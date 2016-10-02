@@ -88,6 +88,7 @@ routes() ->
     , {html, post, "/playlists_post", fun handle_playlists_post/3}
     , {html, post, "/register_post",  fun handle_register_post/3}
     , {html, post, "/share_pl_post",  fun handle_share_pl_post/3}
+    , {html, post, "/pl_post",        fun handle_pl_post/3}
 
     , {'*',                           fun handle_wildcard/3}
     ].
@@ -136,9 +137,32 @@ handle_logout(_, _, Headers) ->
       extra_headers => "Set-Cookie: username=\r\n"
                        "Refresh: 0; url=/\r\n"}.
 
-handle_pl2(_Data, _Parameters, _Headers) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
+
+handle_pl2(_Data, Parameters, Headers) ->
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        _Username ->
+            {"list", ListId} = lists:keyfind("list", 1, Parameters),
+            Playlist = musiklistan:playlist_get(ListId),
+            Tracks   = Playlist#playlist.tracks,
+            Tracks2  =
+                lists:zip(Playlist#playlist.tracks,
+                          lists:seq(0,
+                                    length(Playlist#playlist.tracks) - 1
+                                   )),
+            Tracks3 =
+                [{Track#track.title, Track#track.id, Id} || {Track, Id} <- Tracks2],
+            %% RecInfo = {record_info, [{playlist, record_info(fields, playlist)}]},
+            {ok, Module} = erlydtl:compile_file("pages/pl2.dtl", pl2),
+            {ok, Binary} = Module:render([{playlist, Playlist},
+                                          {tracks,  Tracks},
+                                          {tracks3, Tracks3},
+                                          {listid, ListId},
+                                          {playlist_name, Playlist#playlist.name}
+                                         ]),
+            Binary
+    end.
 
 handle_playlists(_Data, _Parameters, Headers) ->
     case is_logged_in(Headers) of
@@ -147,25 +171,12 @@ handle_playlists(_Data, _Parameters, Headers) ->
         Username ->
             Lists    = musiklistan:playlists_get(Username),
 
-            FLists = lists:foldl(fun(List, Acc) ->
-                                         Acc ++ add_link(List)
-                                 end,
-                                 "<table class=\"test\">",
-                                 Lists),
-            _ = ", you are logged in.<br/>" ++
-                   "<h1>Lists:</h1>" ++ FLists ++ "</table>",
-
             {ok, Module} = erlydtl:compile_file("pages/playlists.dtl",
                                                 playlists),
-            {ok, Binary} = Module:render([{content, Lists}]),
+            {ok, Binary} = Module:render([{content, Lists},
+                                          {username, Username}]),
             Binary
     end.
-
-add_link({Id, Name}) ->
-    "<tr>" ++
-    "<td><a href=\"pl2.yaws?list="++Id++"\">" ++ Name ++ "</a></td>" ++
-    "<td><a href=\"share_pl.yaws?list="++Id++"\">Dela listan</a></td>" ++
-    "<td><a href=\"leave.yaws?list="++Id++"\">Lamna listan</a></td>" ++ "</tr>".
 
 handle_register(_Data, _Parameters, _Headers) ->
     {ok, Module} = erlydtl:compile_file("pages/register.dtl", register),
@@ -223,6 +234,23 @@ handle_register_post(Data, _Parameters, _Headers) ->
 handle_share_pl_post(_Data, _Parameters, _Headers) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
     Binary.
+
+handle_pl_post(Data, _Parameters, Headers) ->
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        _ ->
+            PostParameters = http_parser:parameters(Data),
+            {_, Playlist} = lists:keyfind("playlist", 1, PostParameters),
+            {_, Songname0} = lists:keyfind("track_name", 1, PostParameters),
+
+            Songname = http_uri:decode(Songname0),
+
+            musiklistan:add_track(Playlist, Songname),
+            #{response      => <<"">>,
+              extra_headers => "Refresh: 0; url=pl2" ++
+                              "?list=" ++ Playlist++"\r\n"}
+    end.
 
 handle_wildcard(_Data, _Parameters, _Headers) ->
     <<"404: Hello there!">>.

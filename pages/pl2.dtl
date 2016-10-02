@@ -1,0 +1,58 @@
+<html>
+
+  <head>
+    <link href="hacker.css" rel="stylesheet">
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+    <script src="http://www.youtube.com/player_api"></script>
+    <script type="text/javascript">
+      var tracks = [
+      {% for recname,source,id,url,title in tracks %}
+      {"id": "{{id}}", source: "{{source}}"},
+      {% endfor %}
+      ];
+    </script>
+    <script src="playlist.js"></script>
+  </head>
+
+  <body>
+    <h1>
+      {{playlist_name}}
+      <a onclick="prevTrack();"><<</a>
+      <a onclick="nextTrack();">>></a>
+    </h1>
+
+    <div id="holder">
+      <div id="container">
+      </div>
+    </div>
+
+    <br/>
+
+    <table width="100%">
+      {% for title,trackid,id in tracks3 %}
+      <tr>
+        <td width="30px">{{id}}.</td>
+        <td>
+          <div id="{{trackid}}">
+            <a onclick='goto({{id}});'>{{title}}</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <form method="post" action="pl_post">
+
+      <input type="hidden" name="playlist" value="{{listid}}"/>
+
+      <h1>Lagg till track :)</h1>
+      track URL (youtube eller soundcloud):
+      <br/>
+      <input name="track_name" type="text"/>
+      <br/>
+      <input type="submit" value="Adda"/>
+    </form>
+
+    <a href="playlists">Tillbaka...</a>
+  </body>
+</html>
