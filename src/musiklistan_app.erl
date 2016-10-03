@@ -36,10 +36,6 @@
 start(_Type, _Args) ->
     crypto:start(),
     application:start(brunhilde),
-    Server = #{name     => musiklistan,
-               port     => 7030,
-               workers  => 10},
-    br_ext:add_server(Server),
     musiklistan_sup:start_link().
 
 -spec stop(any()) -> ok.
