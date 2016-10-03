@@ -2,8 +2,7 @@ build:
 	rebar3 compile
 
 start: build
-	erl -name musiklistan -boot start_sasl -detached \
-            -pa _build/default/lib/*/ebin \
+	erl -boot start_sasl -pa _build/default/lib/*/ebin \
             -pa priv -eval "application:start(musiklistan)"
 clean:
 	rm -rf _build

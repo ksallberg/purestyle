@@ -107,7 +107,6 @@ handle_js(_, _, _) ->
 
 handle_allusers(_Data, _Parameters, _Headers) ->
     {atomic, Users} = musiklistan:get_users(),
-    io:format("hej~p~n", [Users]),
     {ok, Module} = erlydtl:compile_file("pages/allusers.dtl", allusers),
     {ok, Binary} = Module:render([{users, Users}]),
     Binary.
@@ -125,7 +124,8 @@ handle_leave(_Data, Parameters, Headers) ->
             {"list", ListId} = lists:keyfind("list", 1, Parameters),
             musiklistan:leave_list(Username, ListId),
             #{response      => <<"">>,
-              extra_headers => "Refresh: 0; url=/playlists\r\n"}
+              extra_headers => "Location: /playlists\r\n",
+              return_code   => "307 TEMPORARY REDIRECT"}
     end.
 
 handle_logout(_, _, Headers) ->
@@ -135,7 +135,8 @@ handle_logout(_, _, Headers) ->
     end,
     #{response      => <<"">>,
       extra_headers => "Set-Cookie: username=\r\n"
-                       "Refresh: 0; url=/\r\n"}.
+                       "Location: /\r\n",
+      return_code   => "307 TEMPORARY REDIRECT"}.
 
 
 handle_playlist(_Data, Parameters, Headers) ->
@@ -206,7 +207,8 @@ handle_login_post(Data, _Parameters, _Headers) ->
         {login_ok, Cookie} ->
             #{response      => <<"">>,
               extra_headers => Cookie ++
-                  "Refresh: 0; url=playlists\r\n"}
+                               "Location: playlists\r\n",
+              return_code   => "307 TEMPORARY REDIRECT"}
     end.
 
 handle_playlists_post(Data, _Parameters, Headers) ->
@@ -217,7 +219,8 @@ handle_playlists_post(Data, _Parameters, Headers) ->
                                       PostParameters),
     playlist_create(Username, PlaylistName),
     #{response      => <<"">>,
-      extra_headers => "Refresh: 0; url=playlists\r\n"}.
+      extra_headers => "Location: playlists\r\n",
+      return_code   => "307 TEMPORARY REDIRECT"}.
 
 handle_register_post(Data, _Parameters, _Headers) ->
     PostParameters = http_parser:parameters(Data),
@@ -232,7 +235,8 @@ handle_register_post(Data, _Parameters, _Headers) ->
                 {login_ok, Cookie} ->
                     #{response      => <<"">>,
                       extra_headers => Cookie ++
-                                       "Refresh: 0; url=playlists\r\n"}
+                                       "Location: playlists\r\n",
+                      return_code   => "307 TEMPORARY REDIRECT"}
             end;
         user_already_existing ->
             <<"Anvandaren upptagen">>
@@ -248,7 +252,8 @@ handle_share_pl_post(Data, _Parameters, Headers) ->
             {_, Username} = lists:keyfind("user_name", 1, PostParameters),
             musiklistan:add_playlist_to_user(Playlist, Username),
             #{response      => <<"">>,
-              extra_headers => "Refresh: 0; url=playlists\r\n"}
+              extra_headers => "Location: playlists\r\n",
+              return_code   => "307 TEMPORARY REDIRECT"}
     end.
 
 handle_pl_post(Data, _Parameters, Headers) ->
@@ -259,13 +264,12 @@ handle_pl_post(Data, _Parameters, Headers) ->
             PostParameters = http_parser:parameters(Data),
             {_, Playlist} = lists:keyfind("playlist", 1, PostParameters),
             {_, Songname0} = lists:keyfind("track_name", 1, PostParameters),
-
             Songname = http_uri:decode(Songname0),
-
             musiklistan:add_track(Playlist, Songname),
             #{response      => <<"">>,
-              extra_headers => "Refresh: 0; url=playlist" ++
-                              "?list=" ++ Playlist++"\r\n"}
+              extra_headers => "Location: playlist" ++
+                               "?list=" ++ Playlist ++ "\r\n",
+              return_code   => "307 TEMPORARY REDIRECT"}
     end.
 
 handle_wildcard(_Data, _Parameters, _Headers) ->
@@ -313,12 +317,10 @@ reg_user(Username, PlainPassword) ->
     end.
 
 check_login(Username, PlainPassword) ->
-    io:format("Username ~p pass ~p", [Username, PlainPassword]),
     Password = hash_salt(PlainPassword),
     case get_user(Username) of
         {atomic, []} -> login_fail;
         {atomic, [#user{info = #userinfo{password = DBPassword}}]} ->
-            io:format("DBPassword: ~p ~p~n", [Password, DBPassword]),
             case Password == DBPassword of
                 false -> login_fail;
                 true  ->
