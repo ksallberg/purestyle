@@ -125,7 +125,7 @@ handle_leave(_Data, Parameters, Headers) ->
             musiklistan:leave_list(Username, ListId),
             #{response      => <<"">>,
               extra_headers => "Location: /playlists\r\n",
-              return_code   => "307 TEMPORARY REDIRECT"}
+              return_code   => "301 PERMANENT REDIRECT"}
     end.
 
 handle_logout(_, _, Headers) ->
@@ -136,7 +136,7 @@ handle_logout(_, _, Headers) ->
     #{response      => <<"">>,
       extra_headers => "Set-Cookie: username=\r\n"
                        "Location: /\r\n",
-      return_code   => "307 TEMPORARY REDIRECT"}.
+      return_code   => "301 PERMANENT REDIRECT"}.
 
 
 handle_playlist(_Data, Parameters, Headers) ->
@@ -207,8 +207,8 @@ handle_login_post(Data, _Parameters, _Headers) ->
         {login_ok, Cookie} ->
             #{response      => <<"">>,
               extra_headers => Cookie ++
-                               "Location: playlists\r\n",
-              return_code   => "307 TEMPORARY REDIRECT"}
+                               "Location: /playlists\r\n",
+              return_code   => "301 PERMANENT REDIRECT"}
     end.
 
 handle_playlists_post(Data, _Parameters, Headers) ->
@@ -219,8 +219,8 @@ handle_playlists_post(Data, _Parameters, Headers) ->
                                       PostParameters),
     playlist_create(Username, PlaylistName),
     #{response      => <<"">>,
-      extra_headers => "Location: playlists\r\n",
-      return_code   => "307 TEMPORARY REDIRECT"}.
+      extra_headers => "Location: /playlists\r\n",
+      return_code   => "301 PERMANENT REDIRECT"}.
 
 handle_register_post(Data, _Parameters, _Headers) ->
     PostParameters = http_parser:parameters(Data),
@@ -235,8 +235,8 @@ handle_register_post(Data, _Parameters, _Headers) ->
                 {login_ok, Cookie} ->
                     #{response      => <<"">>,
                       extra_headers => Cookie ++
-                                       "Location: playlists\r\n",
-                      return_code   => "307 TEMPORARY REDIRECT"}
+                                       "Location: /playlists\r\n",
+                      return_code   => "301 PERMANENT REDIRECT"}
             end;
         user_already_existing ->
             <<"Anvandaren upptagen">>
@@ -252,8 +252,8 @@ handle_share_pl_post(Data, _Parameters, Headers) ->
             {_, Username} = lists:keyfind("user_name", 1, PostParameters),
             musiklistan:add_playlist_to_user(Playlist, Username),
             #{response      => <<"">>,
-              extra_headers => "Location: playlists\r\n",
-              return_code   => "307 TEMPORARY REDIRECT"}
+              extra_headers => "Location: /playlists\r\n",
+              return_code   => "301 PERMANENT REDIRECT"}
     end.
 
 handle_pl_post(Data, _Parameters, Headers) ->
@@ -267,9 +267,9 @@ handle_pl_post(Data, _Parameters, Headers) ->
             Songname = http_uri:decode(Songname0),
             musiklistan:add_track(Playlist, Songname),
             #{response      => <<"">>,
-              extra_headers => "Location: playlist" ++
+              extra_headers => "Location: /playlist" ++
                                "?list=" ++ Playlist ++ "\r\n",
-              return_code   => "307 TEMPORARY REDIRECT"}
+              return_code   => "301 PERMANENT REDIRECT"}
     end.
 
 handle_wildcard(_Data, _Parameters, _Headers) ->
@@ -401,7 +401,7 @@ get_title(Link) ->
     end.
 
 soundcloud_title(Link) ->
-    APIKey    = os:getenv("SOUNDCLOUD"),
+    APIKey    = get_soundcloudkey(),
     QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
                 "&client_id=" ++ APIKey,
     {ok, {_HTTPVer, _Headers, Response}}
@@ -423,7 +423,7 @@ youtube_id(Link) ->
     ?b2l(VID).
 
 soundcloud_id(Link) ->
-    APIKey    = os:getenv("SOUNDCLOUD"),
+    APIKey    = get_soundcloudkey(),
     QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
                 "&client_id=" ++ APIKey,
     {ok, {_HTTPVer, _Headers, Response}}
@@ -554,4 +554,8 @@ get_cryptkey() ->
 
 get_initvec() ->
     {ok, [#{initvec := X}]} = file:consult("keys.txt"),
+    X.
+
+get_soundcloudkey() ->
+    {ok, [#{soundcloud := X}]} = file:consult("keys.txt"),
     X.
