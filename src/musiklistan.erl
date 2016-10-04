@@ -197,6 +197,8 @@ handle_share_pl(_Data, Parameters, Headers) ->
 
 %% ---- POST handlers
 
+handle_login_post(no_data, _, _) ->
+    <<"FAIIL">>;
 handle_login_post(Data, _Parameters, _Headers) ->
     PostParameters = http_parser:parameters(Data),
     {"username", Username} = lists:keyfind("username", 1, PostParameters),
