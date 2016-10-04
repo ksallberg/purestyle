@@ -208,7 +208,7 @@ handle_login_post(Data, _Parameters, _Headers) ->
             #{response      => <<"">>,
               extra_headers => Cookie ++
                                "Location: /playlists\r\n",
-              return_code   => "303 See Other"}
+              return_code   => "307 Temporary Redirect"}
     end.
 
 handle_playlists_post(Data, _Parameters, Headers) ->
