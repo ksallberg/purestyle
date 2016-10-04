@@ -10,4 +10,5 @@ clean:
 	rm -f priv/*.beam
 	rm -rf lux_logs
 	rm -rf log/*.log
+	rm -rf rebar.lock
 .PHONY: clean
