@@ -125,7 +125,7 @@ handle_leave(_Data, Parameters, Headers) ->
             musiklistan:leave_list(Username, ListId),
             #{response      => <<"">>,
               extra_headers => "Location: /playlists\r\n",
-              return_code   => "301 PERMANENT REDIRECT"}
+              return_code   => ""}
     end.
 
 handle_logout(_, _, Headers) ->
@@ -136,7 +136,7 @@ handle_logout(_, _, Headers) ->
     #{response      => <<"">>,
       extra_headers => "Set-Cookie: username=\r\n"
                        "Location: /\r\n",
-      return_code   => "301 PERMANENT REDIRECT"}.
+      return_code   => "302 FOUND"}.
 
 
 handle_playlist(_Data, Parameters, Headers) ->
@@ -210,7 +210,7 @@ handle_login_post(Data, _Parameters, _Headers) ->
             #{response      => <<"">>,
               extra_headers => Cookie ++
                                "Location: /playlists\r\n",
-              return_code   => "301 PERMANENT REDIRECT"}
+              return_code   => "302 FOUND"}
     end.
 
 handle_playlists_post(Data, _Parameters, Headers) ->
@@ -222,7 +222,7 @@ handle_playlists_post(Data, _Parameters, Headers) ->
     playlist_create(Username, PlaylistName),
     #{response      => <<"">>,
       extra_headers => "Location: /playlists\r\n",
-      return_code   => "301 PERMANENT REDIRECT"}.
+      return_code   => "302 FOUND"}.
 
 handle_register_post(Data, _Parameters, _Headers) ->
     PostParameters = http_parser:parameters(Data),
@@ -238,7 +238,7 @@ handle_register_post(Data, _Parameters, _Headers) ->
                     #{response      => <<"">>,
                       extra_headers => Cookie ++
                                        "Location: /playlists\r\n",
-                      return_code   => "301 PERMANENT REDIRECT"}
+                      return_code   => "302 FOUND"}
             end;
         user_already_existing ->
             <<"Anvandaren upptagen">>
@@ -255,7 +255,7 @@ handle_share_pl_post(Data, _Parameters, Headers) ->
             musiklistan:add_playlist_to_user(Playlist, Username),
             #{response      => <<"">>,
               extra_headers => "Location: /playlists\r\n",
-              return_code   => "301 PERMANENT REDIRECT"}
+              return_code   => "302 FOUND"}
     end.
 
 handle_pl_post(Data, _Parameters, Headers) ->
@@ -271,7 +271,7 @@ handle_pl_post(Data, _Parameters, Headers) ->
             #{response      => <<"">>,
               extra_headers => "Location: /playlist" ++
                                "?list=" ++ Playlist ++ "\r\n",
-              return_code   => "301 PERMANENT REDIRECT"}
+              return_code   => "302 FOUND"}
     end.
 
 handle_wildcard(_Data, _Parameters, _Headers) ->
