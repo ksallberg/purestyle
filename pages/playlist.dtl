@@ -30,12 +30,19 @@
 
     <table width="100%">
       {% for title,trackid,id in tracks3 %}
-      <tr>
+      <tr onmouseover="this.style.background='black';"
+          onmouseout="this.style.background='';">
         <td width="30px">{{id}}.</td>
         <td>
           <div id="{{trackid}}">
             <a onclick='goto({{id}});'>{{title}}</a>
           </div>
+        </td>
+        <td>
+          Change
+        </td>
+        <td>
+          Remove
         </td>
       </tr>
       {% endfor %}

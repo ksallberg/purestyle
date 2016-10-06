@@ -125,7 +125,7 @@ handle_leave(_Data, Parameters, Headers) ->
             musiklistan:leave_list(Username, ListId),
             #{response      => <<"">>,
               extra_headers => "Location: /playlists\r\n",
-              return_code   => ""}
+              return_code   => "303 See Other"}
     end.
 
 handle_logout(_, _, Headers) ->
