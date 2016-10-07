@@ -30,7 +30,7 @@
       <tr onmouseover="this.style.background='black';"
           onmouseout="this.style.background='';">
         <td><a href="playlist?list={{id}}">{{name}}</a></td>
-        <td><a href="share_pl?list={{id}}">Dela listan</a></td>
+        <td><a href="share_playlist?list={{id}}">Dela listan</a></td>
         <td class="absorbing-column"><a href="leave?list={{id}}">Lamna listan</a></td>
       </tr>
       {% endfor %}

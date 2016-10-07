@@ -59,33 +59,33 @@ init() ->
     inets:start().
 
 routes() ->
-    [ {file, get,  "/favicon.ico",      fun handle_icon/3}
-    , {file, get,  "/fluffy_cat.jpg",   fun handle_fluffy_cat/3}
-    , {file, get,  "/piano_cat.jpg",    fun handle_piano_cat/3}
-    , {file, get,  "/hacker.css",       fun handle_css/3}
-    , {file, get,  "/playlist.js",      fun handle_js/3}
-    , {file, get,  "/bootstrap.min.js", fun handle_bootstrap/3}
-    , {file, get,  "/jquery.js",        fun handle_jquery/3}
+    [ {file, get,  "/favicon.ico",            fun handle_icon/3}
+    , {file, get,  "/fluffy_cat.jpg",         fun handle_fluffy_cat/3}
+    , {file, get,  "/piano_cat.jpg",          fun handle_piano_cat/3}
+    , {file, get,  "/hacker.css",             fun handle_css/3}
+    , {file, get,  "/playlist.js",            fun handle_js/3}
+    , {file, get,  "/bootstrap.min.js",       fun handle_bootstrap/3}
+    , {file, get,  "/jquery.js",              fun handle_jquery/3}
 
-    , {html, get,  "/allusers",         fun handle_allusers/3}
-    , {html, get,  "/",                 fun handle_index/3}
-    , {html, get,  "/leave",            fun handle_leave/3}
-    , {html, get,  "/delete_song",      fun handle_delete_song/3} %% TODO
-    , {html, get,  "/logout",           fun handle_logout/3}
-    , {html, get,  "/playlist",         fun handle_playlist/3}
-    , {html, get,  "/playlists",        fun handle_playlists/3}
-    , {html, get,  "/register",         fun handle_register/3}
-    , {html, get,  "/share_pl",         fun handle_share_pl/3}
+    , {html, get,  "/allusers",               fun handle_allusers/3}
+    , {html, get,  "/",                       fun handle_index/3}
+    , {html, get,  "/leave",                  fun handle_leave/3}
+    , {html, get,  "/delete_song",            fun handle_delete_song/3} %% TODO
+    , {html, get,  "/logout",                 fun handle_logout/3}
+    , {html, get,  "/playlist",               fun handle_playlist/3}
+    , {html, get,  "/playlists",              fun handle_playlists/3}
+    , {html, get,  "/register",               fun handle_register/3}
+    , {html, get,  "/share_playlist",         fun handle_share_playlist/3}
 
-    , {html, post, "/login_post",       fun handle_login_post/3}
-    , {html, post, "/playlists_post",   fun handle_playlists_post/3}
-    , {html, post, "/register_post",    fun handle_register_post/3}
-    , {html, post, "/share_pl_post",    fun handle_share_pl_post/3}
-    , {html, post, "/pl_post",          fun handle_pl_post/3}
+    , {html, post, "/login_post",             fun handle_login_post/3}
+    , {html, post, "/playlists_post",         fun handle_playlists_post/3}
+    , {html, post, "/register_post",          fun handle_register_post/3}
+    , {html, post, "/share_playlist_post",    fun handle_share_playlist_post/3}
+    , {html, post, "/playlist_post",          fun handle_playlist_post/3}
 
-    , {json, post, "/change_song",      fun handle_change_song/3}
+    , {json, post, "/change_song",            fun handle_change_song/3}
 
-    , {'*',                             fun handle_wildcard/3}
+    , {'*',                                   fun handle_wildcard/3}
     ].
 
 %% ---- GET handlers:
@@ -156,11 +156,12 @@ handle_delete_song(_Data, Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
             <<"Not logged in.">>;
-        Username ->
+        _Username ->
+            {"trackid", TrackId} = lists:keyfind("trackid", 1, Parameters),
             {"list", ListId} = lists:keyfind("list", 1, Parameters),
-            delete_song(Username, ListId),
+            delete_song(ListId, TrackId),
             #{response      => <<"">>,
-              extra_headers => "Location: /playlists\r\n",
+              extra_headers => "Location: /playlist?list="++ListId++"\r\n",
               return_code   => "303 See Other"}
     end.
 
@@ -220,13 +221,14 @@ handle_register(_Data, _Parameters, _Headers) ->
     {ok, Binary} = Module:render([]),
     Binary.
 
-handle_share_pl(_Data, Parameters, Headers) ->
+handle_share_playlist(_Data, Parameters, Headers) ->
     {"list", ListId} = lists:keyfind("list", 1, Parameters),
     case is_logged_in(Headers) of
         false ->
             <<"Not logged in.">>;
         _Username ->
-            {ok, Module} = erlydtl:compile_file("pages/share_pl.dtl", share_pl),
+            {ok, Module} = erlydtl:compile_file("pages/share_playlist.dtl",
+                                                share_playlist),
             {ok, Binary} = Module:render([{listid, ListId}]),
             Binary
     end.
@@ -278,7 +280,7 @@ handle_register_post(Data, _Parameters, _Headers) ->
             <<"Anvandaren upptagen">>
     end.
 
-handle_share_pl_post(Data, _Parameters, Headers) ->
+handle_share_playlist_post(Data, _Parameters, Headers) ->
     PostParameters = http_parser:parameters(Data),
     case is_logged_in(Headers) of
         false ->
@@ -292,7 +294,7 @@ handle_share_pl_post(Data, _Parameters, Headers) ->
               return_code   => "303 See Other"}
     end.
 
-handle_pl_post(Data, _Parameters, Headers) ->
+handle_playlist_post(Data, _Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
             <<"Not logged in.">>;
@@ -528,18 +530,22 @@ leave_list(Username, ListId) ->
     ModUserInfo      = UserInfo#userinfo{playlists = FilteredLists},
     put_obj(User#user{info=ModUserInfo}).
 
-update_song(ListId, Id, Title) ->
+update_song(ListId, TrackId, Title) ->
     PlayList   = playlist_get(ListId),
     PrevTracks = PlayList#playlist.tracks,
-    OldTrack = lists:keyfind(Id, #track.id, PrevTracks),
+    OldTrack = lists:keyfind(TrackId, #track.id, PrevTracks),
     NewTrack = OldTrack#track{title=Title},
-    NewTracks = lists:keyreplace(Id, #track.id,
+    NewTracks = lists:keyreplace(TrackId, #track.id,
                                  PrevTracks, NewTrack),
     NewList = PlayList#playlist{tracks = NewTracks},
     put_obj(NewList).
 
-delete_song(_, _) ->
-    ok.
+delete_song(ListId, TrackId) ->
+    PlayList   = playlist_get(ListId),
+    PrevTracks = PlayList#playlist.tracks,
+    NewTracks = lists:keydelete(TrackId, #track.id, PrevTracks),
+    NewList = PlayList#playlist{tracks = NewTracks},
+    put_obj(NewList).
 
 is_logged_in(Headers) ->
     case [Cookies || {"Cookie", Cookies} <- Headers] of
