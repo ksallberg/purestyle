@@ -1,5 +1,7 @@
 var currentTrack = -1;
 var youtubePlayer;
+var currentModifyTrack;
+var currentListId;
 
 function nextTrack() {
     currentTrack ++;
@@ -89,4 +91,31 @@ function emit_player(text, source) {
         getYoutube(text);
     if(source == "soundcloud")
         getSoundcloud(text);
+}
+
+function update_box(trackid, title, listid) {
+    $("#song_change_box").val(title);
+    currentModifyTrack = trackid;
+    currentListId = listid;
+}
+
+function change_song() {
+
+    $.ajax({
+        type: "POST",
+        url: "/change_song",
+        data: JSON.stringify({title: $("#song_change_box").val(),
+                              id: currentModifyTrack,
+                              listid: currentListId
+                             }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+            $('#changeModal').modal('hide');
+            $('#' + currentModifyTrack).html(data.new_name);
+        },
+        failure: function(errMsg) {
+            alert(errMsg);
+        }
+    });
 }

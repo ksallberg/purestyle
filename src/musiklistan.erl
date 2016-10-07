@@ -59,28 +59,33 @@ init() ->
     inets:start().
 
 routes() ->
-    [ {file, get,  "/favicon.ico",    fun handle_icon/3}
-    , {file, get,  "/fluffy_cat.jpg", fun handle_fluffy_cat/3}
-    , {file, get,  "/piano_cat.jpg",  fun handle_piano_cat/3}
-    , {file, get,  "/hacker.css",     fun handle_css/3}
-    , {file, get,  "/playlist.js",    fun handle_js/3}
+    [ {file, get,  "/favicon.ico",      fun handle_icon/3}
+    , {file, get,  "/fluffy_cat.jpg",   fun handle_fluffy_cat/3}
+    , {file, get,  "/piano_cat.jpg",    fun handle_piano_cat/3}
+    , {file, get,  "/hacker.css",       fun handle_css/3}
+    , {file, get,  "/playlist.js",      fun handle_js/3}
+    , {file, get,  "/bootstrap.min.js", fun handle_bootstrap/3}
+    , {file, get,  "/jquery.js",        fun handle_jquery/3}
 
-    , {html, get,  "/allusers",       fun handle_allusers/3}
-    , {html, get,  "/",               fun handle_index/3}
-    , {html, get,  "/leave",          fun handle_leave/3}
-    , {html, get,  "/logout",         fun handle_logout/3}
-    , {html, get,  "/playlist",       fun handle_playlist/3}
-    , {html, get,  "/playlists",      fun handle_playlists/3}
-    , {html, get,  "/register",       fun handle_register/3}
-    , {html, get,  "/share_pl",       fun handle_share_pl/3}
+    , {html, get,  "/allusers",         fun handle_allusers/3}
+    , {html, get,  "/",                 fun handle_index/3}
+    , {html, get,  "/leave",            fun handle_leave/3}
+    , {html, get,  "/delete_song",      fun handle_delete_song/3} %% TODO
+    , {html, get,  "/logout",           fun handle_logout/3}
+    , {html, get,  "/playlist",         fun handle_playlist/3}
+    , {html, get,  "/playlists",        fun handle_playlists/3}
+    , {html, get,  "/register",         fun handle_register/3}
+    , {html, get,  "/share_pl",         fun handle_share_pl/3}
 
-    , {html, post, "/login_post",     fun handle_login_post/3}
-    , {html, post, "/playlists_post", fun handle_playlists_post/3}
-    , {html, post, "/register_post",  fun handle_register_post/3}
-    , {html, post, "/share_pl_post",  fun handle_share_pl_post/3}
-    , {html, post, "/pl_post",        fun handle_pl_post/3}
+    , {html, post, "/login_post",       fun handle_login_post/3}
+    , {html, post, "/playlists_post",   fun handle_playlists_post/3}
+    , {html, post, "/register_post",    fun handle_register_post/3}
+    , {html, post, "/share_pl_post",    fun handle_share_pl_post/3}
+    , {html, post, "/pl_post",          fun handle_pl_post/3}
 
-    , {'*',                           fun handle_wildcard/3}
+    , {json, post, "/change_song",      fun handle_change_song/3}
+
+    , {'*',                             fun handle_wildcard/3}
     ].
 
 %% ---- GET handlers:
@@ -105,16 +110,35 @@ handle_js(_, _, _) ->
     {ok, Binary} = file:read_file("pages/playlist.js"),
     Binary.
 
+handle_bootstrap(_, _, _) ->
+    {ok, Binary} = file:read_file("pages/bootstrap.min.js"),
+    Binary.
+
+handle_styles(_, _, _) ->
+    {ok, Binary} = file:read_file("pages/styles.css"),
+    Binary.
+
+handle_jquery(_, _, _) ->
+    {ok, Binary} = file:read_file("pages/jquery11-2.min.js"),
+    Binary.
+
 handle_allusers(_Data, _Parameters, _Headers) ->
-    {atomic, Users} = musiklistan:get_users(),
+    {atomic, Users} = get_users(),
     {ok, Module} = erlydtl:compile_file("pages/allusers.dtl", allusers),
     {ok, Binary} = Module:render([{users, Users}]),
     Binary.
 
-handle_index(_Data, _Parameters, _Headers) ->
-    {ok, Module} = erlydtl:compile_file("pages/index.dtl", index),
-    {ok, Binary} = Module:render([{header, <<"Login example">>}]),
-    Binary.
+handle_index(_Data, _Parameters, Headers) ->
+    case is_logged_in(Headers) of
+        false ->
+            {ok, Module} = erlydtl:compile_file("pages/index.dtl", index),
+            {ok, Binary} = Module:render([{header, <<"Login example">>}]),
+            Binary;
+        _Username ->
+            #{response      => <<"">>,
+              extra_headers => "Location: /playlists\r\n",
+              return_code   => "303 See Other"}
+    end.
 
 handle_leave(_Data, Parameters, Headers) ->
     case is_logged_in(Headers) of
@@ -122,7 +146,19 @@ handle_leave(_Data, Parameters, Headers) ->
             <<"Not logged in.">>;
         Username ->
             {"list", ListId} = lists:keyfind("list", 1, Parameters),
-            musiklistan:leave_list(Username, ListId),
+            leave_list(Username, ListId),
+            #{response      => <<"">>,
+              extra_headers => "Location: /playlists\r\n",
+              return_code   => "303 See Other"}
+    end.
+
+handle_delete_song(_Data, Parameters, Headers) ->
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        Username ->
+            {"list", ListId} = lists:keyfind("list", 1, Parameters),
+            delete_song(Username, ListId),
             #{response      => <<"">>,
               extra_headers => "Location: /playlists\r\n",
               return_code   => "303 See Other"}
@@ -145,7 +181,7 @@ handle_playlist(_Data, Parameters, Headers) ->
             <<"Not logged in.">>;
         _Username ->
             {"list", ListId} = lists:keyfind("list", 1, Parameters),
-            Playlist = musiklistan:playlist_get(ListId),
+            Playlist = playlist_get(ListId),
             Tracks   = Playlist#playlist.tracks,
             Tracks2  =
                 lists:zip(Playlist#playlist.tracks,
@@ -171,7 +207,7 @@ handle_playlists(_Data, _Parameters, Headers) ->
         false ->
             <<"Not logged in.">>;
         Username ->
-            Lists = musiklistan:playlists_get(Username),
+            Lists = playlists_get(Username),
             {ok, Module} = erlydtl:compile_file("pages/playlists.dtl",
                                                 playlists),
             {ok, Binary} = Module:render([{content, Lists},
@@ -250,7 +286,7 @@ handle_share_pl_post(Data, _Parameters, Headers) ->
         _MyUsername ->
             {_, Playlist} = lists:keyfind("playlist",  1, PostParameters),
             {_, Username} = lists:keyfind("user_name", 1, PostParameters),
-            musiklistan:add_playlist_to_user(Playlist, Username),
+            add_playlist_to_user(Playlist, Username),
             #{response      => <<"">>,
               extra_headers => "Location: /playlists\r\n",
               return_code   => "303 See Other"}
@@ -265,11 +301,23 @@ handle_pl_post(Data, _Parameters, Headers) ->
             {_, Playlist} = lists:keyfind("playlist", 1, PostParameters),
             {_, Songname0} = lists:keyfind("track_name", 1, PostParameters),
             Songname = http_uri:decode(Songname0),
-            musiklistan:add_track(Playlist, Songname),
+            add_track(Playlist, Songname),
             #{response      => <<"">>,
               extra_headers => "Location: /playlist" ++
                                "?list=" ++ Playlist ++ "\r\n",
               return_code   => "303 See Other"}
+    end.
+
+handle_change_song(#{<<"id">>     := Id,
+                     <<"title">>  := Title,
+                     <<"listid">> := ListId}, _, Headers) ->
+    case is_logged_in(Headers) of
+        false ->
+            <<"Not logged in.">>;
+        _Username ->
+            update_song(?b2l(ListId), ?b2l(Id), ?b2l(Title)),
+            #{<<"ok">> => <<"complete">>,
+              <<"new_name">> => Title}
     end.
 
 handle_wildcard(_Data, _Parameters, _Headers) ->
@@ -479,6 +527,19 @@ leave_list(Username, ListId) ->
     FilteredLists    = [X || X <- Playlists, X /= ListId],
     ModUserInfo      = UserInfo#userinfo{playlists = FilteredLists},
     put_obj(User#user{info=ModUserInfo}).
+
+update_song(ListId, Id, Title) ->
+    PlayList   = playlist_get(ListId),
+    PrevTracks = PlayList#playlist.tracks,
+    OldTrack = lists:keyfind(Id, #track.id, PrevTracks),
+    NewTrack = OldTrack#track{title=Title},
+    NewTracks = lists:keyreplace(Id, #track.id,
+                                 PrevTracks, NewTrack),
+    NewList = PlayList#playlist{tracks = NewTracks},
+    put_obj(NewList).
+
+delete_song(_, _) ->
+    ok.
 
 is_logged_in(Headers) ->
     case [Cookies || {"Cookie", Cookies} <- Headers] of

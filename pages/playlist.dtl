@@ -1,6 +1,7 @@
 <html>
 
   <head>
+    <meta name="viewport" content="width=device-width">
     <link href="hacker.css" rel="stylesheet">
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="http://www.youtube.com/player_api"></script>
@@ -12,9 +13,44 @@
       ];
     </script>
     <script src="playlist.js"></script>
+
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+
   </head>
 
   <body>
+
+    <div id="changeModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title">Change song info</h4>
+          </div>
+          <div class="modal-body">
+            <p>Change this song's name!</p>
+            <input id="song_change_box"
+                   name="username"
+                   type="email"
+                   class="form-control"
+                   placeholder="Link">
+          </div>
+          <div class="modal-footer">
+            <button type="button"
+                    class="btn btn-default"
+                    data-dismiss="modal">Close</button>
+            <button id="song_change_btn"
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="change_song();">Change</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <h1>
       {{playlist_name}}
       <a onclick="prevTrack();"><<</a>
@@ -39,7 +75,14 @@
           </div>
         </td>
         <td>
-          Change
+          <a href="#"
+             class="forgotPass"
+             data-toggle="modal"
+             data-target="#changeModal"
+             onclick='update_box("{{trackid}}",
+                                 "{{title}}",
+                                 "{{listid}}")'>Update
+          </a>
         </td>
         <td>
           Remove
@@ -61,5 +104,9 @@
     </form>
 
     <a href="playlists">Tillbaka...</a>
+    <script>window.jQuery ||
+      document.write('<script src="/jquery.js"><\/script>')</script>
+    <script src="bootstrap.min.js"></script>
+
   </body>
 </html>
