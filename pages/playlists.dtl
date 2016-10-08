@@ -2,6 +2,7 @@
 
   <head>
     <link href="hacker.css" rel="stylesheet">
+    <link href="hack.css" rel="stylesheet">
 
     <style>
       table {
@@ -27,7 +28,7 @@
     <h1>Lists:</h1>
     <table class="test">
       {% for id,name in content %}
-      <tr onmouseover="this.style.background='black';"
+      <tr onmouseover="this.style.background='#20C20E';"
           onmouseout="this.style.background='';">
         <td><a href="playlist?list={{id}}">{{name}}</a></td>
         <td><a href="share_playlist?list={{id}}">Dela listan</a></td>

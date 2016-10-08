@@ -1,6 +1,7 @@
 <html>
     <head>
-        <link href="hacker.css" rel="stylesheet">
+      <link href="hacker.css" rel="stylesheet">
+      <link href="hack.css" rel="stylesheet">
     </head>
     <body>
         <img src="fluffy_cat.jpg" width="50%" height="50%"/>

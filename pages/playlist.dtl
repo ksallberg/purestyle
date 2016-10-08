@@ -3,6 +3,8 @@
   <head>
     <meta name="viewport" content="width=device-width">
     <link href="hacker.css" rel="stylesheet">
+    <link href="hack.css" rel="stylesheet">
+
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="http://www.youtube.com/player_api"></script>
     <script type="text/javascript">
@@ -66,7 +68,7 @@
 
     <table width="100%">
       {% for title,trackid,id in tracks3 %}
-      <tr onmouseover="this.style.background='black';"
+      <tr onmouseover="this.style.background='#20C20E';"
           onmouseout="this.style.background='';">
         <td width="30px">{{id}}.</td>
         <td>
