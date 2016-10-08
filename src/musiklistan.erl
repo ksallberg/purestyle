@@ -62,10 +62,12 @@ routes() ->
     [ {file, get,  "/favicon.ico",            fun handle_icon/3}
     , {file, get,  "/fluffy_cat.jpg",         fun handle_fluffy_cat/3}
     , {file, get,  "/piano_cat.jpg",          fun handle_piano_cat/3}
+    , {file, get,  "/images/bg.jpg",          fun handle_bg/3}
     , {file, get,  "/hacker.css",             fun handle_css/3}
     , {file, get,  "/hack.css",               fun handle_css2/3}
     , {file, get,  "/playlist.js",            fun handle_js/3}
     , {file, get,  "/bootstrap.min.js",       fun handle_bootstrap/3}
+    , {file, get,  "/font-awesome.min.css",   fun handle_fontawesome/3}
     , {file, get,  "/jquery.js",              fun handle_jquery/3}
 
     , {html, get,  "/allusers",               fun handle_allusers/3}
@@ -117,6 +119,14 @@ handle_js(_, _, _) ->
 
 handle_bootstrap(_, _, _) ->
     {ok, Binary} = file:read_file("pages/bootstrap.min.js"),
+    Binary.
+
+handle_fontawesome(_, _, _) ->
+    {ok, Binary} = file:read_file("pages/font-awesome.min.css"),
+    Binary.
+
+handle_bg(_, _, _) ->
+    {ok, Binary} = file:read_file("pages/bg.jpg"),
     Binary.
 
 handle_styles(_, _, _) ->

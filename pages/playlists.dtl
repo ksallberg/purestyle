@@ -28,7 +28,7 @@
     <h1>Lists:</h1>
     <table class="test">
       {% for id,name in content %}
-      <tr onmouseover="this.style.background='#20C20E';"
+      <tr onmouseover="this.style.background='black';"
           onmouseout="this.style.background='';">
         <td><a href="playlist?list={{id}}">{{name}}</a></td>
         <td><a href="share_playlist?list={{id}}">Dela listan</a></td>
