@@ -25,7 +25,7 @@ function changeTrack() {
     }
 
     document.getElementById(tracks[currentTrack].id)
-        .style.backgroundColor = '#333333';
+        .style.backgroundColor = '#000';
 
     emit_player(tracks[currentTrack].id, tracks[currentTrack].source);
 }
