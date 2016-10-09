@@ -1,0 +1,9 @@
+<html>
+  <head>
+    <link href="hacker.css" rel="stylesheet">
+    <link href="hack.css" rel="stylesheet">
+  </head>
+  <body>
+    You are not logged in. <a href="/">Go to index.</a>
+  </body>
+</html>

@@ -158,7 +158,7 @@ handle_index(_Data, _Parameters, Headers) ->
 handle_leave(_Data, Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         Username ->
             {"list", ListId} = lists:keyfind("list", 1, Parameters),
             leave_list(Username, ListId),
@@ -170,7 +170,7 @@ handle_leave(_Data, Parameters, Headers) ->
 handle_delete_song(_Data, Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         _Username ->
             {"trackid", TrackId} = lists:keyfind("trackid", 1, Parameters),
             {"list", ListId} = lists:keyfind("list", 1, Parameters),
@@ -194,7 +194,7 @@ handle_logout(_, _, Headers) ->
 handle_playlist(_Data, Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         _Username ->
             {"list", ListId} = lists:keyfind("list", 1, Parameters),
             Playlist = playlist_get(ListId),
@@ -221,7 +221,7 @@ handle_playlist(_Data, Parameters, Headers) ->
 handle_playlists(_Data, _Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         Username ->
             Lists = playlists_get(Username),
             {ok, Module} = erlydtl:compile_file("pages/playlists.dtl",
@@ -240,7 +240,7 @@ handle_share_playlist(_Data, Parameters, Headers) ->
     {"list", ListId} = lists:keyfind("list", 1, Parameters),
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         _Username ->
             {ok, Module} = erlydtl:compile_file("pages/share_playlist.dtl",
                                                 share_playlist),
@@ -299,7 +299,7 @@ handle_share_playlist_post(Data, _Parameters, Headers) ->
     PostParameters = http_parser:parameters(Data),
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         _MyUsername ->
             {_, Playlist} = lists:keyfind("playlist",  1, PostParameters),
             {_, Username} = lists:keyfind("user_name", 1, PostParameters),
@@ -312,7 +312,7 @@ handle_share_playlist_post(Data, _Parameters, Headers) ->
 handle_playlist_post(Data, _Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         _ ->
             PostParameters = http_parser:parameters(Data),
             {_, Playlist} = lists:keyfind("playlist", 1, PostParameters),
@@ -330,7 +330,7 @@ handle_change_song(#{<<"id">>     := Id,
                      <<"listid">> := ListId}, _, Headers) ->
     case is_logged_in(Headers) of
         false ->
-            <<"Not logged in.">>;
+            render_not_logged_in();
         _Username ->
             update_song(?b2l(ListId), ?b2l(Id), ?b2l(Title)),
             #{<<"ok">> => <<"complete">>,
@@ -341,6 +341,11 @@ handle_wildcard(_Data, _Parameters, _Headers) ->
     <<"404: Hello there!">>.
 
 %% ---- helpers:
+
+render_not_logged_in() ->
+    {ok, Module} = erlydtl:compile_file("pages/not_logged_in.dtl", index),
+    {ok, Binary} = Module:render([{header, <<"Login example">>}]),
+    Binary.
 
 get_users() ->
     F = fun() ->

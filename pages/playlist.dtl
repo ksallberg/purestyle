@@ -58,9 +58,7 @@
     </div><!-- /.modal -->
 
     <h1>
-      {{playlist_name}}
-      <a onclick="prevTrack();"><<</a>
-      <a onclick="nextTrack();">>></a>
+      Playlist: {{playlist_name}}
     </h1>
 
     <div id="holder">
