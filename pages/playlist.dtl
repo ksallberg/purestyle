@@ -75,7 +75,7 @@
         <td width="30px">{{id}}.</td>
         <td>
           <div id="{{trackid}}">
-            <a onclick='goto({{id}});'>{{title}}</a>
+            <a "cursor: pointer;" onclick='goto({{id}});'>{{title}}</a>
           </div>
         </td>
         <td>
