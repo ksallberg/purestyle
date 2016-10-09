@@ -16,11 +16,15 @@
     </script>
     <script src="playlist.js"></script>
 
-    <!-- <link rel="stylesheet" href="styles.css"> -->
-
   </head>
 
   <body>
+
+    <div id="controller">
+      <a href="playlists">Tillbaka...</a>
+      <a onclick="prevTrack();"><<</a>
+      <a onclick="nextTrack();">>></a>
+    </div>
 
     <div id="changeModal" class="modal fade">
       <div class="modal-dialog">
@@ -105,7 +109,6 @@
       <input type="submit" value="Adda"/>
     </form>
 
-    <a href="playlists">Tillbaka...</a>
     <script>window.jQuery ||
       document.write('<script src="/jquery.js"><\/script>')</script>
     <script src="bootstrap.min.js"></script>
