@@ -5,14 +5,14 @@
     </head>
     <body>
         <img src="fluffy_cat.jpg" width="50%" height="50%"/>
-        <h1>Musiklistan!</h1>
+        <h1>The music list!</h1>
 
          <form method="post" action="login_post">
-            Avandarnamn:
+            Username:
             <br/>
             <input name="username" type="text"/>
             <br/>
-            Losenord:
+            Password:
             <br/>
             <input name="password" type="password"/>
             <br/>

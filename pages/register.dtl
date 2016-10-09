@@ -5,11 +5,11 @@
   </head>
   <body>
     <form method="post" action="register_post">
-      Avandarnamn:
+      Username:
       <br/>
       <input name="username" type="text"/>
       <br/>
-      Losenord:
+      Password:
       <br/>
       <input name="password" type="password"/>
       <br/>

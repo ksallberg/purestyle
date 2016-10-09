@@ -31,15 +31,17 @@
       <tr onmouseover="this.style.background='black';"
           onmouseout="this.style.background='';">
         <td><a href="playlist?list={{id}}">{{name}}</a></td>
-        <td><a href="share_playlist?list={{id}}">Dela listan</a></td>
-        <td class="absorbing-column"><a href="leave?list={{id}}">Lamna listan</a></td>
+        <td><a href="share_playlist?list={{id}}">Share playlist</a></td>
+        <td class="absorbing-column">
+          <a href="leave?list={{id}}">Leave playlist</a>
+        </td>
       </tr>
       {% endfor %}
     </table>
 
     <form method="post" action="playlists_post">
-      <h1>Skapa lista</h1>
-      Spellistans namn:
+      <h1>Create a playlist</h1>
+      Playlist name:
       <br/>
       <input name="playlist_name" type="text"/>
       <br/>
@@ -47,6 +49,6 @@
     </form>
   </body>
 
-  <a href="logout">Logga ut...</a>
+  <a href="logout">Log out...</a>
 
 </html>

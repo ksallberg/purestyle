@@ -21,9 +21,9 @@
   <body>
 
     <div id="controller">
-      <a href="playlists">Tillbaka...</a>
-      <a onclick="prevTrack();"><<</a>
-      <a onclick="nextTrack();">>></a>
+      <a href="playlists">Go back</a>
+      <a style="cursor: pointer;" onclick="prevTrack();"><<</a>
+      <a style="cursor: pointer;" onclick="nextTrack();">>></a>
     </div>
 
     <div id="changeModal" class="modal fade">
@@ -99,8 +99,8 @@
 
       <input type="hidden" name="playlist" value="{{listid}}"/>
 
-      <h1>Lagg till track :)</h1>
-      track URL (youtube eller soundcloud):
+      <h1>Add track:</h1>
+      track URL (youtube or soundcloud):
       <br/>
       <input name="track_name" type="text"/>
       <br/>
