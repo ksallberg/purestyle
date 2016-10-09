@@ -969,3 +969,9 @@ button.close{padding:0;cursor:pointer;background:transparent;border:0;-webkit-ap
     right: 1em;
     background: black;
 }
+
+#holder {
+    position: fixed;
+    top: 1em;
+    left: 32em;
+}
