@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width">
     <link href="hacker.css" rel="stylesheet">
     <link href="hack.css" rel="stylesheet">
+    <title>{{playlist_name}} - purestyle</title>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="http://www.youtube.com/player_api"></script>

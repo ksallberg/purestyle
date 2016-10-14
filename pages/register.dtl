@@ -2,6 +2,7 @@
   <head>
     <link href="hacker.css" rel="stylesheet">
     <link href="hack.css" rel="stylesheet">
+    <title>musiklistan - register</title>
   </head>
   <body>
     <form method="post" action="register_post">

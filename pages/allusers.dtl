@@ -1,8 +1,9 @@
 <html>
-<head>
-  <link href="hacker.css" rel="stylesheet">
-  <link href="hack.css" rel="stylesheet">
-</head>
+  <head>
+    <link href="hacker.css" rel="stylesheet">
+    <link href="hack.css" rel="stylesheet">
+    <title>all users</title>
+  </head>
 
 <body>
 <h1>All users: </h1>

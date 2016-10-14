@@ -2,6 +2,7 @@
     <head>
       <link href="hacker.css" rel="stylesheet">
       <link href="hack.css" rel="stylesheet">
+      <title>The music list!</title>
     </head>
     <body>
         <img src="fluffy_cat.jpg" width="50%" height="50%"/>
