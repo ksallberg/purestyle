@@ -35,7 +35,7 @@
 
 -include("common.hrl").
 
--define(DB, login_tracker).
+-define(DB, list_to_atom(atom_to_list(?MODULE)++"login_tracker")).
 
 init() ->
     io:format("Starting ets..."),
