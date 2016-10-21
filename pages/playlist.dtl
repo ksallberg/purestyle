@@ -7,7 +7,7 @@
     <title>{{playlist_name}} - purestyle</title>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
-    <script src="http://www.youtube.com/player_api"></script>
+    <script src="https://www.youtube.com/player_api"></script>
     <script type="text/javascript">
       var tracks = [
       {% for recname,source,id,url,title in tracks %}
