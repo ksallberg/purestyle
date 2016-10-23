@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <link href="hacker.css" rel="stylesheet">
+    <link href="hack.css" rel="stylesheet">
+    {% block extrahead %}
+    {% endblock %}
+  </head>
+  <body>
+    {% block extrabody %}
+    {% endblock %}
+  </body>
+  <hr/>
+  <a href="https://github.com/ksallberg/musiklistan">Musiklistan</a>
+  is served by <a href="https://github.com/ksallberg/brunhilde">brunhilde</a>.
+</html>

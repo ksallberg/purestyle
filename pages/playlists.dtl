@@ -1,8 +1,6 @@
-<html>
+{% extends "base.dtl" %}
 
-  <head>
-    <link href="hacker.css" rel="stylesheet">
-    <link href="hack.css" rel="stylesheet">
+{% block extrahead %}
     <title>purestyle playlists</title>
 
     <style>
@@ -18,11 +16,9 @@
         width: 90%;
       }
     </style>
+{% endblock %}
 
-  </head>
-
-  <body>
-
+{% block extrabody %}
     <img src="piano_cat.jpg" width="40%" height="40%"/>
     <br/>
     {{username}}, you are logged in.
@@ -48,8 +44,5 @@
       <br/>
       <input type="submit"/>
     </form>
-  </body>
-
-  <a href="logout">Log out...</a>
-
-</html>
+    <a href="logout">Log out...</a>
+{% endblock %}

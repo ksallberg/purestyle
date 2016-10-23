@@ -1,9 +1,8 @@
-<html>
+{% extends "base.dtl" %}
 
-  <head>
+{% block extrahead %}
     <meta name="viewport" content="width=device-width">
-    <link href="hacker.css" rel="stylesheet">
-    <link href="hack.css" rel="stylesheet">
+    <title>{{playlist_name}} - purestyle</title>
     <title>{{playlist_name}} - purestyle</title>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
@@ -16,10 +15,9 @@
       ];
     </script>
     <script src="playlist.js"></script>
+{% endblock %}
 
-  </head>
-
-  <body>
+{% block extrabody %}
 
     <div id="controller">
       <a href="playlists">Go back</a>
@@ -112,6 +110,4 @@
     <script>window.jQuery ||
       document.write('<script src="/jquery.js"><\/script>')</script>
     <script src="bootstrap.min.js"></script>
-
-  </body>
-</html>
+{% endblock %}

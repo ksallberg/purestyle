@@ -1,26 +1,25 @@
-<html>
-    <head>
-      <link href="hacker.css" rel="stylesheet">
-      <link href="hack.css" rel="stylesheet">
-      <title>The music list!</title>
-    </head>
-    <body>
-        <img src="fluffy_cat.jpg" width="50%" height="50%"/>
-        <h1>The music list!</h1>
+{% extends "base.dtl" %}
 
-         <form method="post" action="login_post">
-            Username:
-            <br/>
-            <input name="username" type="text"/>
-            <br/>
-            Password:
-            <br/>
-            <input name="password" type="password"/>
-            <br/>
-            <input type="submit"/>
-        </form>
-        <br/>
-        <a href="register">Register</a>
-        <br/>
-    </body>
-</html>
+{% block extrahead %}
+    <title>The music list!</title>
+{% endblock %}
+
+{% block extrabody %}
+    <img src="fluffy_cat.jpg" width="50%" height="50%"/>
+    <h1>The music list!</h1>
+
+    <form method="post" action="login_post">
+      Username:
+      <br/>
+      <input name="username" type="text"/>
+      <br/>
+      Password:
+      <br/>
+      <input name="password" type="password"/>
+      <br/>
+      <input type="submit"/>
+    </form>
+    <br/>
+    <a href="register">Register</a>
+    <br/>
+{% endblock %}

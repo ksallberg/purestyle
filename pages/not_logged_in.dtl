@@ -1,10 +1,9 @@
-<html>
-  <head>
-    <link href="hacker.css" rel="stylesheet">
-    <link href="hack.css" rel="stylesheet">
+{% extends "base.dtl" %}
+
+{% block extrahead %}
     <title>Not logged in</title>
-  </head>
-  <body>
+{% endblock %}
+
+{% block extrabody %}
     You are not logged in. <a href="/">Go to index.</a>
-  </body>
-</html>
+{% endblock %}

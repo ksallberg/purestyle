@@ -1,13 +1,10 @@
-<html>
+{% extends "base.dtl" %}
 
-  <head>
-    <link href="hacker.css" rel="stylesheet">
-    <link href="hack.css" rel="stylesheet">
+{% block extrahead %}
     <title>share song</title>
-  </head>
+{% endblock %}
 
-  <body>
-
+{% block extrabody %}
     <h1>Share playlist</h1>
 
     <form method="post" action="share_playlist_post">
@@ -18,8 +15,5 @@
       <br/>
       <input type="submit"/>
     </form>
-  </body>
-
-  <a href="playlists">Go back</a>
-
-</html>
+    <a href="playlists">Go back</a>
+{% endblock %}
