@@ -9,7 +9,7 @@
     <script src="https://www.youtube.com/player_api"></script>
     <script type="text/javascript">
       var tracks = [
-      {% for recname,source,id,url,title in tracks %}
+      {% for _recname,source,id,_url,_title in tracks %}
       {"id": "{{id}}", source: "{{source}}"},
       {% endfor %}
       ];

@@ -139,14 +139,21 @@ handle_jquery(_, _, _) ->
 
 handle_allusers(_Data, _Parameters, _Headers) ->
     {atomic, Users} = get_users(),
-    {ok, Module} = erlydtl:compile_file("pages/allusers.dtl", allusers),
+    {ok, Module} = erlydtl:compile_file("pages/allusers.dtl",
+                                        allusers,
+                                        [{out_dir, "compiled_templates"}]
+                                       ),
     {ok, Binary} = Module:render([{users, Users}]),
     Binary.
 
 handle_index(_Data, _Parameters, Headers) ->
     case is_logged_in(Headers) of
         false ->
-            {ok, Module} = erlydtl:compile_file("pages/index.dtl", index),
+            {ok, Module} = erlydtl:compile_file("pages/index.dtl",
+                                                index,
+                                                [{out_dir,
+                                                  "compiled_templates"}]
+                                               ),
             {ok, Binary} = Module:render([{header, <<"Login example">>}]),
             Binary;
         _Username ->
@@ -207,7 +214,11 @@ handle_playlist(_Data, Parameters, Headers) ->
             Tracks3 =
                 [{Track#track.title, Track#track.id, Id}
                  || {Track, Id} <- Tracks2],
-            {ok, Module} = erlydtl:compile_file("pages/playlist.dtl", playlist),
+            {ok, Module} = erlydtl:compile_file("pages/playlist.dtl",
+                                                playlist,
+                                                [{out_dir,
+                                                  "compiled_templates"}]
+                                               ),
             {ok, Binary} = Module:render([{playlist, Playlist},
                                           {tracks,  Tracks},
                                           {tracks3, Tracks3},
@@ -225,14 +236,20 @@ handle_playlists(_Data, _Parameters, Headers) ->
         Username ->
             Lists = playlists_get(Username),
             {ok, Module} = erlydtl:compile_file("pages/playlists.dtl",
-                                                playlists),
+                                                playlists,
+                                                [{out_dir,
+                                                  "compiled_templates"}]
+                                               ),
             {ok, Binary} = Module:render([{content, Lists},
                                           {username, Username}]),
             Binary
     end.
 
 handle_register(_Data, _Parameters, _Headers) ->
-    {ok, Module} = erlydtl:compile_file("pages/register.dtl", register),
+    {ok, Module} = erlydtl:compile_file("pages/register.dtl",
+                                        register,
+                                        [{out_dir, "compiled_templates"}]
+                                       ),
     {ok, Binary} = Module:render([]),
     Binary.
 
@@ -243,7 +260,10 @@ handle_share_playlist(_Data, Parameters, Headers) ->
             render_not_logged_in();
         _Username ->
             {ok, Module} = erlydtl:compile_file("pages/share_playlist.dtl",
-                                                share_playlist),
+                                                share_playlist,
+                                                [{out_dir,
+                                                  "compiled_templates"}]
+                                               ),
             {ok, Binary} = Module:render([{listid, ListId}]),
             Binary
     end.
@@ -343,7 +363,10 @@ handle_wildcard(_Data, _Parameters, _Headers) ->
 %% ---- helpers:
 
 render_not_logged_in() ->
-    {ok, Module} = erlydtl:compile_file("pages/not_logged_in.dtl", index),
+    {ok, Module} = erlydtl:compile_file("pages/not_logged_in.dtl",
+                                        not_logged_in,
+                                        [{out_dir, "compiled_templates"}]
+                                       ),
     {ok, Binary} = Module:render([{header, <<"Login example">>}]),
     Binary.
 
