@@ -79,6 +79,7 @@ routes() ->
     , {html, get,  "/playlists",              fun handle_playlists/3}
     , {html, get,  "/register",               fun handle_register/3}
     , {html, get,  "/share_playlist",         fun handle_share_playlist/3}
+    , {html, get,  "/uptime",                 fun handle_uptime/3}
 
     , {html, post, "/login_post",             fun handle_login_post/3}
     , {html, post, "/playlists_post",         fun handle_playlists_post/3}
@@ -136,6 +137,10 @@ handle_styles(_, _, _) ->
 handle_jquery(_, _, _) ->
     {ok, Binary} = file:read_file("pages/jquery11-2.min.js"),
     Binary.
+
+handle_uptime(_, _, _) ->
+    Uptime = os:cmd("uptime"),
+    ?l2b(Uptime).
 
 handle_allusers(_Data, _Parameters, _Headers) ->
     {atomic, Users} = get_users(),
