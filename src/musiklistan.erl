@@ -140,7 +140,8 @@ handle_jquery(_, _, _) ->
 
 handle_uptime(_, _, _) ->
     Uptime = os:cmd("uptime"),
-    ?l2b(Uptime).
+    FreeM  = os:cmd("free -m"),
+    ?l2b(Uptime ++ "\n\n\n" ++ FreeM).
 
 handle_allusers(_Data, _Parameters, _Headers) ->
     {atomic, Users} = get_users(),
