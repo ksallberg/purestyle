@@ -647,17 +647,17 @@ delete_from_active_users(Username) ->
 
 encrypt(PlainText) ->
     Key = get_cryptkey(),
-    Iv = get_initvec(),
+    Iv = crypto:rand_bytes(16),
     En = crypto:block_encrypt(aes_cfb128, Key, Iv, PlainText),
-    B64 = base64:encode(En),
+    B64 = base64:encode(<<Iv/binary, En/binary>>),
     http_uri:encode(binary_to_list(B64)).
 
 decrypt(HtmlEncode) ->
     Key = get_cryptkey(),
-    Iv = get_initvec(),
     HtmlUnencode = list_to_binary(http_uri:decode(HtmlEncode)),
     UnB64 = base64:decode(HtmlUnencode),
-    Dec = crypto:block_decrypt(aes_cfb128, Key, Iv, UnB64),
+    <<Iv:16/binary, CryptoText/binary>> = UnB64,
+    Dec = crypto:block_decrypt(aes_cfb128, Key, Iv, CryptoText),
     binary_to_list(Dec).
 
 get_appsecret() ->
@@ -666,10 +666,6 @@ get_appsecret() ->
 
 get_cryptkey() ->
     {ok, [#{cryptkey := X}]} = file:consult("keys.txt"),
-    X.
-
-get_initvec() ->
-    {ok, [#{initvec := X}]} = file:consult("keys.txt"),
     X.
 
 get_soundcloudkey() ->
