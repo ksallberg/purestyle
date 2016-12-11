@@ -647,18 +647,22 @@ delete_from_active_users(Username) ->
 
 encrypt(PlainText) ->
     Key = get_cryptkey(),
-    Iv = get_initvec(),
+    Iv = crypto:strong_rand_bytes(16),
     En = crypto:block_encrypt(aes_cfb128, Key, Iv, PlainText),
-    B64 = base64:encode(En),
+    B64 = base64:encode(<<Iv:16/binary, En/binary>>),
     http_uri:encode(binary_to_list(B64)).
 
 decrypt(HtmlEncode) ->
     Key = get_cryptkey(),
-    Iv = get_initvec(),
     HtmlUnencode = list_to_binary(http_uri:decode(HtmlEncode)),
     UnB64 = base64:decode(HtmlUnencode),
-    Dec = crypto:block_decrypt(aes_cfb128, Key, Iv, UnB64),
-    binary_to_list(Dec).
+    case UnB64 of
+        <<Iv:16/binary, CryptoText/binary>> ->
+            Dec = crypto:block_decrypt(aes_cfb128, Key, Iv, CryptoText),
+            binary_to_list(Dec);
+        <<>> ->
+            ""
+    end.
 
 get_appsecret() ->
     {ok, [#{appsecret := X}]} = file:consult("keys.txt"),
