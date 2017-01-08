@@ -16,4 +16,7 @@ make build
 make start
 ```
 
+Inspect the development server (HTTP, not HTTPs)
+[locally](http://localhost:8000).
+
 Jenkins webhook

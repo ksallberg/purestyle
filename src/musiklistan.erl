@@ -38,12 +38,19 @@
 -define(DB, list_to_atom(atom_to_list(?MODULE)++"login_tracker")).
 
 init() ->
-    io:format("Starting ets..."),
-
-    ets:new(?DB, [public, set, named_table]),
-    ets:delete_all_objects(?DB),
-    ets:insert(?DB, {active_users, []}),
-
+    %% If several instances of musiklistan are running, only start ETS once.
+    %% The purpose of having several instances is only for development anyway,
+    %% serving HTTP for development and HTTPS for production.
+    Tabs = ets:all(),
+    case lists:member(?DB, Tabs) of
+        true ->
+            ok;
+        false ->
+            io:format("Starting ets..."),
+            ets:new(?DB, [public, set, named_table]),
+            ets:delete_all_objects(?DB),
+            ets:insert(?DB, {active_users, []})
+    end,
     io:format("Starting mnesia..."),
     NodeList = [node()],
     mnesia:create_schema(NodeList),
