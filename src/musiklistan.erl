@@ -27,7 +27,7 @@
 
 -behaviour(http_handler).
 
--export([ init/0
+-export([ init/1
         , routes/0
         ]).
 
@@ -37,7 +37,7 @@
 
 -define(DB, list_to_atom(atom_to_list(?MODULE)++"login_tracker")).
 
-init() ->
+init(_InstanceName) ->
     %% If several instances of musiklistan are running, only start ETS once.
     %% The purpose of having several instances is only for development anyway,
     %% serving HTTP for development and HTTPS for production.

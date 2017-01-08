@@ -27,11 +27,11 @@
 
 -behaviour(http_handler).
 
--export([ init/0
+-export([ init/1
         , routes/0
         ]).
 
-init() ->
+init(_InstanceName) ->
     ok.
 
 routes() ->
