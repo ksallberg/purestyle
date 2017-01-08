@@ -35,22 +35,15 @@
 
 -include("common.hrl").
 
--define(DB, list_to_atom(atom_to_list(?MODULE)++"login_tracker")).
-
-init(_InstanceName) ->
+init(InstanceName) ->
     %% If several instances of musiklistan are running, only start ETS once.
     %% The purpose of having several instances is only for development anyway,
     %% serving HTTP for development and HTTPS for production.
-    Tabs = ets:all(),
-    case lists:member(?DB, Tabs) of
-        true ->
-            ok;
-        false ->
-            io:format("Starting ets..."),
-            ets:new(?DB, [public, set, named_table]),
-            ets:delete_all_objects(?DB),
-            ets:insert(?DB, {active_users, []})
-    end,
+    DB = db_name(InstanceName),
+    io:format("Starting ets..."),
+    ets:new(DB, [public, set, named_table]),
+    ets:delete_all_objects(DB),
+    ets:insert(DB, {active_users, []}),
     io:format("Starting mnesia..."),
     NodeList = [node()],
     mnesia:create_schema(NodeList),
@@ -66,91 +59,91 @@ init(_InstanceName) ->
     inets:start().
 
 routes() ->
-    [ {file, get,  "/favicon.ico",            fun handle_icon/3}
-    , {file, get,  "/fluffy_cat.jpg",         fun handle_fluffy_cat/3}
-    , {file, get,  "/piano_cat.jpg",          fun handle_piano_cat/3}
-    , {file, get,  "/images/bg.jpg",          fun handle_bg/3}
-    , {file, get,  "/hacker.css",             fun handle_css/3}
-    , {file, get,  "/hack.css",               fun handle_css2/3}
-    , {file, get,  "/playlist.js",            fun handle_js/3}
-    , {file, get,  "/bootstrap.min.js",       fun handle_bootstrap/3}
-    , {file, get,  "/font-awesome.min.css",   fun handle_fontawesome/3}
-    , {file, get,  "/jquery.js",              fun handle_jquery/3}
+    [ {file, get,  "/favicon.ico",            fun handle_icon/4}
+    , {file, get,  "/fluffy_cat.jpg",         fun handle_fluffy_cat/4}
+    , {file, get,  "/piano_cat.jpg",          fun handle_piano_cat/4}
+    , {file, get,  "/images/bg.jpg",          fun handle_bg/4}
+    , {file, get,  "/hacker.css",             fun handle_css/4}
+    , {file, get,  "/hack.css",               fun handle_css2/4}
+    , {file, get,  "/playlist.js",            fun handle_js/4}
+    , {file, get,  "/bootstrap.min.js",       fun handle_bootstrap/4}
+    , {file, get,  "/font-awesome.min.css",   fun handle_fontawesome/4}
+    , {file, get,  "/jquery.js",              fun handle_jquery/4}
 
-    , {html, get,  "/allusers",               fun handle_allusers/3}
-    , {html, get,  "/",                       fun handle_index/3}
-    , {html, get,  "/leave",                  fun handle_leave/3}
-    , {html, get,  "/delete_song",            fun handle_delete_song/3} %% TODO
-    , {html, get,  "/logout",                 fun handle_logout/3}
-    , {html, get,  "/playlist",               fun handle_playlist/3}
-    , {html, get,  "/playlists",              fun handle_playlists/3}
-    , {html, get,  "/register",               fun handle_register/3}
-    , {html, get,  "/share_playlist",         fun handle_share_playlist/3}
-    , {html, get,  "/uptime",                 fun handle_uptime/3}
+    , {html, get,  "/allusers",               fun handle_allusers/4}
+    , {html, get,  "/",                       fun handle_index/4}
+    , {html, get,  "/leave",                  fun handle_leave/4}
+    , {html, get,  "/delete_song",            fun handle_delete_song/4}
+    , {html, get,  "/logout",                 fun handle_logout/4}
+    , {html, get,  "/playlist",               fun handle_playlist/4}
+    , {html, get,  "/playlists",              fun handle_playlists/4}
+    , {html, get,  "/register",               fun handle_register/4}
+    , {html, get,  "/share_playlist",         fun handle_share_playlist/4}
+    , {html, get,  "/uptime",                 fun handle_uptime/4}
 
-    , {html, post, "/login_post",             fun handle_login_post/3}
-    , {html, post, "/playlists_post",         fun handle_playlists_post/3}
-    , {html, post, "/register_post",          fun handle_register_post/3}
-    , {html, post, "/share_playlist_post",    fun handle_share_playlist_post/3}
-    , {html, post, "/playlist_post",          fun handle_playlist_post/3}
+    , {html, post, "/login_post",             fun handle_login_post/4}
+    , {html, post, "/playlists_post",         fun handle_playlists_post/4}
+    , {html, post, "/register_post",          fun handle_register_post/4}
+    , {html, post, "/share_playlist_post",    fun handle_share_playlist_post/4}
+    , {html, post, "/playlist_post",          fun handle_playlist_post/4}
 
-    , {json, post, "/change_song",            fun handle_change_song/3}
+    , {json, post, "/change_song",            fun handle_change_song/4}
 
-    , {'*',                                   fun handle_wildcard/3}
+    , {'*',                                   fun handle_wildcard/4}
     ].
 
 %% ---- GET handlers:
 
-handle_icon(_, _, _) ->
+handle_icon(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
     Binary.
 
-handle_fluffy_cat(_, _, _) ->
+handle_fluffy_cat(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/fluffy_cat.jpg"),
     Binary.
 
-handle_piano_cat(_, _, _) ->
+handle_piano_cat(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/piano_cat.jpg"),
     Binary.
 
-handle_css(_, _, _) ->
+handle_css(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/hacker.css"),
     Binary.
 
-handle_css2(_, _, _) ->
+handle_css2(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/hack.css"),
     Binary.
 
-handle_js(_, _, _) ->
+handle_js(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/playlist.js"),
     Binary.
 
-handle_bootstrap(_, _, _) ->
+handle_bootstrap(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bootstrap.min.js"),
     Binary.
 
-handle_fontawesome(_, _, _) ->
+handle_fontawesome(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/font-awesome.min.css"),
     Binary.
 
-handle_bg(_, _, _) ->
+handle_bg(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bg.jpg"),
     Binary.
 
-handle_styles(_, _, _) ->
+handle_styles(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/styles.css"),
     Binary.
 
-handle_jquery(_, _, _) ->
+handle_jquery(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/jquery11-2.min.js"),
     Binary.
 
-handle_uptime(_, _, _) ->
+handle_uptime(_, _, _, _InstanceName) ->
     Uptime = os:cmd("uptime"),
     FreeM  = os:cmd("free -m"),
     ?l2b(Uptime ++ "\n\n\n" ++ FreeM).
 
-handle_allusers(_Data, _Parameters, _Headers) ->
+handle_allusers(_Data, _Parameters, _Headers, _InstanceName) ->
     {atomic, Users} = get_users(),
     {ok, Module} = erlydtl:compile_file("pages/allusers.dtl",
                                         allusers,
@@ -159,8 +152,8 @@ handle_allusers(_Data, _Parameters, _Headers) ->
     {ok, Binary} = Module:render([{users, Users}]),
     Binary.
 
-handle_index(_Data, _Parameters, Headers) ->
-    case is_logged_in(Headers) of
+handle_index(_Data, _Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false ->
             {ok, Module} = erlydtl:compile_file("pages/index.dtl",
                                                 index,
@@ -175,8 +168,8 @@ handle_index(_Data, _Parameters, Headers) ->
               return_code   => "303 See Other"}
     end.
 
-handle_leave(_Data, Parameters, Headers) ->
-    case is_logged_in(Headers) of
+handle_leave(_Data, Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         Username ->
@@ -187,8 +180,8 @@ handle_leave(_Data, Parameters, Headers) ->
               return_code   => "303 See Other"}
     end.
 
-handle_delete_song(_Data, Parameters, Headers) ->
-    case is_logged_in(Headers) of
+handle_delete_song(_Data, Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _Username ->
@@ -200,10 +193,10 @@ handle_delete_song(_Data, Parameters, Headers) ->
               return_code   => "303 See Other"}
     end.
 
-handle_logout(_, _, Headers) ->
-    case is_logged_in(Headers) of
+handle_logout(_, _, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false -> ok;
-        Username ->  delete_from_active_users(Username)
+        Username ->  delete_from_active_users(Username, InstanceName)
     end,
     #{response      => <<"">>,
       extra_headers => "Set-Cookie: username=\r\n"
@@ -211,8 +204,8 @@ handle_logout(_, _, Headers) ->
       return_code   => "303 See Other"}.
 
 
-handle_playlist(_Data, Parameters, Headers) ->
-    case is_logged_in(Headers) of
+handle_playlist(_Data, Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _Username ->
@@ -242,8 +235,8 @@ handle_playlist(_Data, Parameters, Headers) ->
             Binary
     end.
 
-handle_playlists(_Data, _Parameters, Headers) ->
-    case is_logged_in(Headers) of
+handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         Username ->
@@ -258,7 +251,7 @@ handle_playlists(_Data, _Parameters, Headers) ->
             Binary
     end.
 
-handle_register(_Data, _Parameters, _Headers) ->
+handle_register(_Data, _Parameters, _Headers, _InstanceName) ->
     {ok, Module} = erlydtl:compile_file("pages/register.dtl",
                                         register,
                                         [{out_dir, "compiled_templates"}]
@@ -266,9 +259,9 @@ handle_register(_Data, _Parameters, _Headers) ->
     {ok, Binary} = Module:render([]),
     Binary.
 
-handle_share_playlist(_Data, Parameters, Headers) ->
+handle_share_playlist(_Data, Parameters, Headers, InstanceName) ->
     {"list", ListId} = lists:keyfind("list", 1, Parameters),
-    case is_logged_in(Headers) of
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _Username ->
@@ -283,11 +276,11 @@ handle_share_playlist(_Data, Parameters, Headers) ->
 
 %% ---- POST handlers
 
-handle_login_post(Data, _Parameters, _Headers) ->
+handle_login_post(Data, _Parameters, _Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
     {"username", Username} = lists:keyfind("username", 1, PostParameters),
     {"password", Password} = lists:keyfind("password", 1, PostParameters),
-    case check_login(Username, Password) of
+    case check_login(Username, Password, InstanceName) of
         login_fail ->
             <<"Login failed...">>;
         {login_ok, Cookie} ->
@@ -297,9 +290,9 @@ handle_login_post(Data, _Parameters, _Headers) ->
               return_code   => "303 See Other"}
     end.
 
-handle_playlists_post(Data, _Parameters, Headers) ->
+handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
-    Username = is_logged_in(Headers),
+    Username = is_logged_in(Headers, InstanceName),
     {_, PlaylistName} = lists:keyfind("playlist_name",
                                       1,
                                       PostParameters),
@@ -308,14 +301,14 @@ handle_playlists_post(Data, _Parameters, Headers) ->
       extra_headers => "Location: /playlists\r\n",
       return_code   => "303 See Other"}.
 
-handle_register_post(Data, _Parameters, _Headers) ->
+handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
     {"username", Username} = lists:keyfind("username", 1, PostParameters),
     {"password", Password} = lists:keyfind("password", 1, PostParameters),
     Result   = reg_user(Username, Password),
     case Result of
         user_registered ->
-            case check_login(Username, Password) of
+            case check_login(Username, Password, InstanceName) of
                 login_fail ->
                     <<"Registrering gick okej, men login gick inte bra...">>;
                 {login_ok, Cookie} ->
@@ -328,9 +321,9 @@ handle_register_post(Data, _Parameters, _Headers) ->
             <<"Anvandaren upptagen">>
     end.
 
-handle_share_playlist_post(Data, _Parameters, Headers) ->
+handle_share_playlist_post(Data, _Parameters, Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
-    case is_logged_in(Headers) of
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _MyUsername ->
@@ -342,8 +335,8 @@ handle_share_playlist_post(Data, _Parameters, Headers) ->
               return_code   => "303 See Other"}
     end.
 
-handle_playlist_post(Data, _Parameters, Headers) ->
-    case is_logged_in(Headers) of
+handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _ ->
@@ -360,8 +353,8 @@ handle_playlist_post(Data, _Parameters, Headers) ->
 
 handle_change_song(#{<<"id">>     := Id,
                      <<"title">>  := Title,
-                     <<"listid">> := ListId}, _, Headers) ->
-    case is_logged_in(Headers) of
+                     <<"listid">> := ListId}, _, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _Username ->
@@ -370,10 +363,15 @@ handle_change_song(#{<<"id">>     := Id,
               <<"new_name">> => Title}
     end.
 
-handle_wildcard(_Data, _Parameters, _Headers) ->
+handle_wildcard(_Data, _Parameters, _Headers, _InstanceName) ->
     <<"404: Hello there!">>.
 
 %% ---- helpers:
+
+db_name(InstanceName) ->
+    list_to_atom(atom_to_list(?MODULE)      ++
+                 atom_to_list(InstanceName) ++
+                 "login_tracker").
 
 render_not_logged_in() ->
     {ok, Module} = erlydtl:compile_file("pages/not_logged_in.dtl",
@@ -422,7 +420,7 @@ reg_user(Username, PlainPassword) ->
             user_already_existing
     end.
 
-check_login(Username, PlainPassword) ->
+check_login(Username, PlainPassword, InstanceName) ->
     Password = hash_salt(PlainPassword),
     case get_user(Username) of
         {atomic, []} -> login_fail;
@@ -430,7 +428,7 @@ check_login(Username, PlainPassword) ->
             case Password == DBPassword of
                 false -> login_fail;
                 true  ->
-                    add_to_active_users(Username),
+                    add_to_active_users(Username, InstanceName),
                     HtmlEncode = encrypt(Username),
                     C = "Set-Cookie: username=" ++ HtmlEncode ++ "\r\n",
                     {login_ok, C}
@@ -603,7 +601,7 @@ delete_song(ListId, TrackId) ->
     NewList = PlayList#playlist{tracks = NewTracks},
     put_obj(NewList).
 
-is_logged_in(Headers) ->
+is_logged_in(Headers, InstanceName) ->
     case [Cookies || {"Cookie", Cookies} <- Headers] of
         [] ->
             false;
@@ -615,7 +613,7 @@ is_logged_in(Headers) ->
                     false;
                 {"username", HtmlEncode} ->
                     Decrypted = decrypt(HtmlEncode),
-                    case is_active_user(Decrypted) of
+                    case is_active_user(Decrypted, InstanceName) of
                         true ->
                             Decrypted;
                         false ->
@@ -624,8 +622,9 @@ is_logged_in(Headers) ->
             end
     end.
 
-is_active_user(Username) ->
-    ActiveUsers = ets:lookup(?DB, active_users),
+is_active_user(Username, InstanceName) ->
+    DB = db_name(InstanceName),
+    ActiveUsers = ets:lookup(DB, active_users),
     case ActiveUsers of
         [] ->
             false;
@@ -633,23 +632,25 @@ is_active_user(Username) ->
             lists:member(Username, Ls)
     end.
 
-add_to_active_users(Username) ->
-    ActiveUsers = ets:lookup(?DB, active_users),
+add_to_active_users(Username, InstanceName) ->
+    DB = db_name(InstanceName),
+    ActiveUsers = ets:lookup(DB, active_users),
     case ActiveUsers of
         [] ->
-            ets:insert(?DB, {active_users, [Username]});
+            ets:insert(DB, {active_users, [Username]});
         [{active_users, Ls}] ->
-            ets:insert(?DB, {active_users, [Username|Ls]})
+            ets:insert(DB, {active_users, [Username|Ls]})
     end.
 
-delete_from_active_users(Username) ->
-    ActiveUsers = ets:lookup(?DB, active_users),
+delete_from_active_users(Username, InstanceName) ->
+    DB = db_name(InstanceName),
+    ActiveUsers = ets:lookup(DB, active_users),
     case ActiveUsers of
         [] ->
             should_not_happen;
         [{active_users, Ls}] ->
             NewUsers = Ls -- [Username],
-            ets:insert(?DB, {active_users, NewUsers})
+            ets:insert(DB, {active_users, NewUsers})
     end.
 
 encrypt(PlainText) ->
