@@ -35,9 +35,9 @@ init(_InstanceName) ->
     ok.
 
 routes() ->
-    [ {html, get,  "/", fun handle_index/3} ].
+    [ {html, get,  "/", fun handle_index/4} ].
 
-handle_index(_Data, _Parameters, _Headers) ->
+handle_index(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
       extra_headers => "Location: https://www.purestyle.se\r\n",
       return_code   => "301 Moved Permanently"}.
