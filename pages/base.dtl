@@ -1,7 +1,7 @@
 <html>
   <head>
+    <link href="https://kokokaka.com/lib/core.css" rel="stylesheet">
     <link href="hacker.css" rel="stylesheet">
-    <link href="hack.css" rel="stylesheet">
     {% block extrahead %}
     {% endblock %}
   </head>
