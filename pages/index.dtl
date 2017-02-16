@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block extrabody %}
+
     <img src="fluffy_cat.jpg" width="50%" height="50%"/>
     <h1>The music list!</h1>
 

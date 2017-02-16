@@ -63,8 +63,7 @@ routes() ->
     , {file, get,  "/fluffy_cat.jpg",         fun handle_fluffy_cat/4}
     , {file, get,  "/piano_cat.jpg",          fun handle_piano_cat/4}
     , {file, get,  "/images/bg.jpg",          fun handle_bg/4}
-    , {file, get,  "/hacker.css",             fun handle_css/4}
-    , {file, get,  "/hack.css",               fun handle_css2/4}
+    , {file, get,  "/style.css",              fun handle_css/4}
     , {file, get,  "/playlist.js",            fun handle_js/4}
     , {file, get,  "/bootstrap.min.js",       fun handle_bootstrap/4}
     , {file, get,  "/font-awesome.min.css",   fun handle_fontawesome/4}
@@ -107,11 +106,7 @@ handle_piano_cat(_, _, _, _InstanceName) ->
     Binary.
 
 handle_css(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/hacker.css"),
-    Binary.
-
-handle_css2(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/hack.css"),
+    {ok, Binary} = file:read_file("pages/style.css"),
     Binary.
 
 handle_js(_, _, _, _InstanceName) ->
