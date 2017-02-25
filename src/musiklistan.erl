@@ -26,6 +26,7 @@
 -module(musiklistan).
 
 -behaviour(http_handler).
+-include("_build/default/lib/brunhilde/include/brunhilde.hrl").
 
 -export([ init/1
         , routes/0
@@ -59,37 +60,124 @@ init(InstanceName) ->
     inets:start().
 
 routes() ->
-    [ {file, get,  "/favicon.ico",            fun handle_icon/4}
-    , {file, get,  "/fluffy_cat.jpg",         fun handle_fluffy_cat/4}
-    , {file, get,  "/piano_cat.jpg",          fun handle_piano_cat/4}
-    , {file, get,  "/images/bg.jpg",          fun handle_bg/4}
-    , {file, get,  "/style.css",              fun handle_css/4}
-    , {file, get,  "/playlist.js",            fun handle_js/4}
-    , {file, get,  "/bootstrap.min.js",       fun handle_bootstrap/4}
-    , {file, get,  "/font-awesome.min.css",   fun handle_fontawesome/4}
-    , {file, get,  "/jquery.js",              fun handle_jquery/4}
+    %% File addresses
+    [ #route{protocol = file,
+             verb = get,
+             address = "/favicon.ico",
+             callback = fun handle_icon/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/fluffy_cat.jpg",
+             callback = fun handle_fluffy_cat/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/piano_cat.jpg",
+             callback = fun handle_piano_cat/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/images/bg.jpg",
+             callback = fun handle_bg/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/style.css",
+             callback = fun handle_css/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/playlist.js",
+             callback = fun handle_js/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/bootstrap.min.js",
+             callback = fun handle_bootstrap/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/font-awesome.min.css",
+             callback = fun handle_fontawesome/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/jquery.js",
+             callback = fun handle_jquery/4}
 
-    , {html, get,  "/allusers",               fun handle_allusers/4}
-    , {html, get,  "/",                       fun handle_index/4}
-    , {html, get,  "/leave",                  fun handle_leave/4}
-    , {html, get,  "/delete_song",            fun handle_delete_song/4}
-    , {html, get,  "/logout",                 fun handle_logout/4}
-    , {html, get,  "/playlist",               fun handle_playlist/4}
-    , {html, get,  "/playlists",              fun handle_playlists/4}
-    , {html, get,  "/register",               fun handle_register/4}
-    , {html, get,  "/share_playlist",         fun handle_share_playlist/4}
-    , {html, get,  "/uptime",                 fun handle_uptime/4}
+    %% HTML addresses
+    , #route{protocol = html,
+             verb = get,
+             address = "/allusers",
+             callback = fun handle_allusers/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/",
+             callback = fun handle_index/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/leave",
+             callback = fun handle_leave/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/delete_song",
+             callback = fun handle_delete_song/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/logout",
+             callback = fun handle_logout/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/playlist",
+             callback = fun handle_playlist/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/playlists",
+             callback = fun handle_playlists/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/register",
+             callback = fun handle_register/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/share_playlist",
+             callback = fun handle_share_playlist/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/share_playlist",
+             callback = fun handle_share_playlist/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/uptime",
+             callback = fun handle_uptime/4}
 
-    , {html, post, "/login_post",             fun handle_login_post/4}
-    , {html, post, "/playlists_post",         fun handle_playlists_post/4}
-    , {html, post, "/register_post",          fun handle_register_post/4}
-    , {html, post, "/share_playlist_post",    fun handle_share_playlist_post/4}
-    , {html, post, "/playlist_post",          fun handle_playlist_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = "/login_post",
+             callback = fun handle_login_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = "/playlists_post",
+             callback = fun handle_playlists_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = "/register_post",
+             callback = fun handle_register_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = "/share_playlist_post",
+             callback = fun handle_share_playlist_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = "/playlist_post",
+             callback = fun handle_playlist_post/4}
 
-    , {json, post, "/change_song",            fun handle_change_song/4}
+    , #route{protocol = json,
+             verb = post,
+             address = "/change_song",
+             callback = fun handle_change_song/4}
 
-    , {'*',                                   fun handle_wildcard/4}
-    ].
+    %% Other subdomain
+    , #route{protocol = file,
+             verb = get,
+             address = "/xxxyyy",
+             subdomain = "demo",
+             callback = {homepage, info}}
+
+    , {'*', fun handle_wildcard/4}].
 
 %% ---- GET handlers:
 
