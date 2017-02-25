@@ -10,3 +10,5 @@ rel/example_project
 .rebar
 Mnesia.nonode@nohost/
 \#*\#
+_build/
+log/
