@@ -40,17 +40,17 @@ routes() ->
     [ #route{protocol = html,
              verb = get,
              address = "/",
-             callback = fun handle_index/4}
+             callback = {homepage, info}}
 
-    %% Other subdomain
+    %% play subdomain
     , #route{protocol = html,
              verb = get,
-             address = "/xxxyyy",
-             subdomain = "demo",
-             callback = {homepage, info}}
+             address = "/",
+             subdomain = "play",
+             callback = fun handle_play/4}
     ].
 
-handle_index(_Data, _Parameters, _Headers, _InstanceName) ->
+handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
-      extra_headers => "Location: https://www.purestyle.se\r\n",
+      extra_headers => "Location: https://play.purestyle.se\r\n",
       return_code   => "301 Moved Permanently"}.
