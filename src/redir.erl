@@ -40,7 +40,15 @@ routes() ->
     [ #route{protocol = html,
              verb = get,
              address = "/",
-             callback = fun handle_index/4}].
+             callback = fun handle_index/4}
+
+    %% Other subdomain
+    , #route{protocol = html,
+             verb = get,
+             address = "/xxxyyy",
+             subdomain = "demo",
+             callback = {homepage, info}}
+    ].
 
 handle_index(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
