@@ -1,9 +1,12 @@
 build:
 	rebar3 compile
+	lfec src/homepage.lfe
+	mv homepage.beam lfebin
 
 start: build
 	erl -boot start_sasl -pa _build/default/lib/*/ebin \
-            -pa priv -eval "application:start(musiklistan)"
+            -pa priv -pa lfebin \
+            -eval "application:start(musiklistan)"
 clean:
 	rm -rf _build
 	rm -f ebin/*.beam
