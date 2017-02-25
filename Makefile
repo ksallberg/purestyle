@@ -3,8 +3,8 @@ build:
 
 start: build
 	erl -boot start_sasl -pa _build/default/lib/*/ebin \
-            -pa priv \
-            -eval "application:start(musiklistan)"
+            -s musiklistan
+
 clean:
 	rm -rf _build
 	rm -f ebin/*.beam
