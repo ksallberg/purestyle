@@ -27,6 +27,8 @@
 
 -behaviour(http_handler).
 
+-include("_build/default/lib/brunhilde/include/brunhilde.hrl").
+
 -export([ init/1
         , routes/0
         ]).
@@ -35,7 +37,10 @@ init(_InstanceName) ->
     ok.
 
 routes() ->
-    [ {html, get,  "/", fun handle_index/4} ].
+    [ #route{protocol = html,
+             verb = get,
+             address = "/",
+             callback = fun handle_index/4}].
 
 handle_index(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
