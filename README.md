@@ -7,6 +7,8 @@ sources (youtube, spotify, etc.)
 A running demo of this app is available [here](http://www.purestyle.se).
 
 ##Compile with:
+LFE [lisp flavored erlang](http://lfe.io) is required.
+
 ```
 make build
 ```
