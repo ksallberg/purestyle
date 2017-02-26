@@ -28,13 +28,17 @@
 -behaviour(http_handler).
 -include("_build/default/lib/brunhilde/include/brunhilde.hrl").
 
--export([ init/1
+-export([ start/0
+        , init/1
         , routes/0
         ]).
 
 -compile(export_all).
 
 -include("common.hrl").
+
+start() ->
+    application:start(musiklistan).
 
 init(InstanceName) ->
     %% If several instances of musiklistan are running, only start ETS once.
