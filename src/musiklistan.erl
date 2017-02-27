@@ -200,13 +200,6 @@ routes() ->
              subdomain = "play",
              callback = fun handle_change_song/4}
 
-    %% Other subdomain
-    , #route{protocol = file,
-             verb = get,
-             address = "/xxxyyy",
-             subdomain = "demo",
-             callback = {homepage, info}}
-
     , {'*', fun handle_wildcard/4}].
 
 %% ---- GET handlers:

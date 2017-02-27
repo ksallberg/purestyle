@@ -41,6 +41,10 @@ routes() ->
              verb = get,
              address = "/",
              callback = {homepage, info}}
+    , #route{protocol = file,
+             verb = get,
+             address = "/pstyle.png",
+             callback = fun handle_logo/4}
 
     %% play subdomain
     , #route{protocol = html,
@@ -54,3 +58,7 @@ handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
       extra_headers => "Location: https://play.purestyle.se\r\n",
       return_code   => "301 Moved Permanently"}.
+
+handle_logo(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.png"),
+    Binary.
