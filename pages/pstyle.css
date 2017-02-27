@@ -1,0 +1,27 @@
+html {
+  margin: 45px;
+}
+
+.section-title-fonts {
+  font-size: 10em;
+  margin-left: -11px;
+  padding-top: 25px;
+  font-family: 'Droid Sans', sans-serif;
+  color: #151B54;
+}
+
+.sub-title {
+  padding-top: 15px;
+  font-size: 1.5em;
+  font-family: 'Droid Serif', serif;
+}
+
+.bread {
+  max-width: 880px;
+  padding-top: 9px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+a {
+  color: #9975b9;
+}

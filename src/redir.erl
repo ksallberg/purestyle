@@ -45,6 +45,10 @@ routes() ->
              verb = get,
              address = "/pstyle.png",
              callback = fun handle_logo/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/style.css",
+             callback = fun handle_css/4}
 
     %% play subdomain
     , #route{protocol = html,
@@ -61,4 +65,8 @@ handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
 
 handle_logo(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/pstyle.png"),
+    Binary.
+
+handle_css(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.css"),
     Binary.
