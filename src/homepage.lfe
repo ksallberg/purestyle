@@ -6,38 +6,78 @@
 (defun href (url txt)
   (++ "<a href='" (++ (++ url "'>") (++ txt "</a>"))))
 
+(defun linkedin ()
+  (href "https://www.linkedin.com/in/kristian-s%C3%A4llberg-22a7ba18"
+        "linkedin"))
+
+(defun pplay ()
+  (list (href "https://play.purestyle.se" "Musiklistan")
+        " is a web app that lets you collect "
+        (href "https://www.youtube.com" "youtube")
+        " & "
+        (href "https://www.soundcloud.com" "soundcloud")
+        " links, and listen through these links. "
+        ))
+
+(defun subheader ()
+  (list "Welcome to my "
+        (href "https://www.erlang.org" "Erlang/OTP")
+        ", "
+        (href "https://github.com/ksallberg/brunhilde" "brunhilde")
+        ", "
+        (href "http://lfe.io" "LFE")
+        " & "
+        (href "https://github.com/lfex/exemplar" "exemplar")
+        " powered homepage!"))
+
+(defun bread ()
+  (list "My name is Kristian, I like building stuff. I used to be a "
+        "web designer, then a flash developer. Then a student of "
+        "computer science. Now I am employed as a Software Engineer at "
+        (href "https://www.cisco.com" "Cisco Systems, Inc.") " "
+        "Usually I find myself using "
+        (href "http://www.erlang.org" "Erlang/OTP")
+        " or "
+        (href "https://www.python.org" "python") ". "
+        "In my spare time I also like exploring "
+        (href "https://www.haskell.org" "Haskell") ". "
+        "If you are interested, please browse my "
+        (href "https://github.com/ksallberg" "github")
+        " or my "
+        (linkedin) "."
+        ))
+
 (defun info (data parameters headers instancename)
   (html
    (list
     (head
      (list
        (title "pure style.")
+       (script '(src "waves.js"))
        (link '(rel "stylesheet" href "/style.css"))
-       (link '(rel "stylesheet" href "https://fonts.googleapis.com/css?family=Droid+Sans:700"))
-       (link '(rel "stylesheet" href "https://fonts.googleapis.com/css?family=Open+Sans"))
-       (link '(rel "stylesheet" href "https://fonts.googleapis.com/css?family=Droid+Serif"))
-       )
-     )
+       (link
+        '(rel "stylesheet"
+              href "https://fonts.googleapis.com/css?family=Droid+Sans:700"))
+       (link '(rel "stylesheet"
+                   href "https://fonts.googleapis.com/css?family=Open+Sans"))
+       (link '(rel "stylesheet"
+                   href "https://fonts.googleapis.com/css?family=Droid+Serif"))
+       ))
     (body
      (main
       (list
-       (img '(src "pstyle.png"))
-       (div '(class "dynamic content")
-            (list
-             (div '(class "section-title-fonts") "Hello there!")
-             (div '(class "sub-title") "Welcome to my LFE and Exemplar powered homepage!")
-             (div '(class "bread") "Apparently we had reached a great height in the atmosphere, for the sky was a dead black, and the stars had ceased to twinkle. By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car seemed to float in the middle of an immense dark sphere, whose upper half was strewn with silver. Looking down into the dark gulf below, I could see a ruddy light streaming through a rift in the clouds.")
-             (p (href "https://play.purestyle.se" "purestyle. play"))
-             (p (href "http://www.erlang.org" "Erlang/OTP"))
-             (p (href "https://www.haskell.org" "Haskell"))
-             (p (href "https://github.com/ksallberg/brunhilde" "brunhilde"))
-             (p (href "https://www.linkedin.com/in/kristian-s%C3%A4llberg-22a7ba18" "linkedin"))
-             (p (href "https://www.cisco.com" "Cisco Systems, Inc."))
-            )
-          )
-       )
-      )
-     )
-    )
-   )
-  )
+       "<canvas id='waver' width='200' height='400'></canvas>"
+       (div '(id "allt")
+         (list
+           (img '(src "pstyle.png"))
+           (div '(class "dynamic content")
+              (list
+               (div '(class "title") "Hello there!")
+               (div '(class "sub-title") (subheader))
+               (div '(class "bread") (bread))
+               (p (pplay))
+
+              )
+         )))
+       )))
+    )))

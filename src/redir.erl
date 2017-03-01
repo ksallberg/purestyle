@@ -49,6 +49,15 @@ routes() ->
              verb = get,
              address = "/style.css",
              callback = fun handle_css/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/favicon.ico",
+             callback = fun handle_icon/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/waves.js",
+             callback = fun handle_js/4}
+
 
     %% play subdomain
     , #route{protocol = html,
@@ -69,4 +78,12 @@ handle_logo(_, _, _, _InstanceName) ->
 
 handle_css(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/pstyle.css"),
+    Binary.
+
+handle_icon(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    Binary.
+
+handle_js(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/waves.js"),
     Binary.
