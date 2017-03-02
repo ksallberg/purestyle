@@ -73,6 +73,9 @@
            (div '(class "dynamic content")
               (list
                (div '(class "title") "Hello there!")
+               (div '(class "mini") '("Here is the list of the things I like,"
+                                      " this list is the list of the things "
+                                      "I like:"))
                (div '(class "sub-title") (subheader))
                (div '(class "bread") (bread))
                (p (pplay))

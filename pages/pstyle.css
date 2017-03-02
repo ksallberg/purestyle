@@ -22,10 +22,18 @@ html, body {
     z-index: -9999;
 }
 
+.mini {
+  font-family: 'Open Sans', sans-serif;
+  padding-left: 2px;
+  color: #ffffff;
+  margin-top: -25px;
+  margin-bottom: 0px;
+}
+
 .title {
   user-select: none;
   font-size: 10em;
-  margin-left: -11px;
+  margin-left: -13px;
   padding-top: 25px;
   font-family: 'Droid Sans', sans-serif;
   color: #2b172b;
