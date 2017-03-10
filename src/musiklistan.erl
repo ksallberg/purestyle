@@ -72,6 +72,11 @@ routes() ->
              callback = fun handle_icon/4}
     , #route{protocol = file,
              verb = get,
+             address = "/pstyle.png",
+             subdomain = "play",
+             callback = fun handle_logo/4}
+    , #route{protocol = file,
+             verb = get,
              address = "/fluffy_cat.jpg",
              subdomain = "play",
              callback = fun handle_fluffy_cat/4}
@@ -203,6 +208,10 @@ routes() ->
     , {'*', fun handle_wildcard/4}].
 
 %% ---- GET handlers:
+
+handle_logo(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.png"),
+    Binary.
 
 handle_icon(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),

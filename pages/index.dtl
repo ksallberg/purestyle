@@ -6,7 +6,7 @@
 
 {% block extrabody %}
 
-    <img src="fluffy_cat.jpg" width="50%" height="50%"/>
+    <img src="pstyle.png" width="50%" height="50%"/>
     <h1>The music list!</h1>
 
     <form method="post" action="login_post">
