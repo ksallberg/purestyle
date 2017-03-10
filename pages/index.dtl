@@ -21,6 +21,6 @@
       <input type="submit"/>
     </form>
     <br/>
-    <a href="register">Register</a>
+    <a href="register">Register now!</a>
     <br/>
 {% endblock %}
