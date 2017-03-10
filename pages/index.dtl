@@ -2,11 +2,16 @@
 
 {% block extrahead %}
     <title>The music list!</title>
+    <style>
+    html, body {
+        text-align: center;
+    }
+    </style>
 {% endblock %}
 
 {% block extrabody %}
 
-    <img src="pstyle.png" width="50%" height="50%"/>
+    <img src="pstyle.png"/>
     <h1>The music list!</h1>
 
     <form method="post" action="login_post">
