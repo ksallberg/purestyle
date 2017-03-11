@@ -119,3 +119,14 @@ function change_song() {
         }
     });
 }
+
+function key_down(event) {
+    var key_code = event.keyCode;
+    if(key_code == 37) {
+        prevTrack();
+    } else if(key_code == 39) {
+        nextTrack();
+    }
+}
+
+window.addEventListener("keydown", key_down, false);
