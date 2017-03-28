@@ -19,9 +19,7 @@
 {% endblock %}
 
 {% block extrabody %}
-    <img src="piano_cat.jpg" width="40%" height="40%"/>
-    <br/>
-    {{username}}, you are logged in.
+    {{username}}, you are logged in!
     <h1>Lists:</h1>
     <table class="test">
       {% for id,name in content %}

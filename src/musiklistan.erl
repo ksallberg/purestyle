@@ -77,16 +77,6 @@ routes() ->
              callback = fun handle_logo/4}
     , #route{protocol = file,
              verb = get,
-             address = "/fluffy_cat.jpg",
-             subdomain = "play",
-             callback = fun handle_fluffy_cat/4}
-    , #route{protocol = file,
-             verb = get,
-             address = "/piano_cat.jpg",
-             subdomain = "play",
-             callback = fun handle_piano_cat/4}
-    , #route{protocol = file,
-             verb = get,
              address = "/images/bg.jpg",
              subdomain = "play",
              callback = fun handle_bg/4}
@@ -215,14 +205,6 @@ handle_logo(_, _, _, _InstanceName) ->
 
 handle_icon(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
-
-handle_fluffy_cat(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/fluffy_cat.jpg"),
-    Binary.
-
-handle_piano_cat(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/piano_cat.jpg"),
     Binary.
 
 handle_css(_, _, _, _InstanceName) ->
