@@ -40,24 +40,8 @@ routes() ->
     [ #route{protocol = html,
              verb = get,
              address = "/",
-             callback = {homepage, info}}
-    , #route{protocol = file,
-             verb = get,
-             address = "/pstyle.png",
-             callback = fun handle_logo/4}
-    , #route{protocol = file,
-             verb = get,
-             address = "/style.css",
-             callback = fun handle_css/4}
-    , #route{protocol = file,
-             verb = get,
-             address = "/favicon.ico",
-             callback = fun handle_icon/4}
-    , #route{protocol = file,
-             verb = get,
-             address = "/waves.js",
-             callback = fun handle_js/4}
-
+             subdomain = "www",
+             callback = fun handle_www/4}
 
     %% play subdomain
     , #route{protocol = html,
@@ -67,23 +51,12 @@ routes() ->
              callback = fun handle_play/4}
     ].
 
+handle_www(_Data, _Parameters, _Headers, _InstanceName) ->
+    #{response      => <<"">>,
+      extra_headers => "Location: https://www.purestyle.se\r\n",
+      return_code   => "301 Moved Permanently"}.
+
 handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
       extra_headers => "Location: https://play.purestyle.se\r\n",
       return_code   => "301 Moved Permanently"}.
-
-handle_logo(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/pstyle.png"),
-    Binary.
-
-handle_css(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/pstyle.css"),
-    Binary.
-
-handle_icon(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
-
-handle_js(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/waves.js"),
-    Binary.

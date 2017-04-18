@@ -157,11 +157,6 @@ routes() ->
              address = "/share_playlist",
              subdomain = "play",
              callback = fun handle_share_playlist/4}
-    , #route{protocol = html,
-             verb = get,
-             address = "/uptime",
-             subdomain = "play",
-             callback = fun handle_uptime/4}
 
     , #route{protocol = html,
              verb = post,
@@ -194,6 +189,37 @@ routes() ->
              address = "/change_song",
              subdomain = "play",
              callback = fun handle_change_song/4}
+
+    , #route{protocol = html,
+             verb = get,
+             address = "/",
+             subdomain = "www",
+             callback = {homepage, info}}
+    , #route{protocol = file,
+             verb = get,
+             address = "/pstyle.png",
+             subdomain = "www",
+             callback = fun handle_logo_www/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/style.css",
+             subdomain = "www",
+             callback = fun handle_css_www/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/favicon.ico",
+             subdomain = "www",
+             callback = fun handle_icon_www/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/waves.js",
+             subdomain = "www",
+             callback = fun handle_js_www/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/uptime",
+             subdomain = "www",
+             callback = fun handle_uptime/4}
 
     , {'*', fun handle_wildcard/4}].
 
@@ -784,3 +810,21 @@ get_initvec() ->
 get_soundcloudkey() ->
     {ok, [#{soundcloud := X}]} = file:consult("keys.txt"),
     X.
+
+%% Experimental:
+
+handle_logo_www(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.png"),
+    Binary.
+
+handle_css_www(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.css"),
+    Binary.
+
+handle_icon_www(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    Binary.
+
+handle_js_www(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/waves.js"),
+    Binary.
