@@ -23,51 +23,64 @@
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 %% OF THE POSSIBILITY OF SUCH DAMAGE.
 
--module(redir).
-
--behaviour(http_handler).
+-module(www).
 
 -include("_build/default/lib/brunhilde/include/brunhilde.hrl").
 
--export([ init/1
-        , routes/0
-        ]).
-
-init(_InstanceName) ->
-    ok.
+-export([ routes/0 ]).
 
 routes() ->
     [ #route{protocol = html,
              verb = get,
              address = "/",
              subdomain = "www",
-             callback = fun handle_www/4}
-
-    %% play subdomain
+             callback = {homepage, info}}
+    , #route{protocol = file,
+             verb = get,
+             address = "/pstyle.png",
+             subdomain = "www",
+             callback = fun handle_logo/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/style.css",
+             subdomain = "www",
+             callback = fun handle_css/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/favicon.ico",
+             subdomain = "www",
+             callback = fun handle_icon/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/waves.js",
+             subdomain = "www",
+             callback = fun handle_js/4}
     , #route{protocol = html,
              verb = get,
-             address = "/",
-             subdomain = "play",
-             callback = fun handle_play/4}
-
-    , #route{protocol = html,
-             verb = get,
-             address = "/",
-             subdomain = "demo",
-             callback = fun handle_demo/4}
+             address = "/uptime",
+             subdomain = "www",
+             callback = fun handle_uptime/4}
     ].
 
-handle_www(_Data, _Parameters, _Headers, _InstanceName) ->
-    #{response      => <<"">>,
-      extra_headers => "Location: https://www.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+%% Experimental:
 
-handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
-    #{response      => <<"">>,
-      extra_headers => "Location: https://play.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+handle_logo(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.png"),
+    Binary.
 
-handle_demo(_Data, _Parameters, _Headers, _InstanceName) ->
-    #{response      => <<"">>,
-      extra_headers => "Location: https://play.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+handle_css(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.css"),
+    Binary.
+
+handle_icon(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/favicon.ico"),
+    Binary.
+
+handle_js(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/waves.js"),
+    Binary.
+
+handle_uptime(_, _, _, _InstanceName) ->
+    Uptime = os:cmd("uptime"),
+    FreeM  = os:cmd("free -m"),
+    ?l2b(Uptime ++ "\n\n\n" ++ FreeM).

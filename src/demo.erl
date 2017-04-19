@@ -23,51 +23,34 @@
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 %% OF THE POSSIBILITY OF SUCH DAMAGE.
 
--module(redir).
-
--behaviour(http_handler).
+-module(demo).
 
 -include("_build/default/lib/brunhilde/include/brunhilde.hrl").
 
--export([ init/1
-        , routes/0
-        ]).
-
-init(_InstanceName) ->
-    ok.
+-export([ routes/0 ]).
 
 routes() ->
-    [ #route{protocol = html,
+    %% File addresses
+    [ #route{protocol = file,
              verb = get,
-             address = "/",
-             subdomain = "www",
-             callback = fun handle_www/4}
-
-    %% play subdomain
-    , #route{protocol = html,
-             verb = get,
-             address = "/",
-             subdomain = "play",
-             callback = fun handle_play/4}
-
-    , #route{protocol = html,
+             address = "/pstyle.png",
+             subdomain = "demo",
+             callback = fun handle_logo/4}
+    , #route{protocol = file,
              verb = get,
              address = "/",
              subdomain = "demo",
-             callback = fun handle_demo/4}
+             callback = fun handle_page/4}
     ].
 
-handle_www(_Data, _Parameters, _Headers, _InstanceName) ->
-    #{response      => <<"">>,
-      extra_headers => "Location: https://www.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+handle_page(_, _, _, _InstanceName) ->
+    {ok, Module} = erlydtl:compile_file("pages/demo.dtl",
+                                        register,
+                                        [{out_dir, "compiled_templates"}]
+                                       ),
+    {ok, Binary} = Module:render([]),
+    Binary.
 
-handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
-    #{response      => <<"">>,
-      extra_headers => "Location: https://play.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
-
-handle_demo(_Data, _Parameters, _Headers, _InstanceName) ->
-    #{response      => <<"">>,
-      extra_headers => "Location: https://play.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+handle_logo(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/pstyle.png"),
+    Binary.
