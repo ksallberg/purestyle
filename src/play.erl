@@ -23,45 +23,13 @@
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 %% OF THE POSSIBILITY OF SUCH DAMAGE.
 
--module(musiklistan).
+-module(play).
 
--behaviour(http_handler).
 -include("_build/default/lib/brunhilde/include/brunhilde.hrl").
 
--export([ start/0
-        , init/1
-        , routes/0
-        ]).
-
--compile(export_all).
+-export([ routes/0 ]).
 
 -include("common.hrl").
-
-start() ->
-    application:start(musiklistan).
-
-init(InstanceName) ->
-    %% If several instances of musiklistan are running, only start ETS once.
-    %% The purpose of having several instances is only for development anyway,
-    %% serving HTTP for development and HTTPS for production.
-    DB = db_name(InstanceName),
-    io:format("Starting ets..."),
-    ets:new(DB, [public, set, named_table]),
-    ets:delete_all_objects(DB),
-    ets:insert(DB, {active_users, []}),
-    io:format("Starting mnesia..."),
-    NodeList = [node()],
-    mnesia:create_schema(NodeList),
-    mnesia:start(),
-    mnesia:create_table(user,
-                        [{attributes, record_info(fields, user)},
-                         {disc_copies, NodeList}]),
-    mnesia:create_table(playlist,
-                        [{attributes, record_info(fields, playlist)},
-                         {disc_copies, NodeList}]),
-    io:format("Starting inets..."),
-    ssl:start(),
-    inets:start().
 
 routes() ->
     %% File addresses
@@ -190,9 +158,7 @@ routes() ->
              subdomain = "play",
              callback = fun handle_change_song/4}
 
-    , {'*', fun handle_wildcard/4}]
-        ++ www:routes()
-        ++ demo:routes().
+    ].
 
 %% ---- GET handlers:
 
