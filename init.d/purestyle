@@ -1,27 +1,27 @@
 #! /bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          musiklistan
+# Provides:          purestyle
 # Required-Start:    $remote_fs $network
 # Required-Stop:     $remote_fs $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Starts musiklistan
-# Description:       Starts musiklistan
+# Short-Description: Starts purestyle
+# Description:       Starts purestyle
 ### END INIT INFO
 
 export HOME=/home/user/
-export DIR=/home/user/path/to/musiklistan/
+export DIR=/home/user/path/to/purestyle/
 
 start()
 {
   cd $DIR
-  erl -boot start_sasl -pa $DIR/_build/default/lib/*/ebin -detached -s musiklistan
+  erl -boot start_sasl -pa $DIR/_build/default/lib/*/ebin -detached -s purestyle
 }
 
 stop()
 {
-  kill $(ps aux | grep "musiklistan" | awk '{print $2}')
+  kill $(ps aux | grep "purestyle" | awk '{print $2}')
 }
 
 case "$1" in

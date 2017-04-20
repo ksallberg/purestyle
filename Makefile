@@ -3,7 +3,7 @@ build:
 
 start: build
 	erl -boot start_sasl -pa _build/default/lib/*/ebin \
-            -s musiklistan
+            -s purestyle
 
 clean:
 	rm -rf _build
