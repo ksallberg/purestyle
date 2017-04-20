@@ -1,0 +1,6 @@
+{application, purestyle,
+ [{description, "Personal homepage"},
+  {vsn, "1.4"},
+  {modules,[]},
+  {mod,{purestyle_app,[]}},
+  {applications,[kernel, stdlib]}]}.

@@ -23,21 +23,21 @@
 %% ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 %% OF THE POSSIBILITY OF SUCH DAMAGE.
 
--module(musiklistan_app).
--author('kristian@purestyle.se').
+%% Top level supervisor.
 
--behaviour(application).
--export([ start/2
-        , stop/1]).
+-module(purestyle_sup).
+-behavior(supervisor).
 
--spec start(any(), term()) -> {ok, pid()}
-                           |  {ok, pid(), term()}
-                           |  {error, any()}.
-start(_Type, _Args) ->
-    crypto:start(),
-    application:start(brunhilde),
-    musiklistan_sup:start_link().
+-export([ start_link/0
+        , init/1]).
 
--spec stop(any()) -> ok.
-stop(_State) ->
-    ok.
+start_link() ->
+    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+
+init([]) ->
+
+    SupFlags = #{strategy  => one_for_one,
+                 intensity => 10,
+                 preiod    => 60},
+
+    {ok, {SupFlags, []}}.

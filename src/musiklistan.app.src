@@ -1,7 +1,0 @@
-{application, musiklistan,
- [{description, "Musiklistan, audio link collector."
-                "Using Youtube and Soundcloud APIs"},
-  {vsn, "1.1"},
-  {modules,[]},
-  {mod,{musiklistan_app,[]}},
-  {applications,[kernel, stdlib]}]}.
