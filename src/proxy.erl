@@ -38,13 +38,13 @@
 -include("common.hrl").
 
 start() ->
-    application:start(musiklistan).
+    application:start(purestyle).
 
 init(InstanceName) ->
-    %% If several instances of musiklistan are running, only start ETS once.
+    %% If several instances of purestyle play are running, only start ETS once.
     %% The purpose of having several instances is only for development anyway,
     %% serving HTTP for development and HTTPS for production.
-    DB = db_name(InstanceName),
+    DB = play:db_name(InstanceName),
     io:format("Starting ets..."),
     ets:new(DB, [public, set, named_table]),
     ets:delete_all_objects(DB),

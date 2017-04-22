@@ -1,7 +1,7 @@
 {% extends "base.dtl" %}
 
 {% block extrahead %}
-    <title>musiklistan - register</title>
+    <title>register</title>
 {% endblock %}
 
 {% block extrabody %}

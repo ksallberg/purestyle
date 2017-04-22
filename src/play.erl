@@ -27,7 +27,8 @@
 
 -include("_build/default/lib/brunhilde/include/brunhilde.hrl").
 
--export([ routes/0 ]).
+-export([ routes/0
+        , db_name/1 ]).
 
 -include("common.hrl").
 
@@ -188,10 +189,6 @@ handle_fontawesome(_, _, _, _InstanceName) ->
 
 handle_bg(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bg.jpg"),
-    Binary.
-
-handle_styles(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/styles.css"),
     Binary.
 
 handle_jquery(_, _, _, _InstanceName) ->
@@ -417,9 +414,6 @@ handle_change_song(#{<<"id">>     := Id,
             #{<<"ok">> => <<"complete">>,
               <<"new_name">> => Title}
     end.
-
-handle_wildcard(_Data, _Parameters, _Headers, _InstanceName) ->
-    <<"404: Hello there!">>.
 
 %% ---- helpers:
 
@@ -733,10 +727,6 @@ get_appsecret() ->
 
 get_cryptkey() ->
     {ok, [#{cryptkey := X}]} = file:consult("keys.txt"),
-    X.
-
-get_initvec() ->
-    {ok, [#{initvec := X}]} = file:consult("keys.txt"),
     X.
 
 get_soundcloudkey() ->

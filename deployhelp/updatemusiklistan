@@ -1,4 +1,0 @@
-cd /home/ubuntu/musiklistan
-git pull
-rebar compile
-service yaws restart

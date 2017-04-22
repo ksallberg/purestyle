@@ -1,9 +1,11 @@
 build:
 	rebar3 compile
 
+# -s calls proxy:start()
+# see http://erlang.org/doc/man/erl.html
 start: build
 	erl -boot start_sasl -pa _build/default/lib/*/ebin \
-            -s purestyle
+            -s proxy
 
 clean:
 	rm -rf _build
