@@ -75,7 +75,7 @@
         <td width="30px">{{id}}.</td>
         <td>
           <div id="{{trackid}}">
-          {% if source=="other" %}
+          {% if source=='other' %}
             <a style="cursor: pointer;" href='{{title}}'>{{title}}</a>
           {% else %}
             <a style="cursor: pointer;" onclick='goto({{id}});'>{{title}}</a>
