@@ -270,7 +270,7 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                                     length(Playlist#playlist.tracks) - 1
                                    )),
             Tracks3 =
-                [{Track#track.title, Track#track.id, Id}
+                [{Track#track.title, Track#track.id, Track#track.source, Id}
                  || {Track, Id} <- Tracks2],
             {ok, Module} = erlydtl:compile_file("pages/playlist.dtl",
                                                 playlist,
@@ -563,11 +563,15 @@ soundcloud_title(Link) ->
     [Title | _]   = re:split(?b2l(TitleEtc), "\","),
     ?b2l(Title).
 
+%% other used to be "no_id", but that was not very good since
+%% it is used as a key in the db. When changing the "song name"
+%% you would change it for some other song in the list if you
+%% had multiple "no_id" keys
 get_id(Link) ->
     case determine_source(Link) of
         youtube    -> youtube_id(Link);
         soundcloud -> soundcloud_id(Link);
-        other      -> "no_id"
+        other      -> uuid:uuid_to_string(uuid:get_v4())
     end.
 
 youtube_id(Link) ->
