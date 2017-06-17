@@ -69,14 +69,15 @@
     <br/>
 
     <table width="100%">
-      {% for title,trackid,source,id in tracks3 %}
+      {% for title,trackid,source,url,id in tracks3 %}
       <tr onmouseover="this.style.background='black';"
           onmouseout="this.style.background='';">
         <td width="30px">{{id}}.</td>
         <td>
           <div id="{{trackid}}">
           {% if source=='other' %}
-            <a style="cursor: pointer;" href='{{title}}'>{{title}}</a>
+            <a style="cursor: pointer;" target="_blank"
+               href='{{url}}'>{{title}}</a>
           {% else %}
             <a style="cursor: pointer;" onclick='goto({{id}});'>{{title}}</a>
           {% endif %}

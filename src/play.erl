@@ -270,7 +270,8 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                                     length(Playlist#playlist.tracks) - 1
                                    )),
             Tracks3 =
-                [{Track#track.title, Track#track.id, Track#track.source, Id}
+                [{Track#track.title, Track#track.id,
+                  Track#track.source, Track#track.url, Id}
                  || {Track, Id} <- Tracks2],
             {ok, Module} = erlydtl:compile_file("pages/playlist.dtl",
                                                 playlist,
