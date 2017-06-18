@@ -70,8 +70,13 @@
 
     <table width="100%">
       {% for title,trackid,source,url,id in tracks3 %}
-      <tr onmouseover="this.style.background='black';"
-          onmouseout="this.style.background='';">
+      <tr onmouseout="this.style.background='';"
+          {% if source=='other' %}
+          onmouseover="this.style.background='violet3';"
+          {% else %}
+          onmouseover="this.style.background='black';"
+          {% endif %}
+          >
         <td width="30px">{{id}}.</td>
         <td>
           <div id="{{trackid}}">
