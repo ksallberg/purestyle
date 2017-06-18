@@ -72,7 +72,7 @@
       {% for title,trackid,source,url,id in tracks3 %}
       <tr onmouseout="this.style.background='';"
           {% if source=='other' %}
-          onmouseover="this.style.background='violet3';"
+          onmouseover="this.style.background='#4E004E';"
           {% else %}
           onmouseover="this.style.background='black';"
           {% endif %}
