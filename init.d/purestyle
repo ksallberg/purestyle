@@ -21,7 +21,7 @@ start()
 
 stop()
 {
-  kill $(ps aux | grep "purestyle" | awk '{print $2}')
+  kill $(ps aux | grep "purestyle" | grep "ebin" | awk '{print $2}')
 }
 
 case "$1" in
