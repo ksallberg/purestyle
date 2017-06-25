@@ -27,7 +27,7 @@
 
 -behaviour(http_handler).
 
--include("_build/default/lib/brunhilde/include/brunhilde.hrl").
+-include("./_build/default/lib/brunhilde/include/brunhilde.hrl").
 
 -export([ init/1
         , routes/0

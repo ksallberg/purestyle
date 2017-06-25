@@ -26,7 +26,7 @@
 -module(proxy).
 
 -behaviour(http_handler).
--include("_build/default/lib/brunhilde/include/brunhilde.hrl").
+-include("./_build/default/lib/brunhilde/include/brunhilde.hrl").
 
 -export([ start/0
         , init/1
