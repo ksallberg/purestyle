@@ -81,6 +81,9 @@ handle_js(_, _, _, _InstanceName) ->
     Binary.
 
 handle_uptime(_, _, _, _InstanceName) ->
+    WrapFun  = fun(Txt) ->
+                       "<p>" ++ Txt ++ "</p>"
+               end,
     Spacing  = "\n\n\n",
     Uptime   = os:cmd("uptime"),
     FreeM    = os:cmd("free -m"),
@@ -88,14 +91,16 @@ handle_uptime(_, _, _, _InstanceName) ->
     ProcsTxt = "Procs: " ++ Procs,
     Memory   = lists:flatten(io_lib:format("~p", [erlang:memory()])),
     Link     = "<a href='https://play.purestyle.se/'>play</a>",
-    Ls = [ Uptime
+    Ls = [ "<html><head></head><body>"
+         , WrapFun(Uptime)
          , Spacing
-         , FreeM
+         , WrapFun(FreeM)
          , Spacing
-         , ProcsTxt
+         , WrapFun(ProcsTxt)
          , Spacing
-         , Memory
+         , WrapFun(Memory)
          , Spacing
          , Link
+         , "</body></html>"
          ],
     ?l2b(lists:flatten(Ls)).
