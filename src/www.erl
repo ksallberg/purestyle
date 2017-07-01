@@ -81,6 +81,18 @@ handle_js(_, _, _, _InstanceName) ->
     Binary.
 
 handle_uptime(_, _, _, _InstanceName) ->
-    Uptime = os:cmd("uptime"),
-    FreeM  = os:cmd("free -m"),
-    ?l2b(Uptime ++ "\n\n\n" ++ FreeM).
+    Spacing  = "\n\n\n",
+    Uptime   = os:cmd("uptime"),
+    FreeM    = os:cmd("free -m"),
+    Procs    = integer_to_list(length(erlang:processes())),
+    ProcsTxt = "Procs: " ++ Procs,
+    Memory   = lists:flatten(io_lib:format("~p", [erlang:memory()])),
+    Ls = [ Uptime
+         , Spacing
+         , FreeM
+         , Spacing
+         , ProcsTxt
+         , Spacing
+         , Memory
+         ],
+    ?l2b(lists:flatten(Ls)).
