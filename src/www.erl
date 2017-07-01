@@ -87,6 +87,7 @@ handle_uptime(_, _, _, _InstanceName) ->
     Procs    = integer_to_list(length(erlang:processes())),
     ProcsTxt = "Procs: " ++ Procs,
     Memory   = lists:flatten(io_lib:format("~p", [erlang:memory()])),
+    Link     = "<a href='https://play.purestyle.se/'>play</a>",
     Ls = [ Uptime
          , Spacing
          , FreeM
@@ -94,5 +95,7 @@ handle_uptime(_, _, _, _InstanceName) ->
          , ProcsTxt
          , Spacing
          , Memory
+         , Spacing
+         , Link
          ],
     ?l2b(lists:flatten(Ls)).
