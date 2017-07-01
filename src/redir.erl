@@ -69,5 +69,5 @@ handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
 
 handle_demo(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
-      extra_headers => "Location: https://play.purestyle.se\r\n",
+      extra_headers => "Location: https://demo.purestyle.se\r\n",
       return_code   => "301 Moved Permanently"}.
