@@ -4,7 +4,8 @@
 -record(usercookie, {username :: string(),
                      times = 0}).
 
-%%% 1) All users bucket
+%% 1) All users bucket
+%%
 %% -------------------
 %% | username | info |
 %% -------------------
@@ -17,7 +18,8 @@
 -record(userinfo, {password  :: string(),
                    playlists :: [playlist]}).
 
-%%% 2) All playlists: (example bucket name: user2_lists)
+%% 2) All playlists: (example bucket name: user2_lists)
+%%
 %% tracks is a list of strings (id) that corresponds
 %% to track.id
 %% --------------------------
