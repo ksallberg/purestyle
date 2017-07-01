@@ -82,7 +82,7 @@ handle_js(_, _, _, _InstanceName) ->
 
 handle_uptime(_, _, _, _InstanceName) ->
     WrapFun  = fun(Txt) ->
-                       "<p>" ++ Txt ++ "</p>"
+                       "<pre>" ++ Txt ++ "</pre>"
                end,
     Spacing  = "\n\n\n",
     Uptime   = os:cmd("uptime"),
