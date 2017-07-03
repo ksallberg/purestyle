@@ -89,7 +89,10 @@ handle_uptime(_, _, _, _InstanceName) ->
     FreeM    = os:cmd("free -m"),
     Procs    = integer_to_list(length(erlang:processes())),
     ProcsTxt = "Procs: " ++ Procs,
-    Memory   = lists:flatten(io_lib:format("~p", [erlang:memory()])),
+    ErMem    = erlang:memory(),
+    Memory   = lists:flatten(io_lib:format("~p", [ErMem])),
+    {_, Tot} = lists:keyfind(total, 1, ErMem),
+    TotMb    = integer_to_list(Tot div 1048576),
     Link     = "<a href='https://play.purestyle.se/'>play</a>",
     Ls = [ "<html><head></head><body>"
          , WrapFun(Uptime)
@@ -101,6 +104,8 @@ handle_uptime(_, _, _, _InstanceName) ->
          , WrapFun(Memory)
          , Spacing
          , Link
+         , Spacing
+         , "Total in Mb: " ++ TotMb
          , "</body></html>"
          ],
     ?l2b(lists:flatten(Ls)).
