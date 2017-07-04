@@ -103,9 +103,9 @@ handle_uptime(_, _, _, _InstanceName) ->
          , Spacing
          , WrapFun(Memory)
          , Spacing
-         , Link
-         , Spacing
          , "Total in Mb: " ++ TotMb
+         , Spacing
+         , Link
          , "</body></html>"
          ],
     ?l2b(lists:flatten(Ls)).
