@@ -103,7 +103,7 @@ handle_uptime(_, _, _, _InstanceName) ->
          , Spacing
          , WrapFun(Memory)
          , Spacing
-         , "Total in Mb: " ++ TotMb
+         , WrapFun("Total in Mb: " ++ TotMb)
          , Spacing
          , Link
          , "</body></html>"
