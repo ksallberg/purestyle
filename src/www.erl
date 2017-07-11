@@ -25,7 +25,7 @@
 
 -module(www).
 
--include("./_build/default/lib/brunhilde/include/brunhilde.hrl").
+-include_lib("brunhilde/include/brunhilde.hrl").
 
 -export([ routes/0 ]).
 
