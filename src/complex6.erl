@@ -8,5 +8,5 @@ init() ->
 foo(_X) ->
     exit(nif_library_not_loaded).
 
-foo(_Y) ->
+bar(_Y) ->
     exit(nif_library_not_loaded).
