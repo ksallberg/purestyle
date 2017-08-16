@@ -571,7 +571,13 @@ soundcloud_title(Link) ->
 get_id(Link) ->
     case determine_source(Link) of
         youtube    -> youtube_id(Link);
-        soundcloud -> soundcloud_id(Link);
+        soundcloud ->
+            try
+                soundcloud_id(Link)
+            catch
+                _:_ ->
+                    uuid:uuid_to_string(uuid:get_v4())
+            end;
         other      -> uuid:uuid_to_string(uuid:get_v4())
     end.
 
