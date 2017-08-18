@@ -12,3 +12,4 @@ Mnesia.nonode@nohost/
 \#*\#
 _build/
 log/
+c_src/complex6_nif.so

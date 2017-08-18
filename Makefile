@@ -14,4 +14,5 @@ clean:
 	rm -rf lux_logs
 	rm -rf log/*.log
 	rm -rf rebar.lock
+	rm -f c_src/complex6_nif.so
 .PHONY: clean
