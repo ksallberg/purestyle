@@ -3,7 +3,7 @@
 -on_load(init/0).
 
 init() ->
-    ok = erlang:load_nif("./complex6_nif", 0).
+    ok = erlang:load_nif("c_src/complex6_nif", 0).
 
 foo(_X) ->
     exit(nif_library_not_loaded).

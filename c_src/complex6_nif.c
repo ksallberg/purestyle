@@ -24,7 +24,7 @@ static ERL_NIF_TERM bar_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
     return enif_make_badarg(env);
   }
 
-  ret = foo(y);
+  ret = bar(y);
 
   return enif_make_int(env, ret);
 }
