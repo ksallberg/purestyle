@@ -67,9 +67,14 @@ init(InstanceName) ->
 routes() ->
     [ #route{protocol = html,
              verb = get,
-             address = "/test_nif",
-             callback = fun nif_test/4} ] ++
-        play:routes()
+             address = "/nif_test",
+             callback = fun nif_test/4}
+    , #route{protocol = html,
+             subdomain = "www",
+             verb = get,
+             address = "/nif_test",
+             callback = fun nif_test/4} ]
+        ++ play:routes()
         ++ www:routes()
         ++ demo:routes()
         ++ [{'*', fun handle_wildcard/4}].
