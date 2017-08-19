@@ -7,7 +7,9 @@ sources (youtube, spotify, etc.)
 A running demo of this app is available [here](https://www.purestyle.se).
 
 ## Compile with:
-LFE [lisp flavored erlang](http://lfe.io) is required.
+* [Erlang/OTP](http://www.erlang.org) is required.
+* LFE [lisp flavored erlang](http://lfe.io) is required.
+* Make sure $ERL_TOP points to something like ```/usr/lib/erlang```
 
 ```
 make build
