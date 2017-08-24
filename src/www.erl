@@ -94,7 +94,6 @@ handle_uptime(_, _, _, _InstanceName) ->
     {_, Tot} = lists:keyfind(total, 1, ErMem),
     TotMb    = integer_to_list(Tot div 1048576),
     Link     = "<a href='https://play.purestyle.se/'>play</a>",
-    Node     = atom_to_list(node()),
     Ls = [ "<html><head></head><body>"
          , WrapFun(Uptime)
          , Spacing
@@ -105,8 +104,6 @@ handle_uptime(_, _, _, _InstanceName) ->
          , WrapFun(Memory)
          , Spacing
          , WrapFun("Total in Mb: " ++ TotMb)
-         , Spacing
-         , Node
          , Spacing
          , Link
          , "</body></html>"
