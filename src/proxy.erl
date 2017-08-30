@@ -65,24 +65,10 @@ init(InstanceName) ->
     inets:start().
 
 routes() ->
-    [ #route{protocol = html,
-             verb = get,
-             address = "/nif_test",
-             callback = fun nif_test/4}
-    , #route{protocol = html,
-             subdomain = "www",
-             verb = get,
-             address = "/nif_test",
-             callback = fun nif_test/4} ]
-        ++ play:routes()
-        ++ www:routes()
-        ++ demo:routes()
-        ++ [{'*', fun handle_wildcard/4}].
+    [ play:routes()
+      ++ www:routes()
+      ++ demo:routes()
+      ++ [{'*', fun handle_wildcard/4}] ].
 
 handle_wildcard(_Data, _Parameters, _Headers, _InstanceName) ->
     <<"404: Hello there!">>.
-
-nif_test(_Data, _Parameters, _Headers, _InstanceName) ->
-    FooVal = integer_to_list(complex6:foo(3)),
-    BarVal = integer_to_list(complex6:bar(5)),
-    list_to_binary("hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal).

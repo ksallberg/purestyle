@@ -94,6 +94,9 @@ handle_uptime(_, _, _, _InstanceName) ->
     {_, Tot} = lists:keyfind(total, 1, ErMem),
     TotMb    = integer_to_list(Tot div 1048576),
     Link     = "<a href='https://play.purestyle.se/'>play</a>",
+    FooVal = integer_to_list(complex6:foo(3)),
+    BarVal = integer_to_list(complex6:bar(5)),
+    Nif    = list_to_binary("hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal),
     Ls = [ "<html><head></head><body>"
          , WrapFun(Uptime)
          , Spacing
@@ -106,6 +109,9 @@ handle_uptime(_, _, _, _InstanceName) ->
          , WrapFun("Total in Mb: " ++ TotMb)
          , Spacing
          , Link
+         , Spacing
+         , "NIF result: " ++ WrapFun(Nif)
+         , Spacing
          , "</body></html>"
          ],
     ?l2b(lists:flatten(Ls)).
