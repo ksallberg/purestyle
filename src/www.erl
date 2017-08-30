@@ -96,7 +96,7 @@ handle_uptime(_, _, _, _InstanceName) ->
     Link     = "<a href='https://play.purestyle.se/'>play</a>",
     FooVal = integer_to_list(complex6:foo(3)),
     BarVal = integer_to_list(complex6:bar(5)),
-    Nif    = list_to_binary("hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal),
+    Nif    = "hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal,
     Ls = [ "<html><head></head><body>"
          , WrapFun(Uptime)
          , Spacing
