@@ -110,7 +110,7 @@ handle_uptime(_, _, _, _InstanceName) ->
          , Spacing
          , Link
          , Spacing
-         , "NIF result: " ++ WrapFun(Nif)
+         , WrapFun("NIF result: " ++ Nif)
          , Spacing
          , "</body></html>"
          ],
