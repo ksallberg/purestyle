@@ -65,10 +65,10 @@ init(InstanceName) ->
     inets:start().
 
 routes() ->
-    [ play:routes()
-      ++ www:routes()
-      ++ demo:routes()
-      ++ [{'*', fun handle_wildcard/4}] ].
+    play:routes()
+        ++ www:routes()
+        ++ demo:routes()
+        ++ [{'*', fun handle_wildcard/4}].
 
 handle_wildcard(_Data, _Parameters, _Headers, _InstanceName) ->
     <<"404: Hello there!">>.
