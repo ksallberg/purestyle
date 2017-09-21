@@ -60,6 +60,12 @@ routes() ->
              address = "/uptime",
              subdomain = "www",
              callback = fun handle_uptime/4}
+
+    %% debug
+    ,  #route{protocol = html,
+              verb = get,
+              address = "/uptime",
+              callback = fun handle_uptime/4}
     ].
 
 %% Experimental:
