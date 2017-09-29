@@ -1,4 +1,9 @@
+OS = ${shell uname -s}
+
+include arch/${OS}/Makefile
+
 build:
+	gcc ${ARCHFLAGS} -I${ERL_TOP}/usr/include -I${ERL_TOP}/installed/lib/erlang/usr/include -o c_src/complex6_nif.so -fpic -shared c_src/complex.c c_src/complex6_nif.c
 	rebar3 compile
 
 # -s calls proxy:start()
