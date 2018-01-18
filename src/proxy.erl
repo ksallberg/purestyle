@@ -34,8 +34,6 @@
         , routes/0
         ]).
 
--compile(export_all).
-
 -include("common.hrl").
 
 start() ->
