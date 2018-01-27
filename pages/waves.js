@@ -7,7 +7,7 @@ var globline = 0;
 var debug = false;
 var is_mouse_down = false;
 var last_mouse_y = 0;
-var mult = 1.002134;
+var mult = .039134;
 var dist = 10;
 var demo = true;
 
@@ -77,37 +77,36 @@ function repos() {
     var new_target = globline + 600;
     last_mouse_y = new_target;
     points[pointnum].ty = new_target / mult;
-
-    do_repos_left(new_target, pointnum-1);
-    do_repos_right(new_target, pointnum+1);
+    do_repos_left(new_target, 0, pointnum-1);
+    do_repos_right(new_target, 0, pointnum+1);
 }
 
-function do_repos_left(old, i) {
+function do_repos_left(old, inc, i) {
     if(i < 0) {
         return;
     }
-    var new_val
+    var new_val;
     if(last_mouse_y > globline) {
-        new_val = old / mult;
+        new_val = old - inc;
     } else {
-        new_val = old * mult;
+        new_val = old + inc;
     }
     points[i].ty = new_val;
-    do_repos_left(new_val, i - 1);
+    do_repos_left(new_val, inc+mult, i - 1);
 }
 
-function do_repos_right(old, i) {
+function do_repos_right(old, inc, i) {
     if(i > pamount - 1) {
         return;
     }
-    var new_val
+    var new_val;
     if(last_mouse_y > globline) {
-        new_val = old / mult;
+        new_val = old - inc;
     } else {
-        new_val = old * mult;
+        new_val = old + inc;
     }
     points[i].ty = new_val;
-    do_repos_right(new_val, i + 1);
+    do_repos_right(new_val, inc+mult, i + 1);
 }
 
 function on_load(event) {
@@ -152,10 +151,9 @@ function mouse_move(event) {
         var new_target = event.clientY;
         var x_target = Math.round(event.clientX / dist);
         last_mouse_y = event.clientY;
-
         points[x_target].ty = new_target;
-        do_repos_left(new_target, x_target - 1);
-        do_repos_right(new_target, x_target + 1);
+        do_repos_left(new_target, 0, x_target - 1);
+        do_repos_right(new_target, 0, x_target + 1);
     }
 }
 
