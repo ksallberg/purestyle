@@ -9,7 +9,7 @@ var is_mouse_down = false;
 var last_mouse_y = 0;
 var mult = .039134;
 var dist = 10;
-var demo = true;
+var demo = false; // demo turned off...
 
 function draw() {
     ctx.canvas.width  = window.innerWidth;
