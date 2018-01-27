@@ -27,7 +27,7 @@ function draw() {
     }
 
     ctx.beginPath();
-    ctx.fillStyle="#2b172b";
+    ctx.fillStyle="#333350";
     ctx.moveTo(0,points[0].y);
     for (var i = 0; i < pamount; i ++) {
         ctx.lineTo(points[i].x, points[i].y);
@@ -110,7 +110,7 @@ function do_repos_right(old, i) {
     do_repos_right(new_val, i + 1);
 }
 
-function xxx(event) {
+function on_load(event) {
 
     globline = window.innerHeight - 200;
     pamount = (window.innerWidth / dist) + 2;
@@ -159,7 +159,7 @@ function mouse_move(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', xxx, false);
+document.addEventListener('DOMContentLoaded', on_load, false);
 window.addEventListener('keydown', toggle_debug, false);
 window.addEventListener('mousedown', mouse_down, false);
 window.addEventListener('mouseup', mouse_up, false);

@@ -72,7 +72,7 @@
            (img '(src "pstyle.png"))
            (div '(class "dynamic content")
               (list
-               (div '(class "title") "Hello there!")
+               (div '(class "title") "____ _____")
                (div '(class "mini") '("Here is the list of the things I like,"
                                       " this list is the list of the things "
                                       "I like:"))

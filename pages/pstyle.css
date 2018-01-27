@@ -14,7 +14,7 @@ html, body {
   padding-top: 50px;
   padding-left: 50px;
   height: auto;
-  color: #2b172b;
+  color: #333350;
 }
 
 #waver {
@@ -36,7 +36,7 @@ html, body {
   margin-left: -13px;
   padding-top: 25px;
   font-family: 'Droid Sans', sans-serif;
-  color: #2b172b;
+  color: #333350;
 }
 
 .sub-title {
