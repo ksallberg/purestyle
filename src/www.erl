@@ -115,7 +115,7 @@ handle_uptime(_, _, _, _InstanceName) ->
          , Spacing
          , WrapFun("Total in Mb: " ++ TotMb)
          , Spacing
-         , WrapFun("Erlang/OTP relase: " ++ Rel),
+         , WrapFun("Erlang/OTP relase: " ++ Rel)
          , Spacing
          , Link
          , Spacing
