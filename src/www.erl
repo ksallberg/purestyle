@@ -96,6 +96,7 @@ handle_uptime(_, _, _, _InstanceName) ->
     Procs    = integer_to_list(length(erlang:processes())),
     ProcsTxt = "Procs: " ++ Procs,
     ErMem    = erlang:memory(),
+    Rel      = erlang:system_info(otp_release),
     Memory   = lists:flatten(io_lib:format("~p", [ErMem])),
     {_, Tot} = lists:keyfind(total, 1, ErMem),
     TotMb    = integer_to_list(Tot div 1048576),
@@ -113,6 +114,8 @@ handle_uptime(_, _, _, _InstanceName) ->
          , WrapFun(Memory)
          , Spacing
          , WrapFun("Total in Mb: " ++ TotMb)
+         , Spacing
+         , WrapFun("Erlang/OTP relase: " ++ Rel),
          , Spacing
          , Link
          , Spacing
