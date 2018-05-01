@@ -72,9 +72,6 @@
            (img '(src "pstyle.png"))
            (div '(class "dynamic content")
               (list
-               (div '(class "mini") '("Here is the list of the things I like,"
-                                      " this list is the list of the things "
-                                      "I like:"))
                (div '(class "sub-title") (subheader))
                (div '(class "bread") (bread))
                (p (pplay))
