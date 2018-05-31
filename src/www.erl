@@ -101,9 +101,10 @@ handle_uptime(_, _, _, _InstanceName) ->
     {_, Tot} = lists:keyfind(total, 1, ErMem),
     TotMb    = integer_to_list(Tot div 1048576),
     Link     = "<a href='https://play.purestyle.se/'>play</a>",
-    FooVal = integer_to_list(complex6:foo(3)),
-    BarVal = integer_to_list(complex6:bar(5)),
-    Nif    = "hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal,
+    FooVal   = integer_to_list(complex6:foo(3)),
+    BarVal   = integer_to_list(complex6:bar(5)),
+    Nif      = "hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal,
+    Cass     = os:cmd("/home/pi/Documents/cassandra/bin/nodetool status"),
     Ls = [ "<html><head></head><body>"
          , WrapFun(Uptime)
          , Spacing
@@ -120,6 +121,8 @@ handle_uptime(_, _, _, _InstanceName) ->
          , Link
          , Spacing
          , WrapFun("NIF result: " ++ Nif)
+         , Spacing
+         , WrapFun(Cass)
          , Spacing
          , "</body></html>"
          ],
