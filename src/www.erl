@@ -87,6 +87,7 @@ handle_js(_, _, _, _InstanceName) ->
     Binary.
 
 handle_uptime(_, _, _, _InstanceName) ->
+    lager:log(info, self(), "www: show uptime.", []),
     WrapFun  = fun(Txt) ->
                        "<pre>" ++ Txt ++ "</pre>"
                end,

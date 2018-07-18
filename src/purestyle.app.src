@@ -3,4 +3,15 @@
   {vsn, "1.4"},
   {modules,[]},
   {mod,{purestyle_app,[]}},
+  {lager,
+      [ {log_root, "log/"}
+      , {handlers, [ {lager_console_backend, info}
+                   , {lager_file_backend, [{file, "error.log"},
+                                           {level, error}]}
+                   , {lager_file_backend, [{file, "console.log"},
+                                           {level, info}]}
+                   ]}
+      , {colored, true}
+      ]
+    },
   {applications,[kernel, stdlib]}]}.

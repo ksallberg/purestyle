@@ -37,6 +37,7 @@
 -include("common.hrl").
 
 start() ->
+    lager:start(),
     application:start(purestyle).
 
 init(InstanceName) ->
