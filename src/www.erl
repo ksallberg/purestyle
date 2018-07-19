@@ -34,7 +34,7 @@ routes() ->
              verb = get,
              address = "/",
              subdomain = "www",
-             callback = {homepage, info}}
+             callback = fun handle_homepage/4}
     , #route{protocol = file,
              verb = get,
              address = "/pstyle.png",
@@ -128,3 +128,7 @@ handle_uptime(_, _, _, _InstanceName) ->
          , "</body></html>"
          ],
     ?l2b(lists:flatten(Ls)).
+
+handle_homepage(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/homepage.html"),
+    Binary.
