@@ -1,32 +1,61 @@
 <!DOCTYPE html>
-
   <head>
     <title>purestyle.</title>
-    <link href="https://fonts.googleapis.com/css?family=Special+Elite" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata"
+          rel="stylesheet">
     <style>
-
+      html, body {
+        height: 100%;
+      }
       body {
-        font-family: 'Special Elite', cursive;
+        font-family: 'Inconsolata', cursive;
+        margin: 0;
+        height: 100%;
+        overflow-x: hidden; /* For Opera */
+        -webkit-box-shadow:
+          inset #d3d3d3 0 0 0 2.5em;
+        -moz-box-shadow:
+          inset #d3d3d3 0 0 0 2.5em;
+        box-shadow:
+          inset #d3d3d3 0 0 0 2.5em;
+      }
+      #container {
+        top: 5em;
+        left: 5em;
+        padding-right: 5em;
+        position: absolute;
       }
     </style>
-
   </head>
+<body>
+    <div id="container">
+      <img src="pstyle.png"/>
 
-  <body>
+      <br/><br/>
 
-    <img src="pstyle.png"/>
+      <a href='https://www.linkedin.com/in/kristian-s%C3%A4llberg-22a7ba18'>linkedin</a>
+      <a href='https://www.github.com/ksallberg'>github</a>
+      <a href='https://play.purestyle.se'>musiklistan</a>
 
-    <br/><br/>
+      <br/><br/>
 
-    <a href='https://www.linkedin.com/in/kristian-s%C3%A4llberg-22a7ba18'>linkedin</a>
-    <a href='https://www.github.com/ksallberg'>github</a>
-    <a href='https://play.purestyle.se'>musiklistan</a>
-
-    <br/><br/>
-
-    My name is Kristian, I like building stuff. I used to be a
-    web designer, then a flash developer. Then a student of
-    computer science. Now I am a software engineer, with an interest in functional programming.
+      My name is Kristian, I like building stuff. I used to be a
+      web designer, then a flash developer. Then a student of
+      computer science. Now I am a software engineer, with an interest
+      in functional programming.
+    </div>
+    <script type="text/javascript">
+      var rotated = false;
+      document.body.onclick = function() {
+          var div = document.getElementById('container'),
+              deg = rotated ? 0 : 180;
+          div.style.webkitTransform = 'rotate('+deg+'deg)';
+          div.style.mozTransform    = 'rotate('+deg+'deg)';
+          div.style.msTransform     = 'rotate('+deg+'deg)';
+          div.style.oTransform      = 'rotate('+deg+'deg)';
+          div.style.transform       = 'rotate('+deg+'deg)';
+          rotated = !rotated;
+      }
+    </script>
   </body>
-
 </html>
