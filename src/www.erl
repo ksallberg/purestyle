@@ -80,7 +80,7 @@ handle_logo(_, _, _, _InstanceName) ->
     Binary.
 
 handle_css(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/pstyle.css"),
+    {ok, Binary} = file:read_file("pages/style.css"),
     Binary.
 
 handle_icon(_, _, _, _InstanceName) ->
