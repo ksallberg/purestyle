@@ -82,6 +82,11 @@ routes() ->
              address = "/bonsai_pfitzeriana.html",
              subdomain = "www",
              callback = fun handle_bonsai_pfitzeriana/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_idegran.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_idegran/4}
 
     %% debug
     ,  #route{protocol = html,
@@ -122,6 +127,10 @@ handle_bonsai_stricta(_, _, _, _InstanceName) ->
 
 handle_bonsai_pfitzeriana(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bonsai_pfitzeriana.html"),
+    Binary.
+
+handle_bonsai_idegran(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/bonsai_idegran.html"),
     Binary.
 
 handle_uptime(_, _, _, _InstanceName) ->
