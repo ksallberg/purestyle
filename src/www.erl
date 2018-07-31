@@ -60,11 +60,28 @@ routes() ->
              address = "/uptime",
              subdomain = "www",
              callback = fun handle_uptime/4}
+
+    %% bonsai trees
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai.html",
+             subdomain = "www",
+             callback = fun handle_bonsai/4}
     , #route{protocol = html,
              verb = get,
              address = "/bonsai_lonn.html",
              subdomain = "www",
              callback = fun handle_bonsai_lonn/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_stricta.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_stricta/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_pfitzeriana.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_pfitzeriana/4}
 
     %% debug
     ,  #route{protocol = html,
@@ -91,8 +108,20 @@ handle_js(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/waves.js"),
     Binary.
 
+handle_bonsai(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/bonsai.html"),
+    Binary.
+
 handle_bonsai_lonn(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bonsai_lonn.html"),
+    Binary.
+
+handle_bonsai_stricta(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/bonsai_stricta.html"),
+    Binary.
+
+handle_bonsai_pfitzeriana(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/bonsai_pfitzeriana.html"),
     Binary.
 
 handle_uptime(_, _, _, _InstanceName) ->
