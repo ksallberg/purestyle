@@ -1,16 +1,12 @@
-#controller {
-    position: fixed;
-    top: 1em;
-    right: 1em;
-    background: black;
-}
-
-#holder {
-    position: fixed;
-    top: 1em;
-    left: 32em;
-}
-
 a {
     font-size: 12px
+}
+
+body {
+    font-family: 'Inconsolata', cursive;
+}
+
+img {
+    image-orientation: from-image;
+    width: auto;
 }
