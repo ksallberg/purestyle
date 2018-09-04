@@ -47,16 +47,29 @@
     </div>
     <script type="text/javascript">
         var rotated = false;
-        document.body.onclick = function() {
-            var div = document.getElementById('container'),
-                deg = rotated ? 0 : 180;
-            div.style.webkitTransform = 'rotate('+deg+'deg)';
-            div.style.mozTransform    = 'rotate('+deg+'deg)';
-            div.style.msTransform     = 'rotate('+deg+'deg)';
-            div.style.oTransform      = 'rotate('+deg+'deg)';
-            div.style.transform       = 'rotate('+deg+'deg)';
-            rotated = !rotated;
-        }
+        setTimeout(function(){ flip() }, Math.random() * 5000);
+        var flip = function() {
+          var div = document.getElementById('container');
+          if(!rotated) {
+              div.style.webkitTransform = 'scaleY(-1)';
+              div.style.mozTransform    = 'scaleY(-1)';
+              div.style.msTransform     = 'scaleY(-1)';
+              div.style.oTransform      = 'scaleY(-1)';
+              div.style.transform       = 'scaleY(-1)';
+              div.style.bottom = '4em';
+              rotated = true;
+              setTimeout(function(){ flip() }, 450);
+          } else {
+              div.style.webkitTransform = 'scaleY(1)';
+              div.style.mozTransform    = 'scaleY(1)';
+              div.style.msTransform     = 'scaleY(1)';
+              div.style.oTransform      = 'scaleY(1)';
+              div.style.transform       = 'scaleY(1)';
+              div.style.bottom = 'undefined';
+              rotated = false;
+              Math.random() * 30000;
+          }
+        };
     </script>
   </body>
 </html>
