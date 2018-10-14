@@ -99,6 +99,11 @@ routes() ->
              callback = fun handle_bonsai_y/4}
     , #route{protocol = html,
              verb = get,
+             address = "/bonsai_z.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_z/4}
+    , #route{protocol = html,
+             verb = get,
              address = "/bonsai_shinpaku.html",
              subdomain = "www",
              callback = fun handle_bonsai_shinpaku/4}
@@ -107,7 +112,6 @@ routes() ->
              address = "/bonsai_yama.html",
              subdomain = "www",
              callback = fun handle_bonsai_yama/4}
-
 
     , #route{protocol = html,
              verb = get,
@@ -166,6 +170,10 @@ handle_bonsai_x(_, _, _, _InstanceName) ->
 
 handle_bonsai_y(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bonsai_y.html"),
+    Binary.
+
+handle_bonsai_z(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/bonsai_z.html"),
     Binary.
 
 handle_bonsai_shinpaku(_, _, _, _IN) ->
