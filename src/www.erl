@@ -112,6 +112,11 @@ routes() ->
              address = "/bonsai_yama.html",
              subdomain = "www",
              callback = fun handle_bonsai_yama/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_avenbok.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_avenbok/4}
 
     , #route{protocol = html,
              verb = get,
@@ -182,6 +187,10 @@ handle_bonsai_shinpaku(_, _, _, _IN) ->
 
 handle_bonsai_yama(_, _, _, _IN) ->
     {ok, Binary} = file:read_file("pages/bonsai_yama.html"),
+    Binary.
+
+handle_bonsai_avenbok(_, _, _, _IN) ->
+    {ok, Binary} = file:read_file("pages/bonsai_avenbok.html"),
     Binary.
 
 handle_bonsai_katt(_, _, _, _InstanceName) ->
