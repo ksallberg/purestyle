@@ -27,5 +27,6 @@
     </form>
     <br/>
     <a href="register">Register now!</a>
+    <a href="change_pw">Change password</a>
     <br/>
 {% endblock %}

@@ -22,17 +22,14 @@
       Old password:
       <br/>
       <input name="oldpw" type="password"/>
-
-
+      <br/>
       New password:
       <br/>
       <input name="newpw" type="password"/>
-
-
+      <br/>
       New password again:
       <br/>
       <input name="newpw2" type="password"/>
-
       <br/>
       <input type="submit"/>
     </form>
