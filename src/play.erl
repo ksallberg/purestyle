@@ -86,6 +86,13 @@ routes() ->
              address = "/",
              subdomain = "play",
              callback = fun handle_index/4}
+
+    , #route{protocol = html,
+             verb = get,
+             address = "/change_pw",
+             subdomain = "play",
+             callback = fun handle_changepw/4}
+
     , #route{protocol = html,
              verb = get,
              address = "/leave",
@@ -126,12 +133,16 @@ routes() ->
              address = "/share_playlist",
              subdomain = "play",
              callback = fun handle_share_playlist/4}
-
     , #route{protocol = html,
              verb = post,
              address = "/login_post",
              subdomain = "play",
              callback = fun handle_login_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = "/change_pw",
+             subdomain = "play",
+             callback = fun handle_changepw_post/4}
     , #route{protocol = html,
              verb = post,
              address = "/playlists_post",
@@ -219,6 +230,15 @@ handle_index(_Data, _Parameters, Headers, InstanceName) ->
               extra_headers => "Location: /playlists\r\n",
               return_code   => "303 See Other"}
     end.
+
+handle_changepw(_Data, _Parameters, _Headers, _InstanceName) ->
+    {ok, Module} = erlydtl:compile_file("pages/changepw.dtl",
+                                        index,
+                                        [{out_dir,
+                                          "compiled_templates"}]
+                                       ),
+    {ok, Binary} = Module:render([{header, <<"Login example">>}]),
+    Binary.
 
 handle_leave(_Data, Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
@@ -341,6 +361,19 @@ handle_login_post(Data, _Parameters, _Headers, InstanceName) ->
               extra_headers => Cookie ++
                                "Location: /playlists\r\n",
               return_code   => "303 See Other"}
+    end.
+
+handle_changepw_post(Data, _Parameters, _Headers, _InstanceName) ->
+    PostParameters = http_parser:parameters(Data),
+    {"username", Username}   = lists:keyfind("username", 1, PostParameters),
+    {"oldpw", OldPassword}   = lists:keyfind("oldpw", 1, PostParameters),
+    {"newpw", NewPassword}   = lists:keyfind("newpw", 1, PostParameters),
+    {"newpw2", NewPassword2} = lists:keyfind("newpw2", 1, PostParameters),
+    case maybe_change_pw(Username, OldPassword, NewPassword, NewPassword2) of
+        change_pw_fail ->
+            <<"Password change failed...">>;
+        change_pw_ok ->
+            <<"Password change successful!">>
     end.
 
 handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
@@ -484,6 +517,27 @@ check_login(Username, PlainPassword, InstanceName) ->
                     {login_ok, C}
             end
     end.
+
+maybe_change_pw(Username, OldPw, NewPw, NewPw) ->
+    Password = hash_salt(OldPw),
+    case get_user(Username) of
+        {atomic, []} -> change_pw_fail;
+        {atomic, [#user{info = #userinfo{password = DBPassword}=UserInfo}=User
+                 ]} ->
+            case Password == DBPassword of
+                false -> change_pw_fail;
+                true  ->
+                    %% Actually change pw
+                    NewPassword = hash_salt(NewPw),
+                    NewUserInfo = UserInfo#userinfo{password = NewPassword},
+                    NewUser = User#user{info=NewUserInfo},
+                    %% overwrite userinfo
+                    put_obj(NewUser),
+                    change_pw_ok
+            end
+    end;
+maybe_change_pw(_Username, _OldPw, _NewPw, _NewPw2) ->
+    change_pw_fail.
 
 add_playlist_to_user(PlaylistId, Username) ->
     {atomic, [User]} = get_user(Username),

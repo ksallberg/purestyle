@@ -1,0 +1,40 @@
+{% extends "base.dtl" %}
+
+{% block extrahead %}
+    <title>The music list!</title>
+    <style>
+    html, body {
+        text-align: center;
+    }
+    </style>
+{% endblock %}
+
+{% block extrabody %}
+
+    <img src="pstyle.png"/>
+    <h1>Change pw</h1>
+
+    <form method="post" action="change_pw">
+      Username:
+      <br/>
+      <input name="username" type="text"/>
+      <br/>
+      Old password:
+      <br/>
+      <input name="oldpw" type="password"/>
+
+
+      New password:
+      <br/>
+      <input name="newpw" type="password"/>
+
+
+      New password again:
+      <br/>
+      <input name="newpw2" type="password"/>
+
+      <br/>
+      <input type="submit"/>
+    </form>
+    <br/>
+{% endblock %}
