@@ -61,6 +61,18 @@ routes() ->
              subdomain = "www",
              callback = fun handle_uptime/4}
 
+    , #route{protocol = html,
+             verb = get,
+             address = "/unscii-16.ttf",
+             subdomain = "www",
+             callback = fun handle_ttf/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/unscii-16.woff",
+             subdomain = "www",
+             callback = fun handle_woff/4}
+
+
     %% bonsai trees
     , #route{protocol = html,
              verb = get,
@@ -205,6 +217,16 @@ handle_bonsai_hibiscus(_, _, _, _IN) ->
 handle_bonsai_katt(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bonsai_katt.html"),
     Binary.
+
+%% fonts
+handle_ttf(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/unscii-16.ttf"),
+    Binary.
+
+handle_woff(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/unscii-16.woff"),
+    Binary.
+
 
 handle_uptime(_, _, _, _InstanceName) ->
     lager:log(info, self(), "www: show uptime.", []),
