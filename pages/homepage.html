@@ -16,32 +16,40 @@
         list-style: none;
         padding-left: 0;
       }
+      a {
+        color: #6076C5;
+      }
       body {
         font-family:"unscii16",monospace;
+        color: #6076C5;
         margin: 0;
         height: 100%;
+        background-color: #20398D;
         overflow-x: hidden; /* For Opera */
         -webkit-box-shadow:
-          inset #d3d3d3 0 0 0 2em;
+          inset #6076C5 0 0 0 4em;
         -moz-box-shadow:
-          inset #d3d3d3 0 0 0 2em;
+          inset #6076C5 0 0 0 4em;
         box-shadow:
-          inset #d3d3d3 0 0 0 2em;
+          inset #6076C5 0 0 0 4em;
       }
       #container {
-        top: 4em;
-        left: 4em;
-        padding-right: 4em;
+        top: 5em;
+        left: 5em;
+        padding-right: 5em;
         position: absolute;
       }
       .tileMe li {
         display: inline;
       }
+      .colo {
+        filter: brightness(1);
+      }
     </style>
   </head>
   <body>
     <div id="container">
-      <img src="pstyle.png"/>
+      <img src="pstyle.png" class="colo"/>
 
       <ul class="tileMe">
         <li><a href='https://www.linkedin.com/in/kristian-s%C3%A4llberg-22a7ba18'>linkedin</a></li>
@@ -53,8 +61,7 @@
 
       My name is Kristian, I like building stuff. I used to be a
       web designer, then a flash developer. Then a student of
-      computer science. Now I am a software engineer, interested
-      in functional programming.
+      computer science. Now I am a software engineer...
     </div>
     <script type="text/javascript">
         var rotated = false;
