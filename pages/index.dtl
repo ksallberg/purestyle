@@ -2,6 +2,7 @@
 
 {% block extrahead %}
     <title>The music list!</title>
+    <link href="style.css" rel="stylesheet">
     <style>
     html, body {
         text-align: center;
