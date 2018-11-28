@@ -9,7 +9,7 @@ img {
     url("unscii-16.ttf") format("ttf");
 }
 
-html, body {
+html {
     height: 100%;
 }
 
@@ -25,8 +25,7 @@ a {
 body {
     font-family:"unscii16",monospace;
     color: #6076C5;
-    margin: 0;
-    height: 100%;
+    height: calc(100% - 5em);
     background-color: #20398D;
     overflow-x: hidden; /* For Opera */
     -webkit-box-shadow:
@@ -35,13 +34,9 @@ body {
     inset #6076C5 0 0 0 4em;
     box-shadow:
     inset #6076C5 0 0 0 4em;
-}
-
-#container {
-    top: 5em;
-    left: 5em;
-    padding-right: 5em;
-    position: absolute;
+    padding-left: 5em;
+    padding-top: 5em;
+    margin: 0;
 }
 
 .tileMe li {
