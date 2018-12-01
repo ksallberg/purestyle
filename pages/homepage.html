@@ -3,7 +3,8 @@
     <title>pure style.</title>
     <link href="style.css" rel="stylesheet">
   </head>
-  <body>
+<body>
+  <div id="container">
       **** COMMODORE 64 BASIC V2 ****
       <br/>
       64K RAM SYSTEM 38911 BASIC BYTES FREE
@@ -24,31 +25,6 @@
       My name is Kristian, I like building stuff. I used to be a
       web designer, then a flash developer. Then a student of
       computer science. Now I am a software engineer...
-    <script type="text/javascript">
-        var rotated = false;
-        setTimeout(function(){ flip() }, Math.random() * 5000);
-        var flip = function() {
-          var div = document.getElementById('container');
-          if(!rotated) {
-              div.style.webkitTransform = 'scaleY(-1)';
-              div.style.mozTransform    = 'scaleY(-1)';
-              div.style.msTransform     = 'scaleY(-1)';
-              div.style.oTransform      = 'scaleY(-1)';
-              div.style.transform       = 'scaleY(-1)';
-              div.style.bottom = '4em';
-              rotated = true;
-              setTimeout(function(){ flip() }, 450);
-          } else {
-              div.style.webkitTransform = 'scaleY(1)';
-              div.style.mozTransform    = 'scaleY(1)';
-              div.style.msTransform     = 'scaleY(1)';
-              div.style.oTransform      = 'scaleY(1)';
-              div.style.transform       = 'scaleY(1)';
-              div.style.bottom = 'undefined';
-              rotated = false;
-              Math.random() * 30000;
-          }
-        };
-    </script>
+      </div>
   </body>
 </html>

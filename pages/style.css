@@ -23,10 +23,17 @@ a {
 }
 
 body {
+    height: 100%;
+    margin: 0;
+    background-color: #20398D;
+}
+
+#container {
     font-family:"unscii16",monospace;
     color: #6076C5;
+    padding-top: 5em;
     min-height: calc(100% - 5em);
-    background-color: #20398D;
+    padding-left: 5em;
     overflow-x: hidden; /* For Opera */
     -webkit-box-shadow:
     inset #6076C5 0 0 0 4em;
@@ -34,9 +41,6 @@ body {
     inset #6076C5 0 0 0 4em;
     box-shadow:
     inset #6076C5 0 0 0 4em;
-    padding-left: 5em;
-    padding-top: 5em;
-    margin: 0;
 }
 
 .tileMe li {
