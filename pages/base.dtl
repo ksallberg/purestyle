@@ -1,6 +1,6 @@
 <html>
   <head>
-    <link href="style.css" rel="stylesheet">
+    <link href="https://www.purestyle.se/style.css" rel="stylesheet">
     {% block extrahead %}
     {% endblock %}
   </head>
