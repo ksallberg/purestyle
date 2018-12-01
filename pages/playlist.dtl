@@ -2,7 +2,6 @@
 
 {% block extrahead %}
     <meta name="viewport" content="width=device-width">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <title>{{playlist_name}} - purestyle</title>
     <title>{{playlist_name}} - purestyle</title>
 
