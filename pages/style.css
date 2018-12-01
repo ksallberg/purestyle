@@ -25,7 +25,7 @@ a {
 body {
     font-family:"unscii16",monospace;
     color: #6076C5;
-    height: calc(100% - 5em);
+    min-height: calc(100% - 5em);
     background-color: #20398D;
     overflow-x: hidden; /* For Opera */
     -webkit-box-shadow:
