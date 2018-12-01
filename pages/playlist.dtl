@@ -77,7 +77,7 @@
 
     <div id="holder">
       <a style="cursor: pointer;" onclick="clearContainer();">x</a>
-      <div id="container">
+      <div id="embedcontainer">
       </div>
     </div>
 

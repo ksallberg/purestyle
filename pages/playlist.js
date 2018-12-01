@@ -44,7 +44,7 @@ function getYoutube(id) {
     clearContainer();
 
     //Finally, add the youtube player
-    player = new YT.Player('container', {
+    player = new YT.Player('embedcontainer', {
         height: '390',
         width: '640',
         videoId: id,
@@ -66,7 +66,7 @@ function getSoundcloud(id) {
         "show_comments=true&amp;show_user=true&amp;show_reposts="+
         "false&amp;visual=true\"></iframe>";
 
-    document.getElementById("container").innerHTML = t;
+    document.getElementById("embedcontainer").innerHTML = t;
 
     //Apply for song finished event
     var widget = SC.Widget("sound");
@@ -77,12 +77,12 @@ function getSoundcloud(id) {
 
 function clearContainer() {
     // Remove whatever is in the container
-    var frame = document.getElementById("container");
+    var frame = document.getElementById("embedcontainer");
     frame.parentNode.removeChild(frame);
 
     // And create a new container
     var newDiv = document.createElement('div');
-    newDiv.id = 'container';
+    newDiv.id = 'embedcontainer';
     document.getElementById("holder").appendChild(newDiv);
 }
 
