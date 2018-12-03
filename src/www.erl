@@ -215,7 +215,11 @@ handle_bonsai_hibiscus(_, _, _, _IN) ->
     Binary.
 
 handle_bonsai_katt(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_katt.html"),
+    {ok, Module} = erlydtl:compile_file("pages/bonsai_katt.dtl",
+                                        allusers,
+                                        [{out_dir, "compiled_templates"}]
+                                       ),
+    {ok, Binary} = Module:render([]),
     Binary.
 
 %% fonts
