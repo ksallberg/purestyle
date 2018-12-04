@@ -1,8 +1,17 @@
-{% extends "base.dtl" %}
-
-{% block extrahead %}
-  <!-- test --!>
-{% endblock %}
-
-{% block extrabody %}
-{% endblock %}
+<html>
+  <head>
+    <link href="https://www.purestyle.se/style.css" rel="stylesheet">
+    <!-- test --!>
+    {% block extrahead %}
+    {% endblock %}
+  </head>
+  <body>
+    <div id="container">
+    {% block extrabody %}
+    {% endblock %}
+      <a href="https://github.com/ksallberg/purestyle">purestyle</a>
+      is served by
+      <a href="https://github.com/ksallberg/brunhilde">brunhilde</a>.
+    </div>
+  </body>
+</html>
