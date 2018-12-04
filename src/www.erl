@@ -167,60 +167,43 @@ handle_js(_, _, _, _InstanceName) ->
     Binary.
 
 handle_bonsai(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai.html"),
-    Binary.
+    dtl_helper("pages/bonsai.dtl").
 
 handle_bonsai_lonn(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_lonn.html"),
-    Binary.
+    dtl_helper("pages/bonsai_lonn.dtl").
 
 handle_bonsai_stricta(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_stricta.html"),
-    Binary.
+    dtl_helper("pages/bonsai_stricta.dtl").
 
 handle_bonsai_pfitzeriana(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_pfitzeriana.html"),
-    Binary.
+    dtl_helper("pages/bonsai_pfitzeriana.dtl").
 
 handle_bonsai_idegran(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_idegran.html"),
-    Binary.
+    dtl_helper("pages/bonsai_idegran.dtl").
 
 handle_bonsai_x(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_x.html"),
-    Binary.
+    dtl_helper("pages/bonsai_x.dtl").
 
 handle_bonsai_y(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_y.html"),
-    Binary.
+    dtl_helper("pages/bonsai_y.dtl").
 
 handle_bonsai_z(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bonsai_z.html"),
-    Binary.
+    dtl_helper("pages/bonsai_z.dtl").
 
 handle_bonsai_shinpaku(_, _, _, _IN) ->
-    {ok, Binary} = file:read_file("pages/bonsai_shinpaku.html"),
-    Binary.
+    dtl_helper("pages/bonsai_shinpaku.dtl").
 
 handle_bonsai_yama(_, _, _, _IN) ->
-    {ok, Binary} = file:read_file("pages/bonsai_yama.html"),
-    Binary.
+    dtl_helper("pages/bonsai_yama.dtl").
 
 handle_bonsai_avenbok(_, _, _, _IN) ->
-    {ok, Binary} = file:read_file("pages/bonsai_avenbok.html"),
-    Binary.
+    dtl_helper("pages/bonsai_avenbok.dtl").
 
 handle_bonsai_hibiscus(_, _, _, _IN) ->
-    {ok, Binary} = file:read_file("pages/bonsai_hibiscus.html"),
-    Binary.
+    dtl_helper("pages/bonsai_hibiscus.dtl").
 
 handle_bonsai_katt(_, _, _, _InstanceName) ->
-    {ok, Module} = erlydtl:compile_file("pages/bonsai_katt.dtl",
-                                        allusers,
-                                        [{out_dir, "compiled_templates"}]
-                                       ),
-    {ok, Binary} = Module:render([]),
-    Binary.
+    dtl_helper("pages/bonsai_katt.dtl").
 
 %% fonts
 handle_ttf(_, _, _, _InstanceName) ->
@@ -231,6 +214,14 @@ handle_woff(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/unscii-16.woff"),
     Binary.
 
+
+dtl_helper(PageName) ->
+    {ok, Module} = erlydtl:compile_file(PageName,
+                                        allusers,
+                                        [{out_dir, "compiled_templates"}]
+                                       ),
+    {ok, Binary} = Module:render([]),
+    Binary.
 
 handle_uptime(_, _, _, _InstanceName) ->
     lager:log(info, self(), "www: show uptime.", []),
