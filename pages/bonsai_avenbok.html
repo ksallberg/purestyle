@@ -1,18 +1,18 @@
-<html>
-  <head>
-    <meta charset="ISO-8859-1">
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-    <div id="container">
-      <h1>Avenbok (Carpinus betulus)</h1>
+{% extends "bonsai_base.dtl" %}
 
-      <li>Köpt på plantagen skarpnäck, 13 oktober 2018, 100 kr höstrea</li>
-      <li>Omkrets 5 cm</li>
+{% block extrahead %}
+    <title>Avenbok</title>
+{% endblock %}
 
-      <p>Prospect</p>
+{% block extrabody %}
 
-      <img src="https://drive.google.com/thumbnail?id=1UpjgBDNjvSVcVBP2SHI6WZa0l_Sa80PD&sz=w800"/>
-    </div>
-  </body>
-</html>
+<h1>Avenbok (Carpinus betulus)</h1>
+
+<li>Köpt på plantagen skarpnäck, 13 oktober 2018, 100 kr höstrea</li>
+<li>Omkrets 5 cm</li>
+
+<p>Prospect</p>
+
+<img src="https://drive.google.com/thumbnail?id=1UpjgBDNjvSVcVBP2SHI6WZa0l_Sa80PD&sz=w800"/>
+
+{% endblock %}
