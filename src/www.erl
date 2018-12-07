@@ -140,6 +140,11 @@ routes() ->
              address = "/bonsai_katt.html",
              subdomain = "www",
              callback = fun handle_bonsai_katt/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_zelkova.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_zelkova/4}
 
     %% debug
     ,  #route{protocol = html,
@@ -204,6 +209,9 @@ handle_bonsai_hibiscus(_, _, _, _IN) ->
 
 handle_bonsai_katt(_, _, _, _InstanceName) ->
     dtl_helper("pages/bonsai_katt.dtl").
+
+handle_bonsai_zelkova(_, _, _, _InstanceName) ->
+    dtl_helper("pages/bonsai_zelkova.dtl").
 
 %% fonts
 handle_ttf(_, _, _, _InstanceName) ->

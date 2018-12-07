@@ -1,0 +1,17 @@
+{% extends "bonsai_base.dtl" %}
+
+{% block extrahead %}
+    <title>Zelkova parviflora</title>
+{% endblock %}
+
+{% block extrabody %}
+
+<h1>Zelkova parviflora</h1>
+
+<li>Köpt på blomsterlandet city november 2018</li>
+
+<p>text</p>
+
+<img src=""/>
+
+{% endblock %}
