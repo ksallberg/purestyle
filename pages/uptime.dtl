@@ -1,0 +1,17 @@
+{% extends "base.dtl" %}
+
+{% block extrahead %}
+    <title>min uptime</title>
+{% endblock %}
+
+{% block extrabody %}
+   <pre>{{uptime}}</pre>
+   <pre>{{freem}}</pre>
+   <pre>Procs: {{procstext}}</pre>
+   <pre>{{memory}}</pre>
+   <pre>Total in MB: {{totmb}}</pre>
+   <pre>Erlang/OTP release: {{otpv}}</pre>
+   <pre><a href='https://play.purestyle.se/'>play</a></pre>
+   <pre>NIF result: {{nifres}}</pre>
+   <pre>{{cass}}</pre>
+{% endblock %}

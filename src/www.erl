@@ -233,46 +233,28 @@ dtl_helper(PageName) ->
 
 handle_uptime(_, _, _, _InstanceName) ->
     lager:log(info, self(), "www: show uptime.", []),
-    WrapFun  = fun(Txt) ->
-                       "<pre>" ++ Txt ++ "</pre>"
-               end,
-    Spacing  = "\n\n\n",
-    Uptime   = os:cmd("uptime"),
-    FreeM    = os:cmd("free -m"),
-    Procs    = integer_to_list(length(erlang:processes())),
-    ProcsTxt = "Procs: " ++ Procs,
     ErMem    = erlang:memory(),
-    Rel      = erlang:system_info(otp_release),
-    Memory   = lists:flatten(io_lib:format("~p", [ErMem])),
     {_, Tot} = lists:keyfind(total, 1, ErMem),
-    TotMb    = integer_to_list(Tot div 1048576),
-    Link     = "<a href='https://play.purestyle.se/'>play</a>",
     FooVal   = integer_to_list(complex6:foo(3)),
     BarVal   = integer_to_list(complex6:bar(5)),
     Nif      = "hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal,
     Cass     = os:cmd("/home/pi/Documents/cassandra/bin/nodetool status"),
-    Ls = [ "<html><head></head><body>"
-         , WrapFun(Uptime)
-         , Spacing
-         , WrapFun(FreeM)
-         , Spacing
-         , WrapFun(ProcsTxt)
-         , Spacing
-         , WrapFun(Memory)
-         , Spacing
-         , WrapFun("Total in Mb: " ++ TotMb)
-         , Spacing
-         , WrapFun("Erlang/OTP relase: " ++ Rel)
-         , Spacing
-         , Link
-         , Spacing
-         , WrapFun("NIF result: " ++ Nif)
-         , Spacing
-         , WrapFun(Cass)
-         , Spacing
-         , "</body></html>"
-         ],
-    ?l2b(lists:flatten(Ls)).
+    ProxTxt  = integer_to_list(length(erlang:processes())),
+    {ok, Module} = erlydtl:compile_file("pages/uptime.dtl",
+                                        index,
+                                        [{out_dir, "compiled_templates"}]),
+    {ok, Binary} =
+        Module:render([ {uptime, os:cmd("uptime")}
+                      , {freem, os:cmd("free -m")}
+                      , {procstext, ProxTxt}
+                      , {memory, lists:flatten(io_lib:format("~p", [ErMem]))}
+                      , {totmb, integer_to_list(Tot div 1048576)}
+                      , {rel, erlang:system_info(otp_release)}
+                      , {nifres, Nif}
+                      , {cass, Cass}
+                      , {otpv, erlang:system_info(otp_release)}
+                      ]),
+    Binary.
 
 handle_homepage(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/homepage.html"),
