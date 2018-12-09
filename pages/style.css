@@ -9,6 +9,10 @@ img {
     url("unscii-16.ttf") format("ttf");
 }
 
+pre {
+    font-family:"unscii16",monospace;
+}
+
 html {
     height: 100%;
 }
@@ -46,10 +50,6 @@ body {
 .tileMe li {
     display: inline;
 }
-
-
-
-
 
 /* from bootstrap 3.7 */
 .modal {
