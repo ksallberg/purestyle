@@ -125,7 +125,7 @@
       <br/>
       <input name="track_name" type="text"/>
       <br/>
-      <input type="submit" value="Adda"/>
+      <input type="submit" value="Add" class="button"/>
     </form>
 
     <script>window.jQuery ||

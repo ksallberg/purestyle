@@ -40,7 +40,7 @@
       <br/>
       <input name="playlist_name" type="text"/>
       <br/>
-      <input type="submit"/>
+      <input type="submit" class="button"/>
     </form>
     <a href="logout">Log out...</a>
 {% endblock %}

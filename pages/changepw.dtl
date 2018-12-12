@@ -31,7 +31,7 @@
       <br/>
       <input name="newpw2" type="password"/>
       <br/>
-      <input type="submit"/>
+      <input type="submit" class="button"/>
     </form>
     <br/>
 {% endblock %}

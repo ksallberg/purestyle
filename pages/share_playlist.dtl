@@ -13,7 +13,7 @@
       <br/>
       <input name="user_name" type="text"/>
       <br/>
-      <input type="submit"/>
+      <input type="submit" class="button"/>
     </form>
     <a href="playlists">Go back</a>
 {% endblock %}
