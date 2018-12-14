@@ -3,6 +3,13 @@ img {
     width: auto;
 }
 
+input {
+    border: none;
+    color: white;
+    font-family:"unscii16",monospace;
+    background-color: #6076C5;
+}
+
 @font-face{
     font-family:"unscii16";
     src: url("unscii-16.woff") format("woff"),
