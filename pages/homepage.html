@@ -2,6 +2,29 @@
   <head>
     <title>pure style.</title>
     <link href="style.css" rel="stylesheet">
+    <script type="text/javascript">
+      var txt = "My name is Kristian, I like building stuff. \
+                 I used to be a web designer, then a flash developer. \
+                 Then a student of computer science. Now I am a software \
+                 engineer...";
+      var pos=0;
+      var wait=50;
+      window.addEventListener("load", loaded);
+      function loaded(e) {
+        setTimeout(printnext, wait);
+      }
+      function printnext() {
+        if(pos < txt.length) {
+          document.getElementById("txtcontainer").innerHTML += txt[pos];
+          if(txt[pos] == "," || txt[pos] == ".") {
+            setTimeout(printnext, wait * 4);
+          } else {
+            setTimeout(printnext, wait);
+          }
+          pos++;
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="container">
@@ -22,9 +45,7 @@
           <li><a href='https://www.purestyle.se/bonsai_katt.html'>katt</a></li>
         </ul>
 
-        My name is Kristian, I like building stuff. I used to be a
-        web designer, then a flash developer. Then a student of
-        computer science. Now I am a software engineer...
+        <div id="txtcontainer"></div>
     </div>
   </body>
 </html>
