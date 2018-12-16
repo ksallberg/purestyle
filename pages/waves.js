@@ -27,7 +27,7 @@ function draw() {
     }
 
     ctx.beginPath();
-    ctx.fillStyle="#333350";
+    ctx.fillStyle="#000000";
     ctx.moveTo(0,points[0].y);
     for (var i = 0; i < pamount; i ++) {
         ctx.lineTo(points[i].x, points[i].y);

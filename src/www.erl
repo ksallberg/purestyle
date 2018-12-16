@@ -55,6 +55,11 @@ routes() ->
              address = "/waves.js",
              subdomain = "www",
              callback = fun handle_js/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/waves.html",
+             subdomain = "www",
+             callback = fun handle_waves/4}
     , #route{protocol = html,
              verb = get,
              address = "/uptime",
@@ -169,6 +174,10 @@ handle_icon(_, _, _, _InstanceName) ->
 
 handle_js(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/waves.js"),
+    Binary.
+
+handle_waves(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/waves.html"),
     Binary.
 
 handle_bonsai(_, _, _, _InstanceName) ->
