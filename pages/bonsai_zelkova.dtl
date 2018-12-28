@@ -12,6 +12,6 @@
 
 <p>text</p>
 
-<img src=""/>
+<img src="https://drive.google.com/thumbnail?id=1w7fKtiUNmRxAsm9KTqr3bnXA2aly8zhu&sz=w800"/>
 
 {% endblock %}
