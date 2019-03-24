@@ -1,5 +1,5 @@
 -module(complex6).
--export([foo/1, bar/1]).
+-export([foo/1, str/1]).
 -on_load(init/0).
 
 init() ->
@@ -8,5 +8,5 @@ init() ->
 foo(_X) ->
     exit(nif_library_not_loaded).
 
-bar(_Y) ->
+str(_Y) ->
     exit(nif_library_not_loaded).
