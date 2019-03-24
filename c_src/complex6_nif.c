@@ -1,7 +1,7 @@
 #include <erl_nif.h>
 
 extern int foo(int x);
-extern int bar(int y);
+extern int str(int y);
 
 static ERL_NIF_TERM foo_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
@@ -16,7 +16,7 @@ static ERL_NIF_TERM foo_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
   return enif_make_int(env, ret);
 }
 
-static ERL_NIF_TERM bar_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
+static ERL_NIF_TERM str_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
   int y, ret;
 
@@ -31,7 +31,7 @@ static ERL_NIF_TERM bar_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
 static ErlNifFunc nif_funcs[] = {
   {"foo", 1, foo_nif},
-  {"bar", 1, bar_nif}
+  {"str", 1, str_nif}
 };
 
 ERL_NIF_INIT(complex6, nif_funcs, NULL, NULL, NULL, NULL)
