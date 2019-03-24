@@ -4,6 +4,6 @@ int foo(int x) {
   return x+1;
 }
 
-char *str(int y) {
-  return "hej";
+int str(int y) {
+  return 42;
 }
