@@ -245,7 +245,7 @@ handle_uptime(_, _, _, _InstanceName) ->
     ErMem    = erlang:memory(),
     {_, Tot} = lists:keyfind(total, 1, ErMem),
     FooVal   = integer_to_list(complex6:foo(3)),
-    BarVal   = complex6:str(5),
+    BarVal   = integer_to_list(complex6:str(5)),
     Nif      = "hello! foo: " ++ FooVal ++ ", bar: " ++ BarVal,
     Cass     = os:cmd("/home/pi/Documents/cassandra/bin/nodetool status"),
     ProxTxt  = integer_to_list(length(erlang:processes())),
