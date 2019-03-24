@@ -1,7 +1,7 @@
 #include <erl_nif.h>
 
 extern int foo(int x);
-extern char *str(int y);
+extern int str(char outbuf[]);
 
 static ERL_NIF_TERM foo_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
@@ -18,13 +18,15 @@ static ERL_NIF_TERM foo_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
 static ERL_NIF_TERM str_nif(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
-  int y, ret;
+  int y;
+  char ret[100];
 
-  if(!enif_get_int(env, argv[0], &y)) {
-    return enif_make_badarg(env);
-  }
+  /* if(!enif_get_int(env, argv[0], &y)) { */
+  /*   return enif_make_badarg(env); */
+  /* } */
+  str(ret);
 
-  ret = str(y);
+  /* strcpy(ret, "hej hej"); */
 
   return enif_make_string(env, ret, ERL_NIF_LATIN1);
 }
