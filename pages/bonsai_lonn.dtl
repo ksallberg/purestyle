@@ -43,4 +43,9 @@
 <img src="https://s3.eu-central-1.amazonaws.com/kristianbonsai/20180818_101106.jpg" width="50%" height="50%"/>
 <img src="https://s3.eu-central-1.amazonaws.com/kristianbonsai/20180818_101032.jpg" width="50%" height="50%"/>
 
+<p>2:a juni 2019</p>
+<p>Trodde den hade dött under vintern, försökte ympa in trident-maple men det verkar inte ha funkat. Den sproutar nya blad i juni</p>
+
+<img src="https://drive.google.com/thumbnail?id=1Tbk85COvV58jkO7rKlXYQWlvuuKEiwLz&sz=w800"/>
+
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "bonsai_base.dtl" %}
+
+{% block extrahead %}
+    <title>Japanese black pine</title>
+{% endblock %}
+
+{% block extrabody %}
+
+<h1>Japansk svart tall från frö</h1>
+
+<p>2:a juni 2019</p>
+<p>Får stå utomhus när det inte blåser för mycket.</p>
+<img src="https://drive.google.com/thumbnail?id=16AKJRxuTxcVGFOoVnnXF3nxvUbbTSJ19&sz=w800"/>
+
+{% endblock %}

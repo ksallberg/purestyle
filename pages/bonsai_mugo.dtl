@@ -1,0 +1,17 @@
+{% extends "bonsai_base.dtl" %}
+
+{% block extrahead %}
+    <title>Mugo pine</title>
+{% endblock %}
+
+{% block extrabody %}
+
+<h1>Mugo pine Benjamin</h1>
+
+<p>Köpt från trädgårdshuset skarpnäck sent i april 2019</p>
+
+<p>2:a juni 2019</p>
+<p>Virad med aluminiumtråd</p>
+<img src="https://drive.google.com/thumbnail?id=1Q3aHlVHIN7avjn_xFvHljHbzCsb6jpR9&sz=w800"/>
+
+{% endblock %}

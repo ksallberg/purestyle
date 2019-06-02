@@ -19,4 +19,7 @@
 <p>Det växer</p>
 <img src="https://s3.eu-central-1.amazonaws.com/kristianbonsai/20180818_101125.jpg" width="50%" height="50%"/>
 
+<p>2:a juni 2019</p>
+<img src="https://drive.google.com/thumbnail?id=1kWcy4EEcreJWJjo9_hGod0uFVu3AuGYa&sz=w800"/>
+
 {% endblock %}

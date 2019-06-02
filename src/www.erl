@@ -139,7 +139,26 @@ routes() ->
              address = "/bonsai_avenbok.html",
              subdomain = "www",
              callback = fun handle_bonsai_avenbok/4}
-
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_jbp.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_jbp/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_mugo.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_mugo/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_sylv.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_sylv/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_trident.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_trident/4}
     , #route{protocol = html,
              verb = get,
              address = "/bonsai_katt.html",
@@ -221,6 +240,18 @@ handle_bonsai_katt(_, _, _, _InstanceName) ->
 
 handle_bonsai_zelkova(_, _, _, _InstanceName) ->
     dtl_helper("pages/bonsai_zelkova.dtl").
+
+handle_bonsai_jbp(_, _, _, _InstanceName) ->
+    dtl_helper("pages/bonsai_jbp.dtl").
+
+handle_bonsai_sylv(_, _, _, _InstanceName) ->
+    dtl_helper("pages/bonsai_sylv.dtl").
+
+handle_bonsai_mugo(_, _, _, _InstanceName) ->
+    dtl_helper("pages/bonsai_mugo.dtl").
+
+handle_bonsai_trident(_, _, _, _InstanceName) ->
+    dtl_helper("pages/bonsai_trident.dtl").
 
 %% fonts
 handle_ttf(_, _, _, _InstanceName) ->
