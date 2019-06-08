@@ -306,7 +306,11 @@ handle_uptime(_, _, _, _InstanceName) ->
     Binary.
 
 handle_stocks(_, _, _, _InstanceName) ->
-    <<"could not connect to cassandra">>.
+
+    ExecPath = ("/home/pi/Documents/cassandra/bin/cqlsh --cqlversion="
+                "\"3.4.4\" -e \"SELECT * FROM evy.entry;\""),
+    CassRet = os:cmd(ExecPath),
+    list_to_binary(CassRet).
 
 handle_homepage(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/homepage.html"),
