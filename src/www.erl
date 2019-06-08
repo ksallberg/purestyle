@@ -26,7 +26,6 @@
 -module(www).
 
 -include_lib("brunhilde/include/brunhilde.hrl").
--include_lib("cqerl/include/cqerl_protocol.hrl").
 
 -export([ routes/0 ]).
 
