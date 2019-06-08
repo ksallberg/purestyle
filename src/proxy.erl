@@ -38,6 +38,8 @@
 
 start() ->
     lager:start(),
+    io:format("starting apps.\n", []),
+    application:ensure_all_started(cqerl),
     application:start(purestyle).
 
 init(InstanceName) ->

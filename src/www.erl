@@ -26,6 +26,7 @@
 -module(www).
 
 -include_lib("brunhilde/include/brunhilde.hrl").
+-include_lib("cqerl/include/cqerl_protocol.hrl").
 
 -export([ routes/0 ]).
 
@@ -65,6 +66,11 @@ routes() ->
              address = "/uptime",
              subdomain = "www",
              callback = fun handle_uptime/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/stocks",
+             subdomain = "www",
+             callback = fun handle_stocks/4}
 
     , #route{protocol = html,
              verb = get,
@@ -175,6 +181,10 @@ routes() ->
               verb = get,
               address = "/uptime",
               callback = fun handle_uptime/4}
+    ,  #route{protocol = html,
+              verb = get,
+              address = "/stocks",
+              callback = fun handle_stocks/4}
     ].
 
 %% Experimental:
@@ -295,6 +305,18 @@ handle_uptime(_, _, _, _InstanceName) ->
                       , {otpv, erlang:system_info(otp_release)}
                       ]),
     Binary.
+
+handle_stocks(_, _, _, _InstanceName) ->
+    case cqerl:get_client({}) of
+        {ok, Client} ->
+            Query = #cql_query{statement = <<"SELECT * FROM evy.entry;">>},
+            {ok, #cql_result{}=Res} = cqerl:run_query(Client, Query),
+            Rows = cqerl:all_rows(Res),
+            Str = io_lib:format("~p\n", [Rows]),
+            list_to_binary(Str);
+        _ ->
+            <<"could not connect to cassandra">>
+    end.
 
 handle_homepage(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/homepage.html"),
