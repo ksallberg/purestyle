@@ -307,16 +307,7 @@ handle_uptime(_, _, _, _InstanceName) ->
     Binary.
 
 handle_stocks(_, _, _, _InstanceName) ->
-    case cqerl:get_client({}) of
-        {ok, Client} ->
-            Query = #cql_query{statement = <<"SELECT * FROM evy.entry;">>},
-            {ok, #cql_result{}=Res} = cqerl:run_query(Client, Query),
-            Rows = cqerl:all_rows(Res),
-            Str = io_lib:format("~p\n", [Rows]),
-            list_to_binary(Str);
-        _ ->
-            <<"could not connect to cassandra">>
-    end.
+    <<"could not connect to cassandra">>.
 
 handle_homepage(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/homepage.html"),
