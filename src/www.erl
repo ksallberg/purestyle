@@ -306,11 +306,17 @@ handle_uptime(_, _, _, _InstanceName) ->
     Binary.
 
 handle_stocks(_, _, _, _InstanceName) ->
-
-    ExecPath = ("/home/pi/Documents/cassandra/bin/cqlsh --cqlversion="
-                "\"3.4.4\" -e \"SELECT * FROM evy.entry;\""),
-    CassRet = os:cmd(ExecPath),
-    list_to_binary(CassRet).
+    {ok, [ConfMap]} = file:consult("purestyle.conf"),
+    Password = maps:get(pgsql_pw, ConfMap),
+    Opts = #{database=> "evy", timeout => 4000},
+    {ok, C} = epgsql:connect("10.0.1.253", "kristian", Password, Opts),
+    %% ExecPath = ("/home/pi/Documents/cassandra/bin/cqlsh --cqlversion="
+                %% "\"3.4.4\" -e \"SELECT * FROM evy.entry;\""),
+    %% CassRet = os:cmd(ExecPath),
+    {ok, _Cols, Rows} = epgsql:squery(C, "SELECT * FROM Entry"),
+    Ret = io_lib:format("~p\n", [Rows]),
+    ok = epgsql:close(C),
+    list_to_binary(Ret).
 
 handle_homepage(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/homepage.html"),
