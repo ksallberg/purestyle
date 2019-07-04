@@ -20,8 +20,14 @@
 
 <p>4:e juli 2019</p>
 
-<img src="https://drive.google.com/thumbnail?id=1-yp9fho5vkFjMfXN6iXZD5QG5KM_mdOb&sz=w800"/>
-<img src="https://drive.google.com/thumbnail?id=1-iN0-l3Z7qEBqmLxxJ3hwcqfLhh8vsUx&sz=w800"/>
+<p>Innan böj</p>
 <img src="https://drive.google.com/thumbnail?id=1-sadBQDmnllQuEHKbD2Vs4j3VmjjnvM_&sz=w800"/>
+
+<p>Skott</p>
+<img src="https://drive.google.com/thumbnail?id=1-vBXgY6rgUE9myDmZKNLf6CMs7FC6VLY&sz=w800"/>
+
+<img src="https://drive.google.com/thumbnail?id=1-iN0-l3Z7qEBqmLxxJ3hwcqfLhh8vsUx&sz=w800"/>
+<img src="https://drive.google.com/thumbnail?id=1-nBxbMmrPjmIYjMfO2jTexeOqwwNfCch&sz=w800"/>
+<img src="https://drive.google.com/thumbnail?id=1-qKFBKnQNe0MCYJuAL__Td_wIIZrlYhX&sz=w800"/>
 
 {% endblock %}
