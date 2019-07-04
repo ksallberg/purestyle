@@ -22,4 +22,7 @@
 <p>2:a juni 2019</p>
 <img src="https://drive.google.com/thumbnail?id=1kWcy4EEcreJWJjo9_hGod0uFVu3AuGYa&sz=w800"/>
 
+<p>4:e juli 2019<p>
+<img src="https://drive.google.com/thumbnail?id=1-wjASbNFTiJwH2BXNlPSb86CFVLwfhGo&sz=w800"/>
+
 {% endblock %}
