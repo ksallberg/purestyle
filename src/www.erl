@@ -82,6 +82,11 @@ routes() ->
              subdomain = "www",
              callback = fun handle_woff/4}
 
+    , #route{protocol = html,
+             verb = get,
+             address = "/ramen.html",
+             subdomain = "www",
+             callback = fun handle_ramen/4}
 
     %% bonsai trees
     , #route{protocol = html,
@@ -207,6 +212,9 @@ handle_js(_, _, _, _InstanceName) ->
 handle_waves(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/waves.html"),
     Binary.
+
+handle_ramen(_, _, _, _InstanceName) ->
+    dtl_helper("pages/ramen.dtl").
 
 handle_bonsai(_, _, _, _InstanceName) ->
     dtl_helper("pages/bonsai.dtl").

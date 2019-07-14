@@ -1,0 +1,13 @@
+{% extends "bonsai_base.dtl" %}
+
+{% block extrahead %}
+    <title>Ramen</title>
+{% endblock %}
+
+{% block extrabody %}
+
+<h1>TAKUMI NINE</h1>
+
+<img src="https://drive.google.com/thumbnail?id=1X36NLA3dUHu0anBaNkGeBWu81OqqjiK8&sz=w800"/>
+
+{% endblock %}
