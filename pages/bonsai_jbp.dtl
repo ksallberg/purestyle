@@ -15,4 +15,8 @@
 <p>Får stå utomhus när det inte blåser för mycket.</p>
 <img src="https://drive.google.com/thumbnail?id=16AKJRxuTxcVGFOoVnnXF3nxvUbbTSJ19&sz=w800"/>
 
+<p>28:e juli 2019<p>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_jbp1.jpg" width="50%" height="50%"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_jbp2.jpg" width="50%" height="50%"/>
+
 {% endblock %}

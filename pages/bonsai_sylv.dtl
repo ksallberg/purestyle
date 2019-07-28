@@ -17,6 +17,7 @@
 <p>4:e juli 2019</p>
 
 <p>Innan böj</p>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylvinnan.jpg"/>
 <img src="https://drive.google.com/thumbnail?id=1-sadBQDmnllQuEHKbD2Vs4j3VmjjnvM_&sz=w800"/>
 
 <p>Skott</p>
@@ -25,5 +26,13 @@
 <img src="https://drive.google.com/thumbnail?id=1-iN0-l3Z7qEBqmLxxJ3hwcqfLhh8vsUx&sz=w800"/>
 <img src="https://drive.google.com/thumbnail?id=1-nBxbMmrPjmIYjMfO2jTexeOqwwNfCch&sz=w800"/>
 <img src="https://drive.google.com/thumbnail?id=1-qKFBKnQNe0MCYJuAL__Td_wIIZrlYhX&sz=w800"/>
+
+<p>25:e juli 2019: Tog bort lindning från stammen, verkar hålla sin form</p>
+
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylv_lite_lindad.jpg"/>
+
+<p>27:e juli 2019: Lindade små grenar</p>
+
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylv_efter_lindning.jpg"/>
 
 {% endblock %}

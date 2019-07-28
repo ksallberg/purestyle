@@ -25,4 +25,7 @@
 <p>4:e juli 2019<p>
 <img src="https://drive.google.com/thumbnail?id=1-6CUjsM1YQ9QynnAQIW5o7PmzH2G4acS&sz=w800"/>
 
+<p>28:e juli 2019<p>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_idegran.jpg" width="50%" height="50%"/>
+
 {% endblock %}
