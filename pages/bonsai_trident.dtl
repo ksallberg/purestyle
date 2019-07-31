@@ -19,6 +19,6 @@
 <img src="https://drive.google.com/thumbnail?id=1o_ehDtenIkUkcSbxCLwYpKJ0b4CvNjw1&sz=w800"/>
 
 <p>28:e juli 2019: Nya blad efter att dom tagits bort</p>
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_trident_nya_blad.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_trident_nya_blad.jpg" width="50%" height="50%"/>
 
 {% endblock %}

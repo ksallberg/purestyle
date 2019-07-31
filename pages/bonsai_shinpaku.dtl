@@ -30,6 +30,6 @@
 
 <p>28:e juli 2019: lite ändrade vinklar på lindade grenar</p>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_shimpaku.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_shimpaku.jpg" width="50%" height="50%"/>
 
 {% endblock %}

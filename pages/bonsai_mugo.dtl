@@ -31,6 +31,6 @@
 
 <p>Tog bort alla barr förutom årets nya. Testade att ympa in en JBP</p>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_mugo_efter_pinch.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_mugo_efter_pinch.jpg" width="50%" height="50%"/>
 
 {% endblock %}

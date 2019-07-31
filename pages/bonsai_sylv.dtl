@@ -29,10 +29,10 @@
 
 <p>25:e juli 2019: Tog bort lindning från stammen, verkar hålla sin form</p>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylv_lite_lindad.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylv_lite_lindad.jpg" width="50%" height="50%"/>
 
 <p>27:e juli 2019: Lindade små grenar</p>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylv_efter_lindning.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylv_efter_lindning.jpg" width="50%" height="50%"/>
 
 {% endblock %}

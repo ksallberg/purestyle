@@ -51,6 +51,6 @@
 <p>28:a juli 2019</p>
 <p>Alla blad torkade under semestern, bytte kruka så den ska kunna behålla fukt bättre</p>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_lonn_storre_kruka.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_lonn_storre_kruka.jpg" width="50%" height="50%"/>
 
 {% endblock %}
