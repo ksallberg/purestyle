@@ -303,7 +303,6 @@ handle_uptime(_, _, _, _InstanceName) ->
     FooVal   = integer_to_list(complex6:foo(3)),
     StrVal   = complex6:str(5),
     Nif      = "hello! foo: " ++ FooVal ++ ", str: " ++ StrVal,
-    Cass     = os:cmd("/home/pi/Documents/cassandra/bin/nodetool status"),
     ProxTxt  = integer_to_list(length(erlang:processes())),
     {ok, Module} = erlydtl:compile_file("pages/uptime.dtl",
                                         index,
@@ -316,7 +315,6 @@ handle_uptime(_, _, _, _InstanceName) ->
                       , {totmb, integer_to_list(Tot div 1048576)}
                       , {rel, erlang:system_info(otp_release)}
                       , {nifres, Nif}
-                      , {cass, Cass}
                       , {otpv, erlang:system_info(otp_release)}
                       ]),
     Binary.
