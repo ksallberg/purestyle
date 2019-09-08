@@ -3,10 +3,7 @@
     <title>pure style.</title>
     <link href="style.css" rel="stylesheet">
     <script type="text/javascript">
-      var txt = "My name is Kristian, I like building stuff. \
-                 I used to be a web designer, then a flash developer. \
-                 Then a student of computer science. Now I am a software \
-                 engineer...";
+      var txt = "My name is Kristian, I like building stuff.";
       var pos=0;
       var wait=50;
       window.addEventListener("load", loaded);
@@ -17,7 +14,7 @@
         if(pos < txt.length) {
           document.getElementById("txtcontainer").innerHTML += txt[pos];
           if(txt[pos] == "," || txt[pos] == ".") {
-            setTimeout(printnext, wait * 4);
+            setTimeout(printnext, wait * 14);
           } else {
             setTimeout(printnext, wait);
           }
@@ -42,7 +39,6 @@
           <li><a href='https://www.github.com/ksallberg'>github</a></li>
           <li><a href='https://play.purestyle.se'>musiklistan</a></li>
           <li><a href='https://www.purestyle.se/bonsai.html'>tree</a></li>
-          <li><a href='https://www.purestyle.se/bonsai_katt.html'>katt</a></li>
           <li><a href='https://www.purestyle.se/ramen.html'>ramen</a></li>
         </ul>
 
