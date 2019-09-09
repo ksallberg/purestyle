@@ -12,17 +12,17 @@
 
 <h1>RAWBATA st eriksplan</h1>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/received_2064406390339253.jpeg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/received_2064406390339253.jpeg" width="50%" height="50%"/>
 
 <h1>Afuri LUMINE 1 Shinjuku</h1>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/ramen_afuri.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/ramen_afuri.jpg" width="50%" height="50%"/>
 
 <h1>Yodobashi camera akihabara</h1>
 
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/ramen_akihabara.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/ramen_akihabara.jpg" width="50%" height="50%"/>
 
 <h1>Chabuton Kitazawa</h1>
-<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/ramen_chabuton.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/ramen_chabuton.jpg" width="50%" height="50%"/>
 
 {% endblock %}
