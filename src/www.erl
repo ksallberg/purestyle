@@ -184,6 +184,11 @@ routes() ->
              address = "/bonsai_koreana.html",
              subdomain = "www",
              callback = fun handle_bonsai_koreana/4}
+    , #route{protocol = html,
+             verb = get,
+             address = "/bonsai_azalea.html",
+             subdomain = "www",
+             callback = fun handle_bonsai_azalea/4}
 
     %% debug
     ,  #route{protocol = html,
@@ -277,6 +282,9 @@ handle_bonsai_trident(_, _, _, _InstanceName) ->
 
 handle_bonsai_koreana(_, _, _, _InstanceName) ->
     dtl_helper("pages/bonsai_koreana.dtl").
+
+handle_bonsai_azalea(_, _, _, _InstanceName) ->
+    dtl_helper("pages/bonsai_azalea.dtl").
 
 %% fonts
 handle_ttf(_, _, _, _InstanceName) ->
