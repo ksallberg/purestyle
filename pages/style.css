@@ -50,16 +50,6 @@ body {
 #container {
     font-family:"unscii16",monospace;
     color: #6076C5;
-    padding-top: 5em;
-    min-height: calc(100% - 5em);
-    padding-left: 5em;
-    overflow-x: hidden; /* For Opera */
-    -webkit-box-shadow:
-    inset #6076C5 0 0 0 4em;
-    -moz-box-shadow:
-    inset #6076C5 0 0 0 4em;
-    box-shadow:
-    inset #6076C5 0 0 0 4em;
 }
 
 .tileMe li {
