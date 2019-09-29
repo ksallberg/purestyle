@@ -25,4 +25,7 @@
 <h1>Chabuton Kitazawa</h1>
 <img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/ramen_chabuton.jpg" width="50%" height="50%"/>
 
+<h1>RAMEN DAYO!</h1>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/dayo.jpg" width="50%" height="50%"/>
+
 {% endblock %}
