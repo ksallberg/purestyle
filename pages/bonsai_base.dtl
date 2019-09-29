@@ -9,9 +9,11 @@
     <div id="container">
     {% block extrabody %}
     {% endblock %}
-      <a href="https://github.com/ksallberg/purestyle">purestyle</a>
-      is served by
-      <a href="https://github.com/ksallberg/brunhilde">brunhilde</a>.
     </div>
-  </body>
+
+    <a href="https://github.com/ksallberg/purestyle">purestyle</a>
+    is served by
+    <a href="https://github.com/ksallberg/brunhilde">brunhilde</a>.
+
+ </body>
 </html>
