@@ -61,11 +61,6 @@ routes() ->
              callback = fun handle_js/4}
     , #route{protocol = file,
              verb = get,
-             address = "/bootstrap.min.js",
-             subdomain = "play",
-             callback = fun handle_bootstrap/4}
-    , #route{protocol = file,
-             verb = get,
              address = "/font-awesome.min.css",
              subdomain = "play",
              callback = fun handle_fontawesome/4}
@@ -188,10 +183,6 @@ handle_css(_, _, _, _InstanceName) ->
 
 handle_js(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/playlist.js"),
-    Binary.
-
-handle_bootstrap(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/bootstrap.min.js"),
     Binary.
 
 handle_fontawesome(_, _, _, _InstanceName) ->
