@@ -64,11 +64,6 @@ routes() ->
              address = "/font-awesome.min.css",
              subdomain = "play",
              callback = fun handle_fontawesome/4}
-    , #route{protocol = file,
-             verb = get,
-             address = "/jquery.js",
-             subdomain = "play",
-             callback = fun handle_jquery/4}
 
     %% HTML addresses
     , #route{protocol = html,
@@ -191,10 +186,6 @@ handle_fontawesome(_, _, _, _InstanceName) ->
 
 handle_bg(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bg.jpg"),
-    Binary.
-
-handle_jquery(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/jquery11-2.min.js"),
     Binary.
 
 handle_allusers(_Data, _Parameters, _Headers, _InstanceName) ->
