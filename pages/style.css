@@ -16,6 +16,14 @@ input {
     url("unscii-16.ttf") format("ttf");
 }
 
+@font-face {
+  font-family: "Neue Haas Grotesk";
+  src: url("https://type.cargo.site/NeueHaasGrotesk/NeueHaasGroteskTextRegular-3.woff?Expires=1569852142&Signature=V-5TV2HzDzK1qZgO~IX2UgEOaUOfk70fyFjyN-K8z1iw6IDaefF0knj2Io9SoEJxFb-76FL-OCePHIqChyyd75S1NDs7g208d-gYXE52SrEHjynv0h41UM~j~3bqzyoOfxk1upnAQSQhmDxRmV7ksjKe9s0MlkH1qajqLzHy1-P3fFYDWlkBj2qIskMcYB75DZCxJEIN9z6CpTFysuLN5KeG-xaONMl3t27twHtakclyUoMPE0jWPQWyaLY4hko6~zCEbfh1EvN5NYB5~8Ek14hU8-HzdC-xyvuTwCPCqEL8iL9IDI2rcPAkBoBpcgZd24r57hYg-GvUQ~2u1f3sng__&Key-Pair-Id=APKAJ6UHBOV2NWJLY2BQ") format("woff");
+  font-style: normal;
+  font-weight: normal;
+  unicode-range: U+0000-DFFF, U+F900-FFFD;
+}
+
 .button {
     border: none;
     color: white;
@@ -42,6 +50,8 @@ a {
 }
 
 body {
+  font-family:"Neue Haas Grotesk";
+  color: #ffffff;
   background-color: #000000;
 }
 
