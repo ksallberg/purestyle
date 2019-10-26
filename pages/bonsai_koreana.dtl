@@ -14,4 +14,10 @@
 <p>28:e juli 2019: Lite lindning<p>
 <img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_koreana_efter.jpg" width="50%" height="50%"/>
 
+<p>Hösten 2019</p>
+
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/avenbok_host1.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/avenbok_host2.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/avenbok_host3.jpg"/>
+
 {% endblock %}
