@@ -35,4 +35,9 @@
 
 <img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/2019_07_sylv_efter_lindning.jpg" width="50%" height="50%"/>
 
+<p>3:e november 2019:  Ny lindning</p>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/sylv_20191103_virad2.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/sylv_20191103_virad3.jpg"/>
+<img src="https://kristianbonsai.s3.eu-central-1.amazonaws.com/sylv_20191103_virad4.jpg"/>
+
 {% endblock %}
