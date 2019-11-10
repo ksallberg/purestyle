@@ -29,3 +29,15 @@ Inspect the development server (HTTP, not HTTPs)
 
 * put in /etc/init.d/
 * sudo update-rc.d purestyle defaults
+
+## File encodings:
+
+Swedish characters work best with 'iso-8859-1' seemingly.
+
+See conversion:
+
+`file -i (linux) file -I (macos)`
+
+Change conversion:
+
+`iconv -f utf-8 -t iso-8859-1 < file > file.new`

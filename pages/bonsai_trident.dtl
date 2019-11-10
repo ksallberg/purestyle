@@ -1,14 +1,14 @@
 {% extends "bonsai_base.dtl" %}
 
 {% block extrahead %}
-    <title>TreuddslÃ¶nn / Trident Maple</title>
+    <title>Treuddslönn / Trident Maple</title>
 {% endblock %}
 
 {% block extrabody %}
 
-<h1>KÃ¶pt ~Oktober 2018</h1>
+<h1>Köpt ~Oktober 2018</h1>
 
-<li>Klarade Ã¶vervintring i bandhagen</li>
+<li>Klarade övervintring i bandhagen</li>
 <li>Planterad i kattsand & akadama</li>
 
 <p>2:a juni 2019</p>
