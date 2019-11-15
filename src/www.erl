@@ -324,6 +324,8 @@ handle_uptime(_, _, _, _InstanceName) ->
                       , {rel, erlang:system_info(otp_release)}
                       , {nifres, Nif}
                       , {otpv, erlang:system_info(otp_release)}
+                      , {temperature,
+                         os:cmd("/opt/vc/bin/vcgencmd measure_temp")}
                       ]),
     Binary.
 

@@ -13,4 +13,5 @@
    <pre>Erlang/OTP release: {{otpv}}</pre>
    <pre><a href='https://play.purestyle.se/'>play</a></pre>
    <pre>NIF result: {{nifres}}</pre>
+   <pre>{{temperature}}</pre>
 {% endblock %}
