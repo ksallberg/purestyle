@@ -3,7 +3,7 @@ OS = ${shell uname -s}
 include arch/${OS}/Makefile
 
 build:
-	gcc ${ARCHFLAGS} -I/usr/lib/erlang/usr/include -I${ERL_TOP}/usr/include -I${ERL_TOP}/lib/erlang/usr/include -o c_src/complex6_nif.so -fpic -shared c_src/complex.c c_src/complex6_nif.c
+	gcc ${ARCHFLAGS} -I/usr/lib/erlang/usr/include -I${ERL_TOP}/usr/include -I${ERL_TOP}/lib/erlang/usr/include -o c_src/pstyle_nif.so -fpic -shared c_src/pstyle.c c_src/pstyle_nif.c
 	rebar3 compile
 
 # -s calls proxy:start()
@@ -19,5 +19,5 @@ clean:
 	rm -rf lux_logs
 	rm -rf log/*.log
 	rm -rf rebar.lock
-	rm -f c_src/complex6_nif.so
+	rm -f c_src/pstyle_nif.so
 .PHONY: clean

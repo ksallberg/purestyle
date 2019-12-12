@@ -1,14 +1,8 @@
-/* complex.c */
-
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
 
-int foo(int x) {
-  return x+1;
-}
-
-int str(char buffer[]) {
+int pstyle_get_date(char buffer[]) {
   struct tm *ts;
   size_t last;
   time_t timestamp = time(NULL);
