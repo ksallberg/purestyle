@@ -5,7 +5,7 @@ img {
 
 input {
     border: none;
-    color: white;
+    color: #8a82b1;
     font-family:"unscii16",monospace;
     background-color: #6076C5;
 }
@@ -26,7 +26,7 @@ input {
 
 .button {
     border: none;
-    color: white;
+    color: #8a82b1;
     background-color: Transparent;
     font-family:"unscii16",monospace;
     font-size: 1.5em;
@@ -51,8 +51,8 @@ a {
 
 body {
   font-family:"Neue Haas Grotesk";
-  color: #ffffff;
-  background-color: #000000;
+  color: #8a82b1;
+  background-color: #ffffff;
 }
 
 #container {
