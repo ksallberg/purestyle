@@ -640,9 +640,11 @@ youtube_title(Link) ->
     QueryLink = "http://youtube.com/get_video_info?video_id=" ++ VID,
     {ok, {_HTTPVer, _Headers, Response}}
         = httpc:request(get, {QueryLink, []}, [], []),
-    DecodedResponse = http_uri:decode(Response),
-    [_| [TitleEtc|_]] = re:split(DecodedResponse, "title\":\""),
-    [Title|_] = string:split(?b2l(TitleEtc), "\",\"lengthSeconds"),
+    %% DecodedResponse = http_uri:decode(Response),
+    EncodedStartTag = http_uri:encode("title\":\""),
+    EncodedEndTag = http_uri:encode("\",\"lengthSeconds"),
+    [_| [TitleEtc|_]] = re:split(Response, EncodedStartTag),
+    [Title|_] = string:split(?b2l(TitleEtc), EncodedEndTag),
     lists:foldl(fun({Old, New}, Acc) ->
                     re:replace(Acc, Old, New, [global,{return,list}])
                 end,
@@ -650,6 +652,7 @@ youtube_title(Link) ->
                 [{"\\+",    " "}, %% Rules for how to remove html encoded
                  {"%28",    "("},
                  {"%29",    ")"},
+                 {"%27",    "'"},
                  {"%C3%A4", "ä"},
                  {"%C3%B6", "ö"},
                  {"%2B",    "+"}
