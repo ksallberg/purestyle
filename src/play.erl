@@ -639,12 +639,13 @@ youtube_title(Link) ->
     QueryLink = "http://youtube.com/get_video_info?video_id=" ++ VID,
     {ok, {_HTTPVer, _Headers, Response}}
         = httpc:request(get, {QueryLink, []}, [], []),
-    [_, TitleEtc] = re:split(Response, "title="),
-    [Title | _]   = re:split(?b2l(TitleEtc), "&"),
+    DecodedResponse = http_uri:decode(Response),
+    [_| [TitleEtc|_]] = re:split(DecodedResponse, "title\":\""),
+    [Title|_] = string:split(?b2l(TitleEtc), "\",\"lengthSeconds"),
     lists:foldl(fun({Old, New}, Acc) ->
                     re:replace(Acc, Old, New, [global,{return,list}])
                 end,
-                ?b2l(Title),
+                Title,
                 [{"\\+",    " "}, %% Rules for how to remove html encoded
                  {"%28",    "("},
                  {"%29",    ")"},
