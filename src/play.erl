@@ -28,7 +28,8 @@
 -include_lib("brunhilde/include/brunhilde.hrl").
 
 -export([ routes/0
-        , db_name/1 ]).
+        , db_name/1
+        , youtube_title/1 ]).
 
 -include("common.hrl").
 
