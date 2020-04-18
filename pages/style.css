@@ -1,19 +1,19 @@
 img {
-    image-orientation: from-image;
-    width: auto;
+  image-orientation: from-image;
+  width: auto;
 }
 
 input {
-    border: none;
-    color: #ffffff;
-    font-family:"unscii16",monospace;
-    background-color: #6076C5;
+  border: none;
+  color: #ffffff;
+  font-family:"unscii16",monospace;
+  background-color: #6076C5;
 }
 
 @font-face{
-    font-family:"unscii16";
-    src: url("unscii-16.woff") format("woff"),
-    url("unscii-16.ttf") format("ttf");
+  font-family:"unscii16";
+  src: url("unscii-16.woff") format("woff"),
+  url("unscii-16.ttf") format("ttf");
 }
 
 @font-face {
@@ -26,7 +26,7 @@ input {
 
 @font-face {
   font-family: 'Graphik';
-  src: url('https://play.purestyle.se/Graphik-Semibold-Web.woff2') format('woff2');
+  src: url('Graphik-Semibold-Web.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -35,7 +35,7 @@ input {
 
 @font-face {
   font-family: 'Graphik';
-  src: url('https://play.purestyle.se/Graphik-Regular-Web.woff2') format('woff2');
+  src: url('Graphik-Regular-Web.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;

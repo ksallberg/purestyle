@@ -81,6 +81,17 @@ routes() ->
              address = "/unscii-16.woff",
              subdomain = "www",
              callback = fun handle_woff/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/Graphik-Regular-Web.woff2",
+             subdomain = "www",
+             callback = fun handle_graphik/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/Graphik-Semibold-Web.woff2",
+             subdomain = "www",
+             callback = fun handle_graphik2/4}
+
 
     , #route{protocol = html,
              verb = get,
