@@ -185,14 +185,6 @@ handle_fontawesome(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/font-awesome.min.css"),
     Binary.
 
-handle_graphik(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/Graphik-Semibold-Web.woff2"),
-    Binary.
-
-handle_graphik2(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/Graphik-Regular-Web.woff2"),
-    Binary.
-
 handle_bg(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/bg.jpg"),
     Binary.

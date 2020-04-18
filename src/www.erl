@@ -306,6 +306,14 @@ handle_woff(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/unscii-16.woff"),
     Binary.
 
+handle_graphik(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/Graphik-Semibold-Web.woff2"),
+    Binary.
+
+handle_graphik2(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/Graphik-Regular-Web.woff2"),
+    Binary.
+
 
 dtl_helper(PageName) ->
     {ok, Module} = erlydtl:compile_file(PageName,
