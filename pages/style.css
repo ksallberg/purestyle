@@ -63,19 +63,14 @@ ul {
     padding-left: 0;
 }
 
-a {
-    color: #6076C5;
-}
-
 body {
   font-family:"Graphik";
-  color: #8a82b1;
-  background-color: #ffffff;
+  color: #d3d3d3;
+  background-color: #242424;
 }
 
 #container {
   font-family:"Graphik",monospace;
-  color: #6076C5;
   padding-left: 20px;
 }
 
