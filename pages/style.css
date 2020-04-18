@@ -63,6 +63,10 @@ ul {
     padding-left: 0;
 }
 
+a {
+    color: #d3d3d3;
+}
+
 body {
   font-family:"Graphik";
   color: #d3d3d3;
