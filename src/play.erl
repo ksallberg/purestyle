@@ -66,6 +66,18 @@ routes() ->
              subdomain = "play",
              callback = fun handle_fontawesome/4}
 
+    , #route{protocol = file,
+             verb = get,
+             address = "/Graphik-Regular-Web.woff2",
+             subdomain = "play",
+             callback = fun handle_graphik/4}
+    , #route{protocol = file,
+             verb = get,
+             address = "/Graphik-Semibold-Web.woff2",
+             subdomain = "play",
+             callback = fun handle_graphik2/4}
+
+
     %% HTML addresses
     , #route{protocol = html,
              verb = get,
@@ -183,6 +195,14 @@ handle_js(_, _, _, _InstanceName) ->
 
 handle_fontawesome(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/font-awesome.min.css"),
+    Binary.
+
+handle_graphik(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/Graphik-Semibold-Web.woff2"),
+    Binary.
+
+handle_graphik2(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/Graphik-Regular-Web.woff2"),
     Binary.
 
 handle_bg(_, _, _, _InstanceName) ->
