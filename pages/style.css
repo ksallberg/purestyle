@@ -16,37 +16,12 @@ input {
   url("unscii-16.ttf") format("ttf");
 }
 
-@font-face {
-  font-family: "Neue Haas Grotesk";
-  src: url("https://type.cargo.site/NeueHaasGrotesk/NeueHaasGroteskTextRegular-3.woff?Expires=1569852142&Signature=V-5TV2HzDzK1qZgO~IX2UgEOaUOfk70fyFjyN-K8z1iw6IDaefF0knj2Io9SoEJxFb-76FL-OCePHIqChyyd75S1NDs7g208d-gYXE52SrEHjynv0h41UM~j~3bqzyoOfxk1upnAQSQhmDxRmV7ksjKe9s0MlkH1qajqLzHy1-P3fFYDWlkBj2qIskMcYB75DZCxJEIN9z6CpTFysuLN5KeG-xaONMl3t27twHtakclyUoMPE0jWPQWyaLY4hko6~zCEbfh1EvN5NYB5~8Ek14hU8-HzdC-xyvuTwCPCqEL8iL9IDI2rcPAkBoBpcgZd24r57hYg-GvUQ~2u1f3sng__&Key-Pair-Id=APKAJ6UHBOV2NWJLY2BQ") format("woff");
-  font-style: normal;
-  font-weight: normal;
-  unicode-range: U+0000-DFFF, U+F900-FFFD;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('Graphik-Semibold-Web.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-stretch: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('Graphik-Regular-Web.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
 
 .button {
   border: none;
   color: #8a82b1;
   background-color: Transparent;
-  font-family:"unscii16",monospace;
   font-size: 1.5em;
 }
 
@@ -67,14 +42,17 @@ a {
     color: #d3d3d3;
 }
 
+h1 {
+  font-family: 'Patua One', cursive;
+}
+
 body {
-  font-family:"Graphik";
+  font-family:"unscii16";
   color: #d3d3d3;
   background-color: #242424;
 }
 
 #container {
-  font-family:"Graphik",monospace;
   padding-left: 20px;
 }
 
