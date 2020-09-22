@@ -294,8 +294,9 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                 _IsRaw ->
                     {"list", ListId} = lists:keyfind("list", 1, Parameters),
                     Playlist = playlist_get(ListId),
+                    Playlist1 = [Track#track.url || Track <- Playlist],
                     list_to_binary(
-                      lists:concat(lists:join("\n", Playlist#playlist.tracks)))
+                      lists:concat(lists:join("\n", Playlist1#playlist.tracks)))
             end
     end.
 

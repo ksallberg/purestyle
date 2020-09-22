@@ -29,7 +29,7 @@
 %% --------------------------
 -record(playlist, {id     :: string(),
                    name   :: string(),
-                   tracks :: [string()]}).
+                   tracks :: [#track{}]}).
 
 -record(track, {source = other,
                 id     = "no_id",
