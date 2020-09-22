@@ -292,6 +292,8 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                                                  ]),
                     Binary;
                 _IsRaw ->
+                    {"list", ListId} = lists:keyfind("list", 1, Parameters),
+                    Playlist = playlist_get(ListId),
                     list_to_binary(
                       lists:concat(lists:join("\n", Playlist#playlist.tracks)))
             end
