@@ -264,31 +264,37 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
         false ->
             render_not_logged_in();
         _Username ->
-            {"list", ListId} = lists:keyfind("list", 1, Parameters),
-            Playlist = playlist_get(ListId),
-            Tracks   = Playlist#playlist.tracks,
-            Tracks2  =
-                lists:zip(Playlist#playlist.tracks,
-                          lists:seq(0,
-                                    length(Playlist#playlist.tracks) - 1
-                                   )),
-            Tracks3 =
-                [{Track#track.title, Track#track.id,
-                  Track#track.source, Track#track.url, Id}
-                 || {Track, Id} <- Tracks2],
-            {ok, Module} = erlydtl:compile_file("pages/playlist.dtl",
-                                                playlist,
-                                                [{out_dir,
-                                                  "compiled_templates"}]
-                                               ),
-            {ok, Binary} = Module:render([{playlist, Playlist},
-                                          {tracks,  Tracks},
-                                          {tracks3, Tracks3},
-                                          {listid, ListId},
-                                          {playlist_name,
-                                           Playlist#playlist.name}
-                                         ]),
-            Binary
+            case lists:keyfind("raw", 1, Parameters) of
+                false ->
+                    {"list", ListId} = lists:keyfind("list", 1, Parameters),
+                    Playlist = playlist_get(ListId),
+                    Tracks   = Playlist#playlist.tracks,
+                    Tracks2  =
+                        lists:zip(Playlist#playlist.tracks,
+                                  lists:seq(0,
+                                            length(Playlist#playlist.tracks) - 1
+                                           )),
+                    Tracks3 =
+                        [{Track#track.title, Track#track.id,
+                          Track#track.source, Track#track.url, Id}
+                         || {Track, Id} <- Tracks2],
+                    {ok, Module} = erlydtl:compile_file("pages/playlist.dtl",
+                                                        playlist,
+                                                        [{out_dir,
+                                                          "compiled_templates"}]
+                                                       ),
+                    {ok, Binary} = Module:render([{playlist, Playlist},
+                                                  {tracks,  Tracks},
+                                                  {tracks3, Tracks3},
+                                                  {listid, ListId},
+                                                  {playlist_name,
+                                                   Playlist#playlist.name}
+                                                 ]),
+                    Binary;
+                _IsRaw ->
+                    list_to_binary(
+                      lists:concat(lists:join("\n", Playlist#playlist.tracks)))
+            end
     end.
 
 handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
