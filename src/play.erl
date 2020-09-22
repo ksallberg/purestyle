@@ -294,11 +294,17 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                 _IsRaw ->
                     {"list", ListId} = lists:keyfind("list", 1, Parameters),
                     Playlist = playlist_get(ListId),
-                    Playlist1 = [Track#track.url || Track <- Playlist],
+                    Playlist1 = [maybe_to_str(Track#track.url)
+                                 || Track <- Playlist],
                     list_to_binary(
                       lists:concat(lists:join("\n", Playlist1)))
             end
     end.
+
+maybe_to_str(X) when is_binary(X) ->
+    binary_to_list(X);
+maybe_to_str(X) ->
+    X.
 
 handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
