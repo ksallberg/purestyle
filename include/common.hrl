@@ -18,6 +18,11 @@
 -record(userinfo, {password  :: string(),
                    playlists :: [playlist]}).
 
+-record(track, {source = other,
+                id     = "no_id",
+                url    = "no_url",
+                title  = "no_title"}).
+
 %% 2) All playlists: (example bucket name: user2_lists)
 %%
 %% tracks is a list of strings (id) that corresponds
@@ -30,8 +35,3 @@
 -record(playlist, {id     :: string(),
                    name   :: string(),
                    tracks :: [#track{}]}).
-
--record(track, {source = other,
-                id     = "no_id",
-                url    = "no_url",
-                title  = "no_title"}).
