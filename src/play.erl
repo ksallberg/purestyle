@@ -295,7 +295,7 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                     {"list", ListId} = lists:keyfind("list", 1, Parameters),
                     Playlist = playlist_get(ListId),
                     Playlist1 = [maybe_to_str(Track#track.url)
-                                 || Track <- Playlist],
+                                 || Track <- PlayList#playlist.tracks],
                     list_to_binary(
                       lists:concat(lists:join("\n", Playlist1)))
             end
