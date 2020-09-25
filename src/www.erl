@@ -307,8 +307,6 @@ handle_uptime(_, _, _, _InstanceName) ->
     lager:log(info, self(), "www: show uptime.", []),
     ErMem    = erlang:memory(),
     {_, Tot} = lists:keyfind(total, 1, ErMem),
-    StrVal   = pstyle:get_date(1),
-    Nif      = StrVal,
     ProxTxt  = integer_to_list(length(erlang:processes())),
     {ok, Module} = erlydtl:compile_file("pages/uptime.dtl",
                                         index,
@@ -320,7 +318,6 @@ handle_uptime(_, _, _, _InstanceName) ->
                       , {memory, lists:flatten(io_lib:format("~p", [ErMem]))}
                       , {totmb, integer_to_list(Tot div 1048576)}
                       , {rel, erlang:system_info(otp_release)}
-                      , {nifres, Nif}
                       , {otpv, erlang:system_info(otp_release)}
                       , {temperature,
                          os:cmd("/opt/vc/bin/vcgencmd measure_temp")}

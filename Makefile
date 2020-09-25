@@ -3,7 +3,6 @@ OS = ${shell uname -s}
 include arch/${OS}/Makefile
 
 build:
-	gcc ${ARCHFLAGS} -I/usr/lib/erlang/usr/include -I${ERL_TOP}/usr/include -I${ERL_TOP}/lib/erlang/usr/include -o c_src/pstyle_nif.so -fpic -shared c_src/pstyle.c c_src/pstyle_nif.c
 	rebar3 compile
 
 # -s calls proxy:start()
