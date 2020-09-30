@@ -260,6 +260,14 @@ handle_logout(_, _, Headers, InstanceName) ->
       return_code   => "303 See Other"}.
 
 
+expand_text(URL) ->
+    case string:find(URL, "text:") of
+        nomatch ->
+            URL;
+        _ ->
+            lists:concat(string:replace(URL, "+", " ", all))
+    end.
+
 handle_playlist(_Data, Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
         false ->
@@ -277,7 +285,7 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                                            )),
                     Tracks3 =
                         [{Track#track.title, Track#track.id,
-                          Track#track.source, Track#track.url, Id}
+                          Track#track.source, expand_text(Track#track.url), Id}
                          || {Track, Id} <- Tracks2],
                     {ok, Module} = erlydtl:compile_file("pages/playlist.dtl",
                                                         playlist,
