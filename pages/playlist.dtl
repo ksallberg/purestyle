@@ -92,8 +92,16 @@
         <td>
           <div id="{{trackid}}">
           {% if source=='other' %}
-            <a style="cursor: pointer;" target="_blank"
-               href='{{url}}'>{{title}}</a>
+            {% if '.jpg' in url %}
+              <img src="{{url}}"/>
+            {% elif '.jpeg' in url %}
+              <img src="{{url}}"/>
+            {% elif '.png' in url %}
+              <img src="{{url}}"/>
+            {% else %}
+              <a style="cursor: pointer;" target="_blank"
+                 href='{{url}}'>{{title}}</a>
+            {% endif %}
           {% else %}
             <a style="cursor: pointer;" onclick='goto({{id}});'>{{title}}</a>
           {% endif %}
