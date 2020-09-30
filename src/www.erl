@@ -283,7 +283,7 @@ handle_bonsai_trident(_, _, _, _InstanceName) ->
 handle_bonsai_koreana(_, _, _, _InstanceName) ->
     dtl_helper("pages/bonsai_koreana.dtl").
 
-handle_bonsai_azalea(_, _, Headers, _InstanceName) ->
+handle_bonsai_azalea(_, _, Headers, InstanceName) ->
     case play:is_logged_in(Headers, InstanceName) of
         false ->
             <<"hejda">>;
