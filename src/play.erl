@@ -30,7 +30,7 @@
 -export([ routes/0
         , db_name/1
         , youtube_title/1
-        , is_loggen_in/2 ]).
+        , is_logged_in/2 ]).
 
 -include("common.hrl").
 
