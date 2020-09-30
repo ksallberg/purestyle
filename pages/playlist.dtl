@@ -99,7 +99,7 @@
             {% elif '.png' in url %}
               <img src="{{url}}"/>
             {% elif 'text:' in url %}
-              <p>{{url}}</p>
+              <p>{{url|slice:'5:'}}</p>
             {% else %}
               <a style="cursor: pointer;" target="_blank"
                  href='{{url}}'>{{title}}</a>
