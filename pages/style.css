@@ -39,7 +39,7 @@ ul {
 }
 
 a {
-    color: #d3d3d3;
+    color: #000000;
 }
 
 h1 {
@@ -49,8 +49,8 @@ h1 {
 
 body {
   font-family:"unscii16";
-  color: #d3d3d3;
-  background-color: #242424;
+  color: #000000;
+  background-color: #F5DF4D;
 }
 
 #container {

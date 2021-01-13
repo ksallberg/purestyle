@@ -2,40 +2,16 @@
   <head>
     <title>pure style.</title>
     <link href="style.css" rel="stylesheet">
-    <script type="text/javascript">
-      var txt = "___ ____ _____ ____ ____";
-      var pos=0;
-      var wait=50;
-      window.addEventListener("load", loaded);
-      function loaded(e) {
-        setTimeout(printnext, wait);
-      }
-      function printnext() {
-        if(pos < txt.length) {
-          document.getElementById("txtcontainer").innerHTML += txt[pos];
-          if(txt[pos] == "," || txt[pos] == ".") {
-            setTimeout(printnext, wait * 14);
-          } else {
-            setTimeout(printnext, wait);
-          }
-          pos++;
-        }
-      }
-    </script>
   </head>
   <body>
     <div id="container">
-
       <img src="pstyle.png" class="colo"/>
-
       <ul class="tileMe">
         <li><a href='https://www.linkedin.com/in/kristian-s%C3%A4llberg-22a7ba18'>linkedin</a></li>
         <li><a href='https://www.github.com/ksallberg'>github</a></li>
         <li><a href='https://play.purestyle.se'>musiklistan</a></li>
         <li><a href='https://www.purestyle.se/ramen.html'>ramen</a></li>
       </ul>
-
-      <div id="txtcontainer"></div>
     </div>
   </body>
 </html>
