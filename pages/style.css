@@ -7,7 +7,7 @@ input {
   border: none;
   color: #ffffff;
   font-family:"unscii16",monospace;
-  background-color: #6076C5;
+  background-color: #000000;
 }
 
 @font-face{
@@ -20,8 +20,8 @@ input {
 
 .button {
   border: none;
-  color: #8a82b1;
-  background-color: Transparent;
+  color: #ffffff;
+  background-color: #000000;
   font-size: 1.5em;
 }
 
