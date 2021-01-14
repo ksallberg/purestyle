@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Patua+One&display=swap");
+
 img {
   image-orientation: from-image;
   width: auto;
@@ -15,8 +17,6 @@ input {
   src: url("unscii-16.woff") format("woff"),
   url("unscii-16.ttf") format("ttf");
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
 
 .button {
   border: none;
@@ -43,7 +43,7 @@ a {
 }
 
 h1 {
-  font-family: 'Patua One', cursive;
+  font-family: "Patua One", cursive;
   font-style: italic;
 }
 
