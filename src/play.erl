@@ -271,7 +271,7 @@ expand_text(URL) ->
 handle_playlist(_Data, Parameters, Headers, InstanceName) ->
     {"list", ListId} = lists:keyfind("list", 1, Parameters),
     Playlist = playlist_get(ListId),
-    IsPublicPlaylist = get_public_playlist(Playlist),
+    IsPublicPlaylist = get_public_playlist(ListId),
     case is_logged_in(Headers, InstanceName) of
         false when not IsPublicPlaylist ->
             render_not_logged_in();
