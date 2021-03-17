@@ -269,14 +269,15 @@ expand_text(URL) ->
     end.
 
 handle_playlist(_Data, Parameters, Headers, InstanceName) ->
+    {"list", ListId} = lists:keyfind("list", 1, Parameters),
+    Playlist = playlist_get(ListId),
+    IsPublicPlaylist = get_public_playlist(Playlist),
     case is_logged_in(Headers, InstanceName) of
-        false ->
+        false when not IsPublicPlaylist ->
             render_not_logged_in();
         _Username ->
             case lists:keyfind("raw", 1, Parameters) of
                 false ->
-                    {"list", ListId} = lists:keyfind("list", 1, Parameters),
-                    Playlist = playlist_get(ListId),
                     Tracks   = Playlist#playlist.tracks,
                     Tracks2  =
                         lists:zip(Playlist#playlist.tracks,
@@ -297,12 +298,12 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                                                   {tracks3, Tracks3},
                                                   {listid, ListId},
                                                   {playlist_name,
-                                                   Playlist#playlist.name}
+                                                   Playlist#playlist.name},
+                                                  {is_public_playlist,
+                                                   IsPublicPlaylist}
                                                  ]),
                     Binary;
                 _IsRaw ->
-                    {"list", ListId} = lists:keyfind("list", 1, Parameters),
-                    Playlist = playlist_get(ListId),
                     Playlist1 = [maybe_to_str(Track#track.url)
                                  || Track <- Playlist#playlist.tracks],
                     list_to_binary(
@@ -486,6 +487,15 @@ get_user(Username) ->
             mnesia:read(user, Username)
         end,
     mnesia:transaction(F).
+
+get_public_playlist(Playlist) ->
+    F = fun() ->
+            mnesia:read(public_playlist, Playlist)
+        end,
+    case mnesia:transaction(F) of
+        {atomic, []}   -> false;
+        {atomic, [_UserInfo]} -> true
+    end.
 
 put_obj(Obj) ->
     Fun = fun() ->
