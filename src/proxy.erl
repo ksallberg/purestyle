@@ -46,11 +46,11 @@ init(InstanceName) ->
     %% The purpose of having several instances is only for development anyway,
     %% serving HTTP for development and HTTPS for production.
     DB = play:db_name(InstanceName),
-    io:format("Starting ets..."),
+    io:format("Starting ets...~n"),
     ets:new(DB, [public, set, named_table]),
     ets:delete_all_objects(DB),
     ets:insert(DB, {active_users, []}),
-    io:format("Starting mnesia..."),
+    io:format("Starting mnesia...~n"),
     NodeList = [node()],
     mnesia:create_schema(NodeList),
     mnesia:start(),
@@ -60,10 +60,10 @@ init(InstanceName) ->
     mnesia:create_table(playlist,
                         [{attributes, record_info(fields, playlist)},
                          {disc_copies, NodeList}]),
-    mnesia:create_table(public,
-                        [{attributes, record_info(fields, public)},
+    mnesia:create_table(public_playlist,
+                        [{attributes, record_info(fields, public_playlist)},
                          {disc_copies, NodeList}]),
-    io:format("Starting inets..."),
+    io:format("Starting inets...~n", []),
     ssl:start(),
     inets:start().
 

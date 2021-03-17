@@ -36,4 +36,4 @@
                    name   :: string(),
                    tracks :: [#track{}]}).
 
--record(public, {id :: string()}).
+-record(public_playlist, {id :: string(), retracted :: boolean()}).
