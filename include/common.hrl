@@ -35,3 +35,5 @@
 -record(playlist, {id     :: string(),
                    name   :: string(),
                    tracks :: [#track{}]}).
+
+-record(public, {id :: string()}).

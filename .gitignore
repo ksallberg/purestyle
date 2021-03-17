@@ -12,4 +12,3 @@ Mnesia.nonode@nohost/
 \#*\#
 _build/
 log/
-c_src/pstyle_nif.so

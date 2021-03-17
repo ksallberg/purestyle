@@ -60,6 +60,9 @@ init(InstanceName) ->
     mnesia:create_table(playlist,
                         [{attributes, record_info(fields, playlist)},
                          {disc_copies, NodeList}]),
+    mnesia:create_table(public,
+                        [{attributes, record_info(fields, public)},
+                         {disc_copies, NodeList}]),
     io:format("Starting inets..."),
     ssl:start(),
     inets:start().
