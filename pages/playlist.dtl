@@ -73,7 +73,7 @@
 
     <h1>
       Playlist: {{playlist_name}}
-      {% if username!='false' %}
+      {% if username=='false' %}
       :::: Public playlist, you're not logged in!
       {% endif %}
     </h1>
