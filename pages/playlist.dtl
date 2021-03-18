@@ -35,11 +35,14 @@
 {% block extrabody %}
 
     <div id="controller">
+      {% if username!='false' %}
       <a href="playlists">Go back</a>
+      {% endif %}
       <a style="cursor: pointer;" onclick="prevTrack();"><<</a>
       <a style="cursor: pointer;" onclick="nextTrack();">>></a>
     </div>
 
+    {% if username!='false' %}
     <div id="changeModal" class="modal fade">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -66,9 +69,13 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    {% endif %}
 
     <h1>
-      Playlist: {{playlist_name}}
+      Playlist: {{playlist_name}
+      {% if username!='false' %}
+      :::: Public playlist, you're not logged in!
+      {% endif %}
     </h1>
 
     <div id="holder">
@@ -105,6 +112,7 @@
           {% endif %}
           </div>
         </td>
+        {% if username!='false' %}
         <td>
           <a href="#"
              class="forgotPass"
@@ -118,10 +126,12 @@
         <td>
           <a href="/delete_song?trackid={{trackid}}&list={{listid}}">Remove</a>
         </td>
+        {% endif %}
       </tr>
       {% endfor %}
     </table>
 
+    {% if username!='false' %}
     <form method="post" action="playlist_post">
 
       <input type="hidden" name="playlist" value="{{listid}}"/>
@@ -133,6 +143,7 @@
       <br/>
       <input type="submit" value="Add" class="button"/>
     </form>
+    {% endif %}
 
     <script>window.jQuery ||
       document.write('<script src="https://code.jquery.com/jquery-1.11.1.min.js"><\/script>')</script>

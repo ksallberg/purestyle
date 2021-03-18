@@ -275,7 +275,7 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
         false when not IsPublicPlaylist ->
             render_not_logged_in();
-        _Username ->
+        Username ->
             case lists:keyfind("raw", 1, Parameters) of
                 false ->
                     Tracks   = Playlist#playlist.tracks,
@@ -299,8 +299,7 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                                                   {listid, ListId},
                                                   {playlist_name,
                                                    Playlist#playlist.name},
-                                                  {is_public_playlist,
-                                                   IsPublicPlaylist}
+                                                  {username, Username}
                                                  ]),
                     Binary;
                 _IsRaw ->
