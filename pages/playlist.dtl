@@ -5,21 +5,6 @@
     <title>{{playlist_name}} - purestyle</title>
     <title>{{playlist_name}} - purestyle</title>
 
-    <style>
-      #controller {
-          position: fixed;
-          top: 1em;
-          right: 1em;
-          background: black;
-      }
-
-      #holder {
-          position: fixed;
-          top: 1em;
-          left: 32em;
-      }
-    </style>
-
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="https://www.youtube.com/player_api"></script>
     <script type="text/javascript">

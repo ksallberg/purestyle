@@ -164,3 +164,15 @@ body {
   height: 50px;
   overflow: scroll;
 }
+
+#controller {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+}
+
+#holder {
+  position: fixed;
+  top: 1em;
+  left: 32em;
+}
