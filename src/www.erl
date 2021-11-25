@@ -88,6 +88,12 @@ routes() ->
              subdomain = "www",
              callback = fun handle_ramen/4}
 
+    , #route{protocol = html,
+             verb = get,
+             address = "/rc1.html",
+             subdomain = "www",
+             callback = fun handle_rc1/4}
+
     %% debug
     ,  #route{protocol = html,
               verb = get,
@@ -123,6 +129,10 @@ handle_waves(_, _, _, _InstanceName) ->
 
 handle_ramen(_, _, _, _InstanceName) ->
     dtl_helper("pages/ramen.dtl").
+
+handle_rc1(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/rc1.html"),
+    Binary.
 
 %% fonts
 handle_ttf(_, _, _, _InstanceName) ->
