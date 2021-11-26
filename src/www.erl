@@ -132,7 +132,7 @@ handle_ramen(_, _, _, _InstanceName) ->
 
 handle_rc1(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/rc1.html"),
-    ?l2b(edoc_lib(escape_uri(?b2l(Binary)))).
+    Binary.
 
 %% fonts
 handle_ttf(_, _, _, _InstanceName) ->
