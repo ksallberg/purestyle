@@ -94,6 +94,12 @@ routes() ->
              subdomain = "www",
              callback = fun handle_rc1/4}
 
+    , #route{protocol = html,
+             verb = get,
+             address = "/rc2.html",
+             subdomain = "www",
+             callback = fun handle_rc2/4}
+
     %% debug
     ,  #route{protocol = html,
               verb = get,
@@ -132,6 +138,10 @@ handle_ramen(_, _, _, _InstanceName) ->
 
 handle_rc1(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/rc1.html"),
+    Binary.
+
+handle_rc2(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/rc2.html"),
     Binary.
 
 %% fonts
