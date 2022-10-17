@@ -3,6 +3,9 @@
 img {
   image-orientation: from-image;
   width: auto;
+}
+
+.recycle {
   position: absolute;
   bottom: 0;
   right: 0;
