@@ -34,132 +34,135 @@
 
 -include("common.hrl").
 
+%% -define(SUBMODULE, '*').
+-define(SUBMODULE, <<"play">>).
+
 routes() ->
     %% File addresses
     [ #route{protocol = file,
              verb = get,
-             address = "/favicon.ico",
-             subdomain = "play",
+             address = <<"/favicon.ico">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_icon/4}
     , #route{protocol = file,
              verb = get,
-             address = "/pstyle.png",
-             subdomain = "play",
+             address = <<"/pstyle.png">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_logo/4}
     , #route{protocol = file,
              verb = get,
-             address = "/images/bg.jpg",
-             subdomain = "play",
+             address = <<"/images/bg.jpg">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_bg/4}
     , #route{protocol = file,
              verb = get,
-             address = "/style.css",
-             subdomain = "play",
+             address = <<"/style.css">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_css/4}
     , #route{protocol = file,
              verb = get,
-             address = "/playlist.js",
-             subdomain = "play",
+             address = <<"/playlist.js">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_js/4}
     , #route{protocol = file,
              verb = get,
-             address = "/font-awesome.min.css",
-             subdomain = "play",
+             address = <<"/font-awesome.min.css">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_fontawesome/4}
 
     %% HTML addresses
     , #route{protocol = html,
              verb = get,
-             address = "/allusers",
-             subdomain = "play",
+             address = <<"/allusers">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_allusers/4}
     , #route{protocol = html,
              verb = get,
-             address = "/",
-             subdomain = "play",
+             address = <<"/">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_index/4}
 
     , #route{protocol = html,
              verb = get,
-             address = "/change_pw",
-             subdomain = "play",
+             address = <<"/change_pw">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_changepw/4}
 
     , #route{protocol = html,
              verb = get,
-             address = "/leave",
-             subdomain = "play",
+             address = <<"/leave">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_leave/4}
     , #route{protocol = html,
              verb = get,
-             address = "/delete_song",
-             subdomain = "play",
+             address = <<"/delete_song">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_delete_song/4}
     , #route{protocol = html,
              verb = get,
-             address = "/logout",
-             subdomain = "play",
+             address = <<"/logout">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_logout/4}
     , #route{protocol = html,
              verb = get,
-             address = "/playlist",
-             subdomain = "play",
+             address = <<"/playlist">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_playlist/4}
     , #route{protocol = html,
              verb = get,
-             address = "/playlists",
-             subdomain = "play",
+             address = <<"/playlists">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_playlists/4}
     , #route{protocol = html,
              verb = get,
-             address = "/register",
-             subdomain = "play",
+             address = <<"/register">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_register/4}
     , #route{protocol = html,
              verb = get,
-             address = "/share_playlist",
-             subdomain = "play",
+             address = <<"/share_playlist">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_share_playlist/4}
     , #route{protocol = html,
              verb = get,
-             address = "/share_playlist",
-             subdomain = "play",
+             address = <<"/share_playlist">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_share_playlist/4}
     , #route{protocol = html,
              verb = post,
-             address = "/login_post",
-             subdomain = "play",
+             address = <<"/login_post">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_login_post/4}
     , #route{protocol = html,
              verb = post,
-             address = "/change_pw",
-             subdomain = "play",
+             address = <<"/change_pw">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_changepw_post/4}
     , #route{protocol = html,
              verb = post,
-             address = "/playlists_post",
-             subdomain = "play",
+             address = <<"/playlists_post">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_playlists_post/4}
     , #route{protocol = html,
              verb = post,
-             address = "/register_post",
-             subdomain = "play",
+             address = <<"/register_post">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_register_post/4}
     , #route{protocol = html,
              verb = post,
-             address = "/share_playlist_post",
-             subdomain = "play",
+             address = <<"/share_playlist_post">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_share_playlist_post/4}
     , #route{protocol = html,
              verb = post,
-             address = "/playlist_post",
-             subdomain = "play",
+             address = <<"/playlist_post">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_playlist_post/4}
 
     , #route{protocol = json,
              verb = post,
-             address = "/change_song",
-             subdomain = "play",
+             address = <<"/change_song">>,
+             subdomain = ?SUBMODULE,
              callback = fun handle_change_song/4}
 
     ].
@@ -197,7 +200,7 @@ handle_allusers(_Data, _Parameters, _Headers, _InstanceName) ->
                                         [{out_dir, "compiled_templates"}]
                                        ),
     {ok, Binary} = Module:render([{users, Users}]),
-    Binary.
+    iolist_to_binary(Binary).
 
 handle_index(_Data, _Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
@@ -208,11 +211,11 @@ handle_index(_Data, _Parameters, Headers, InstanceName) ->
                                                   "compiled_templates"}]
                                                ),
             {ok, Binary} = Module:render([{header, <<"Login example">>}]),
-            Binary;
+            iolist_to_binary(Binary);
         _Username ->
             #{response      => <<"">>,
-              extra_headers => "Location: /playlists\r\n",
-              return_code   => "303 See Other"}
+              extra_headers => <<"Location: /playlists\r\n">>,
+              return_code   => <<"303 See Other">>}
     end.
 
 handle_changepw(_Data, _Parameters, _Headers, _InstanceName) ->
@@ -222,18 +225,18 @@ handle_changepw(_Data, _Parameters, _Headers, _InstanceName) ->
                                           "compiled_templates"}]
                                        ),
     {ok, Binary} = Module:render([{header, <<"Login example">>}]),
-    Binary.
+    iolist_to_binary(Binary).
 
 handle_leave(_Data, Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         Username ->
-            {"list", ListId} = lists:keyfind("list", 1, Parameters),
+            ListId = extract_param(Parameters, "list"),
             leave_list(Username, ListId),
             #{response      => <<"">>,
-              extra_headers => "Location: /playlists\r\n",
-              return_code   => "303 See Other"}
+              extra_headers => <<"Location: /playlists\r\n">>,
+              return_code   => <<"303 See Other">>}
     end.
 
 handle_delete_song(_Data, Parameters, Headers, InstanceName) ->
@@ -241,12 +244,13 @@ handle_delete_song(_Data, Parameters, Headers, InstanceName) ->
         false ->
             render_not_logged_in();
         _Username ->
-            {"trackid", TrackId} = lists:keyfind("trackid", 1, Parameters),
-            {"list", ListId} = lists:keyfind("list", 1, Parameters),
+            TrackId = extract_param(Parameters, "trackid"),
+            ListId = extract_param(Parameters, "list"),
             delete_song(ListId, TrackId),
             #{response      => <<"">>,
-              extra_headers => "Location: /playlist?list="++ListId++"\r\n",
-              return_code   => "303 See Other"}
+              extra_headers => list_to_binary("Location: /playlist?list="
+                                              ++ListId++"\r\n"),
+              return_code   => <<"303 See Other">>}
     end.
 
 handle_logout(_, _, Headers, InstanceName) ->
@@ -255,10 +259,8 @@ handle_logout(_, _, Headers, InstanceName) ->
         Username ->  delete_from_active_users(Username, InstanceName)
     end,
     #{response      => <<"">>,
-      extra_headers => "Set-Cookie: username=\r\n"
-                       "Location: /\r\n",
-      return_code   => "303 See Other"}.
-
+      extra_headers => <<"Set-Cookie: username=\r\nLocation: /\r\n">>,
+      return_code   => <<"303 See Other">>}.
 
 expand_text(URL) ->
     case string:find(URL, "text:") of
@@ -269,14 +271,14 @@ expand_text(URL) ->
     end.
 
 handle_playlist(_Data, Parameters, Headers, InstanceName) ->
-    {"list", ListId} = lists:keyfind("list", 1, Parameters),
+    ListId = extract_param(Parameters, "list"),
     Playlist = playlist_get(ListId),
     IsPublicPlaylist = get_public_playlist(ListId),
     case is_logged_in(Headers, InstanceName) of
         false when not IsPublicPlaylist ->
             render_not_logged_in();
         Username ->
-            case lists:keyfind("raw", 1, Parameters) of
+            case extract_param(Parameters, "raw") of
                 false ->
                     Tracks   = Playlist#playlist.tracks,
                     Tracks2  =
@@ -301,7 +303,7 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
                                                    Playlist#playlist.name},
                                                   {username, Username}
                                                  ]),
-                    Binary;
+                    iolist_to_binary(Binary);
                 _IsRaw ->
                     Playlist1 = [maybe_to_str(Track#track.url)
                                  || Track <- Playlist#playlist.tracks],
@@ -328,7 +330,7 @@ handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
                                                ),
             {ok, Binary} = Module:render([{content, Lists},
                                           {username, Username}]),
-            Binary
+            iolist_to_binary(Binary)
     end.
 
 handle_register(_Data, _Parameters, _Headers, _InstanceName) ->
@@ -337,10 +339,10 @@ handle_register(_Data, _Parameters, _Headers, _InstanceName) ->
                                         [{out_dir, "compiled_templates"}]
                                        ),
     {ok, Binary} = Module:render([]),
-    Binary.
+    iolist_to_binary(Binary).
 
 handle_share_playlist(_Data, Parameters, Headers, InstanceName) ->
-    {"list", ListId} = lists:keyfind("list", 1, Parameters),
+    ListId = extract_param(Parameters, "list"),
     case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
@@ -351,31 +353,31 @@ handle_share_playlist(_Data, Parameters, Headers, InstanceName) ->
                                                   "compiled_templates"}]
                                                ),
             {ok, Binary} = Module:render([{listid, ListId}]),
-            Binary
+            iolist_to_binary(Binary)
     end.
 
 %% ---- POST handlers
 
 handle_login_post(Data, _Parameters, _Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
-    {"username", Username} = lists:keyfind("username", 1, PostParameters),
-    {"password", Password} = lists:keyfind("password", 1, PostParameters),
+    Username = extract_param(PostParameters, "username"),
+    Password = extract_param(PostParameters, "password"),
     case check_login(Username, Password, InstanceName) of
         login_fail ->
             <<"Login failed...">>;
         {login_ok, Cookie} ->
             #{response      => <<"">>,
-              extra_headers => Cookie ++
-                               "Location: /playlists\r\n",
-              return_code   => "303 See Other"}
+              extra_headers => list_to_binary(Cookie
+                                              ++ "Location: /playlists\r\n"),
+              return_code   => <<"303 See Other">>}
     end.
 
 handle_changepw_post(Data, _Parameters, _Headers, _InstanceName) ->
     PostParameters = http_parser:parameters(Data),
-    {"username", Username}   = lists:keyfind("username", 1, PostParameters),
-    {"oldpw", OldPassword}   = lists:keyfind("oldpw", 1, PostParameters),
-    {"newpw", NewPassword}   = lists:keyfind("newpw", 1, PostParameters),
-    {"newpw2", NewPassword2} = lists:keyfind("newpw2", 1, PostParameters),
+    Username = extract_param(PostParameters, "username"),
+    OldPassword = extract_param(PostParameters, "oldpw"),
+    NewPassword = extract_param(PostParameters, "newpw"),
+    NewPassword2 = extract_param(PostParameters, "newpw2"),
     case maybe_change_pw(Username, OldPassword, NewPassword, NewPassword2) of
         change_pw_fail ->
             <<"Password change failed...">>;
@@ -386,19 +388,17 @@ handle_changepw_post(Data, _Parameters, _Headers, _InstanceName) ->
 handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
     Username = is_logged_in(Headers, InstanceName),
-    {_, PlaylistName} = lists:keyfind("playlist_name",
-                                      1,
-                                      PostParameters),
+    PlaylistName = extract_param(PostParameters, "playlist_name"),
     playlist_create(Username, PlaylistName),
     #{response      => <<"">>,
-      extra_headers => "Location: /playlists\r\n",
-      return_code   => "303 See Other"}.
+      extra_headers => <<"Location: /playlists\r\n">>,
+      return_code   => <<"303 See Other">>}.
 
 handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
-    {"username", Username} = lists:keyfind("username", 1, PostParameters),
-    {"password", Password} = lists:keyfind("password", 1, PostParameters),
-    Result   = reg_user(Username, Password),
+    Username = extract_param(PostParameters, "username"),
+    Password = extract_param(PostParameters, "password"),
+    Result = reg_user(Username, Password),
     case Result of
         user_registered ->
             case check_login(Username, Password, InstanceName) of
@@ -406,9 +406,9 @@ handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
                     <<"Registrering gick okej, men login gick inte bra...">>;
                 {login_ok, Cookie} ->
                     #{response      => <<"">>,
-                      extra_headers => Cookie ++
-                                       "Location: /playlists\r\n",
-                      return_code   => "303 See Other"}
+                      extra_headers =>
+                          list_to_binary(Cookie ++ "Location: /playlists\r\n"),
+                      return_code   => <<"303 See Other">>}
             end;
         user_already_existing ->
             <<"Anvandaren upptagen">>
@@ -420,12 +420,12 @@ handle_share_playlist_post(Data, _Parameters, Headers, InstanceName) ->
         false ->
             render_not_logged_in();
         _MyUsername ->
-            {_, Playlist} = lists:keyfind("playlist",  1, PostParameters),
-            {_, Username} = lists:keyfind("user_name", 1, PostParameters),
+            Playlist = extract_param(PostParameters, "playlist"),
+            Username = extract_param(PostParameters, "user_name"),
             add_playlist_to_user(Playlist, Username),
             #{response      => <<"">>,
-              extra_headers => "Location: /playlists\r\n",
-              return_code   => "303 See Other"}
+              extra_headers => <<"Location: /playlists\r\n">>,
+              return_code   => <<"303 See Other">>}
     end.
 
 handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
@@ -434,14 +434,15 @@ handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
             render_not_logged_in();
         _ ->
             PostParameters = http_parser:parameters(Data),
-            {_, Playlist} = lists:keyfind("playlist", 1, PostParameters),
-            {_, Songname0} = lists:keyfind("track_name", 1, PostParameters),
+            Playlist = extract_param(PostParameters, "playlist"),
+            Songname0 = extract_param(PostParameters, "track_name"),
             Songname = http_uri:decode(Songname0),
             add_track(Playlist, Songname),
             #{response      => <<"">>,
-              extra_headers => "Location: /playlist" ++
-                               "?list=" ++ Playlist ++ "\r\n",
-              return_code   => "303 See Other"}
+              extra_headers =>
+                  list_to_binary("Location: /playlist" ++
+                                     "?list=" ++ Playlist ++ "\r\n"),
+              return_code   => <<"303 See Other">>}
     end.
 
 handle_change_song(#{<<"id">>     := Id,
@@ -469,7 +470,7 @@ render_not_logged_in() ->
                                         [{out_dir, "compiled_templates"}]
                                        ),
     {ok, Binary} = Module:render([{header, <<"Login example">>}]),
-    Binary.
+    iolist_to_binary(Binary).
 
 get_users() ->
     F = fun() ->
@@ -733,16 +734,16 @@ delete_song(ListId, TrackId) ->
     put_obj(NewList).
 
 is_logged_in(Headers, InstanceName) ->
-    case [Cookies || {"Cookie", Cookies} <- Headers] of
+    case [Cookies || {<<"Cookie">>, Cookies} <- Headers] of
         [] ->
             false;
-        [CookieString] ->
-            CookieKVS = http_parser:cookies(CookieString),
-            Username = lists:keyfind("username", 1, CookieKVS),
+        [CookieBinary] ->
+            CookieKVS = http_parser:cookies(CookieBinary),
+            Username = extract_param(CookieKVS, "username"),
             case Username of
                 false ->
                     false;
-                {"username", HtmlEncode} ->
+                HtmlEncode ->
                     Decrypted = decrypt(HtmlEncode),
                     case is_active_user(Decrypted, InstanceName) of
                         true ->
@@ -814,3 +815,12 @@ get_cryptkey() ->
 get_soundcloudkey() ->
     {ok, [#{soundcloud := X}]} = file:consult("keys.txt"),
     X.
+
+extract_param(Params, Name) ->
+    BinaryName = list_to_binary(Name),
+    case lists:keyfind(BinaryName, 1, Params) of
+        false ->
+            false;
+        {BinaryName, BinaryVal} ->
+            binary_to_list(BinaryVal)
+    end.

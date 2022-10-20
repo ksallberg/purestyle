@@ -33,13 +33,13 @@ routes() ->
     %% File addresses
     [ #route{protocol = file,
              verb = get,
-             address = "/pstyle.png",
-             subdomain = "demo",
+             address = <<"/pstyle.png">>,
+             subdomain = <<"demo">>,
              callback = fun handle_logo/4}
     , #route{protocol = file,
              verb = get,
-             address = "/",
-             subdomain = "demo",
+             address = <<"/">>,
+             subdomain = <<"demo">>,
              callback = fun handle_page/4}
     ].
 
@@ -49,7 +49,7 @@ handle_page(_, _, _, _InstanceName) ->
                                         [{out_dir, "compiled_templates"}]
                                        ),
     {ok, Binary} = Module:render([]),
-    Binary.
+    iolist_to_binary(Binary).
 
 handle_logo(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/pstyle.png"),

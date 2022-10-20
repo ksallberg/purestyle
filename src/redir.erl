@@ -29,9 +29,7 @@
 
 -include_lib("brunhilde/include/brunhilde.hrl").
 
--export([ init/1
-        , routes/0
-        ]).
+-export([init/1, routes/0]).
 
 init(_InstanceName) ->
     ok.
@@ -39,35 +37,35 @@ init(_InstanceName) ->
 routes() ->
     [ #route{protocol = html,
              verb = get,
-             address = "/",
-             subdomain = "www",
+             address = <<"/">>,
+             subdomain = <<"www">>,
              callback = fun handle_www/4}
 
     %% play subdomain
     , #route{protocol = html,
              verb = get,
-             address = "/",
-             subdomain = "play",
+             address = <<"/">>,
+             subdomain = <<"play">>,
              callback = fun handle_play/4}
 
     , #route{protocol = html,
              verb = get,
-             address = "/",
-             subdomain = "demo",
+             address = <<"/">>,
+             subdomain = <<"demo">>,
              callback = fun handle_demo/4}
     ].
 
 handle_www(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
-      extra_headers => "Location: https://www.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+      extra_headers => <<"Location: https://www.purestyle.se\r\n">>,
+      return_code   => <<"301 Moved Permanently">>}.
 
 handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
-      extra_headers => "Location: https://play.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+      extra_headers => <<"Location: https://play.purestyle.se\r\n">>,
+      return_code   => <<"301 Moved Permanently">>}.
 
 handle_demo(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
-      extra_headers => "Location: https://demo.purestyle.se\r\n",
-      return_code   => "301 Moved Permanently"}.
+      extra_headers => <<"Location: https://demo.purestyle.se\r\n">>,
+      return_code   => <<"301 Moved Permanently">>}.

@@ -1,6 +1,6 @@
 {application, purestyle,
  [{description, "Personal homepage"},
-  {vsn, "1.4"},
+  {vsn, "2.0"},
   {modules,[]},
   {mod,{purestyle_app,[]}},
   {lager,
