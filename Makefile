@@ -1,7 +1,3 @@
-OS = ${shell uname -s}
-
-include arch/${OS}/Makefile
-
 build:
 	rebar3 compile
 
