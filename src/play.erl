@@ -159,7 +159,7 @@ routes() ->
              subdomain = ?SUBMODULE,
              callback = fun handle_playlist_post/4}
 
-    , #route{protocol = json,
+    , #route{protocol = file,
              verb = post,
              address = <<"/change_song">>,
              subdomain = ?SUBMODULE,
@@ -445,16 +445,17 @@ handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
               return_code   => <<"303 See Other">>}
     end.
 
-handle_change_song(#{<<"id">>     := Id,
-                     <<"title">>  := Title,
-                     <<"listid">> := ListId}, _, Headers, InstanceName) ->
+handle_change_song(Data, _, Headers, InstanceName) ->
+    #{<<"id">> := Id,
+      <<"title">> := Title,
+      <<"listid">> := ListId} = jsx:decode(Data, [return_maps]),
     case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _Username ->
             update_song(?b2l(ListId), ?b2l(Id), ?b2l(Title)),
-            #{<<"ok">> => <<"complete">>,
-              <<"new_name">> => Title}
+            jsx:encode(#{<<"ok">> => <<"complete">>,
+                         <<"new_name">> => Title})
     end.
 
 %% ---- helpers:
@@ -626,7 +627,7 @@ get_title(Link) ->
     end.
 
 soundcloud_title(Link) ->
-    APIKey    = get_soundcloudkey(),
+    APIKey = get_soundcloudkey(),
     QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
                 "&client_id=" ++ APIKey,
     {ok, {_HTTPVer, _Headers, Response}}
@@ -671,7 +672,7 @@ soundcloud_id(Link) ->
 %% the title, return both the link and the title
 youtube_title(Link) ->
     VID = youtube_id(Link),
-    {ok, [#{youtube_api_key:=YTAPIKey}]} = file:consult("purestyle.conf"),
+    YTAPIKey = get_youtubekey(),
     QueryLink = "https://www.googleapis.com/youtube/v3/videos?id=" ++
         VID ++ "&key=" ++ YTAPIKey ++
         "%20&part=snippet",
@@ -681,7 +682,22 @@ youtube_title(Link) ->
     [Items] = maps:get(<<"items">>, JsonReply),
     Snippet = maps:get(<<"snippet">>, Items),
     Title = maps:get(<<"title">>, Snippet),
-    unicode:characters_to_list(Title).
+
+    case is_ok_unicode(Title) of
+        true ->
+            unicode:characters_to_list(Title);
+        false ->
+            Link
+    end.
+
+is_ok_unicode(String) ->
+    try
+        iolist_to_binary(unicode:characters_to_list(String)),
+        true
+    catch
+        _:_ ->
+            false
+    end.
 
 playlist_get(PlaylistId) ->
     F = fun() ->
@@ -808,6 +824,10 @@ get_cryptkey() ->
 
 get_soundcloudkey() ->
     {ok, [#{soundcloud := X}]} = file:consult("keys.txt"),
+    X.
+
+get_youtubekey() ->
+    {ok, [#{youtube := X}]} = file:consult("keys.txt"),
     X.
 
 extract_param(Params, Name) ->

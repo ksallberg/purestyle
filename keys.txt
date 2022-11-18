@@ -1,4 +1,5 @@
 #{appsecret  => "Replace this with your own appsecret",
   cryptkey   => <<"abcdefghabcdefgh">>,
-  soundcloud => "Add your soundcloud API key"
+  soundcloud => "Add your soundcloud API key",
+  youtube => "Add your youtube API key"
  }.
