@@ -34,8 +34,8 @@
 
 -include("common.hrl").
 
-%% -define(SUBMODULE, '*').
--define(SUBMODULE, <<"play">>).
+-define(SUBMODULE, '*').
+%% -define(SUBMODULE, <<"play">>).
 
 routes() ->
     %% File addresses
@@ -670,24 +670,18 @@ soundcloud_id(Link) ->
 %% Take a link, extract the title that youtube associates with
 %% the title, return both the link and the title
 youtube_title(Link) ->
-    VID       = youtube_id(Link),
-    QueryLink = "http://youtube.com/get_video_info?video_id=" ++ VID,
+    VID = youtube_id(Link),
+    {ok, [#{youtube_api_key:=YTAPIKey}]} = file:consult("purestyle.conf"),
+    QueryLink = "https://www.googleapis.com/youtube/v3/videos?id=" ++
+        VID ++ "&key=" ++ YTAPIKey ++
+        "%20&part=snippet",
     {ok, {_HTTPVer, _Headers, Response}}
-        = httpc:request(get, {QueryLink, []}, [], []),
-    DecodedResponse = http_uri:decode(Response),
-    [_| [TitleEtc|_]] = re:split(DecodedResponse, "title\":\""),
-    [Title|_] = string:split(?b2l(TitleEtc), "\",\"lengthSeconds"),
-    lists:foldl(fun({Old, New}, Acc) ->
-                    re:replace(Acc, Old, New, [global,{return,list}])
-                end,
-                Title,
-                [{"\\+",    " "}, %% Rules for how to remove html encoded
-                 {"%28",    "("},
-                 {"%29",    ")"},
-                 {"%C3%A4", "ä"},
-                 {"%C3%B6", "ö"},
-                 {"%2B",    "+"}
-                ]).
+        = httpc:request(get, {QueryLink, []}, [], [{body_format, binary}]),
+    JsonReply = jsx:decode(Response, [return_maps]),
+    [Items] = maps:get(<<"items">>, JsonReply),
+    Snippet = maps:get(<<"snippet">>, Items),
+    Title = maps:get(<<"title">>, Snippet),
+    unicode:characters_to_list(Title).
 
 playlist_get(PlaylistId) ->
     F = fun() ->
