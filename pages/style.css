@@ -14,14 +14,8 @@ img {
 input {
   border: none;
   color: #ffffff;
-  font-family:"unscii16",monospace;
+  font-family:"-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif";
   background-color: #000000;
-}
-
-@font-face{
-  font-family:"unscii16";
-  src: url("unscii-16.woff") format("woff"),
-  url("unscii-16.ttf") format("ttf");
 }
 
 .button {
@@ -32,7 +26,7 @@ input {
 }
 
 pre {
-    font-family:"unscii16",monospace;
+    font-family:"-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif";
 }
 
 html {
@@ -54,7 +48,8 @@ h1 {
 }
 
 body {
-  font-family:"unscii16";
+  font-family:"-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif";
+  letter-spacing: "-.02em";
   color: #000000;
   background-color: #fffff9;
 }

@@ -71,17 +71,6 @@ routes() ->
 
     , #route{protocol = html,
              verb = get,
-             address = <<"/unscii-16.ttf">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_ttf/4}
-    , #route{protocol = html,
-             verb = get,
-             address = <<"/unscii-16.woff">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_woff/4}
-
-    , #route{protocol = html,
-             verb = get,
              address = <<"/ramen.html">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_ramen/4}
@@ -136,15 +125,6 @@ handle_rc1(_, _, _, _InstanceName) ->
 
 handle_rc2(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/rc2.html"),
-    Binary.
-
-%% fonts
-handle_ttf(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/unscii-16.ttf"),
-    Binary.
-
-handle_woff(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/unscii-16.woff"),
     Binary.
 
 dtl_helper(PageName) ->
