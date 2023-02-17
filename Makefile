@@ -3,7 +3,7 @@ build:
 
 # -s calls proxy:start()
 # see http://erlang.org/doc/man/erl.html
-start: build
+start:
 	erl -boot start_sasl -pa _build/default/lib/*/ebin \
             -s proxy
 

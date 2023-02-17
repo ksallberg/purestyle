@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Signika+Negative&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono');
 
 img {
   image-orientation: from-image;
@@ -31,10 +31,11 @@ a {
 
 
 body {
-  font-family: 'Signika Negative', monospace;
-  letter-spacing: -.02em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10pt;
+  letter-spacing: -.07em;
   color: #000000;
-  background-color: #fffff9;
+  background-color: #fdffff;
 }
 
 #container {
