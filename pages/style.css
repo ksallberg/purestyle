@@ -12,15 +12,8 @@ img {
 }
 
 input {
-  border: none;
-  color: #ffffff;
-  background-color: #000000;
-}
-
-.button {
-  border: none;
-  color: #ffffff;
-  background-color: #000000;
+  color: #000000;
+  background-color: #ffffff;
 }
 
 html {
@@ -38,8 +31,8 @@ a {
 
 
 body {
-  font-family:"font-family: 'Signika Negative', sans-serif;";
-  letter-spacing: "-.02em";
+  font-family: 'Signika Negative', monospace;
+  letter-spacing: -.02em;
   color: #000000;
   background-color: #fffff9;
 }
