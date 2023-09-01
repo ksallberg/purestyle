@@ -436,7 +436,7 @@ handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
             PostParameters = http_parser:parameters(Data),
             Playlist = extract_param(PostParameters, "playlist"),
             Songname0 = extract_param(PostParameters, "track_name"),
-            Songname = http_uri:decode(Songname0),
+            Songname = uri_string:unquote(Songname0),
             add_track(Playlist, Songname),
             #{response      => <<"">>,
               extra_headers =>
@@ -798,17 +798,17 @@ delete_from_active_users(Username, InstanceName) ->
 encrypt(PlainText) ->
     Key = get_cryptkey(),
     Iv = crypto:strong_rand_bytes(16),
-    En = crypto:block_encrypt(aes_cfb128, Key, Iv, PlainText),
+    En = crypto:crypto_one_time(aes_cfb128, Key, Iv, PlainText, []),
     B64 = base64:encode(<<Iv:16/binary, En/binary>>),
-    http_uri:encode(binary_to_list(B64)).
+    uri_string:quote(binary_to_list(B64)).
 
 decrypt(HtmlEncode) ->
     Key = get_cryptkey(),
-    HtmlUnencode = list_to_binary(http_uri:decode(HtmlEncode)),
+    HtmlUnencode = list_to_binary(uri_string:unquote(HtmlEncode)),
     UnB64 = base64:decode(HtmlUnencode),
     case UnB64 of
         <<Iv:16/binary, CryptoText/binary>> ->
-            Dec = crypto:block_decrypt(aes_cfb128, Key, Iv, CryptoText),
+            Dec = crypto:crypto_one_time(aes_cfb128, Key, Iv, CryptoText, []),
             binary_to_list(Dec);
         <<>> ->
             ""
