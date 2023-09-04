@@ -152,7 +152,9 @@ handle_uptime(_, _, _, _InstanceName) ->
                       , {rel, erlang:system_info(otp_release)}
                       , {otpv, erlang:system_info(otp_release)}
                       , {temperature,
-                         os:cmd("/opt/vc/bin/vcgencmd measure_temp")}
+                         os:cmd("/opt/vc/bin/vcgencmd measure_temp")},
+                        {uname,
+                         os:cmd("uname -a")}
                       ]),
     iolist_to_binary(Binary).
 
