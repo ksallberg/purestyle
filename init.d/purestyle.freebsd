@@ -16,7 +16,7 @@ purestyle_start()
 
 purestyle_stop()
 {
-    kill $(ps aux | grep "purestyle" | grep "ebin" | awk '{print $2}')
+    kill $(ps aux | grep "beam.smp" | awk '{print $2}')
 }
 
 load_rc_config $name
