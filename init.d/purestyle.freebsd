@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. /etc/rc.subr
+
+dir="/home/kristian/purestyle/"
+name="purestyle"
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+
+purestyle_start()
+{
+    cd $dir
+    echo "starting purestyle" `pwd`
+    erl -boot start_sasl -pa ${dir}/_build/default/lib/*/ebin -detached -s proxy
+}
+
+purestyle_stop()
+{
+    kill $(ps aux | grep "purestyle" | grep "ebin" | awk '{print $2}')
+}
+
+load_rc_config $name
+run_rc_command "$1"

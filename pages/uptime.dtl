@@ -12,6 +12,5 @@
    <pre>Total in MB: {{totmb}}</pre>
    <pre>Erlang/OTP release: {{otpv}}</pre>
    <pre><a href='https://play.purestyle.se/'>play</a></pre>
-   <pre>{{temperature}}</pre>
    <pre>{{uname}}</pre>
 {% endblock %}

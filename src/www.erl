@@ -145,16 +145,13 @@ handle_uptime(_, _, _, _InstanceName) ->
                                         [{out_dir, "compiled_templates"}]),
     {ok, Binary} =
         Module:render([ {uptime, os:cmd("uptime")}
-                      , {freem, os:cmd("free -m")}
+                      , {freem, os:cmd("free")}
                       , {procstext, ProxTxt}
                       , {memory, lists:flatten(io_lib:format("~p", [ErMem]))}
                       , {totmb, integer_to_list(Tot div 1048576)}
                       , {rel, erlang:system_info(otp_release)}
                       , {otpv, erlang:system_info(otp_release)}
-                      , {temperature,
-                         os:cmd("/opt/vc/bin/vcgencmd measure_temp")},
-                        {uname,
-                         os:cmd("uname -a")}
+                      , {uname, os:cmd("uname -a")}
                       ]),
     iolist_to_binary(Binary).
 

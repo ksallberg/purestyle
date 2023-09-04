@@ -16,7 +16,7 @@ export DIR=/home/user/path/to/purestyle/
 start()
 {
   cd $DIR
-  erl -boot start_sasl -pa $DIR/_build/default/lib/*/ebin -detached -s purestyle
+  erl -boot start_sasl -pa $DIR/_build/default/lib/*/ebin -detached -s proxy
 }
 
 stop()
