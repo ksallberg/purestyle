@@ -1,17 +1,20 @@
 #!/bin/sh
 
+# PROVIDE: purestyle
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
 . /etc/rc.subr
 
-dir="/home/kristian/purestyle/"
 name="purestyle"
+rcvar="purestyle_enable"
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
 
 purestyle_start()
 {
-    cd $dir
-    echo "starting purestyle" `pwd`
-    erl -boot start_sasl -pa ${dir}/_build/default/lib/*/ebin -detached -s proxy
+    cd /home/kristian/purestyle
+    /usr/local/bin/erl -boot start_sasl -pa /home/kristian/purestyle/_build/default/lib/*/ebin -detached -s proxy -sname gorebrother
 }
 
 purestyle_stop()
@@ -20,4 +23,6 @@ purestyle_stop()
 }
 
 load_rc_config $name
+: ${purestyle_enable:=no}
+
 run_rc_command "$1"
