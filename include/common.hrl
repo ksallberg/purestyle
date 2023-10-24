@@ -37,3 +37,21 @@
                    tracks :: [#track{}]}).
 
 -record(public_playlist, {id :: string(), retracted :: boolean()}).
+
+%% Temperature ruuvitag
+-record(ruuvidata, {datetime :: {{integer(), integer(), integer()},
+                                 {integer(), integer(), integer()}},
+                    data_format :: integer(),
+                    humidity :: float(),
+                    temperature :: float(),
+                    pressure :: float(),
+                    acceleration :: float(),
+                    acceleration_x :: integer(),
+                    acceleration_y :: integer(),
+                    acceleration_z :: integer(),
+                    tx_power :: integer(),
+                    battery :: integer(),
+                    movement_counter :: integer(),
+                    measurement_sequence_number :: integer(),
+                    'rssi' :: integer()
+                   }).

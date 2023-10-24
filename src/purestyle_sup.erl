@@ -35,7 +35,13 @@ start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
+    RuuviServer = #{id => ruuvi_server,
+                    start => {ruuvi_server, start_link, []},
+                    restart => permanent,
+                    shutdown => 1000,
+                    type => worker,
+                    modules => [ruuvi_server]},
     SupFlags = #{strategy  => one_for_one,
                  intensity => 10,
                  period    => 60},
-    {ok, {SupFlags, []}}.
+    {ok, {SupFlags, [RuuviServer]}}.
