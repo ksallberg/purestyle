@@ -92,6 +92,12 @@ routes() ->
               verb = get,
               address = <<"/uptime">>,
               callback = fun handle_uptime/4}
+
+    ,  #route{protocol = html,
+              verb = get,
+              address = <<"/temp">>,
+              callback = fun handle_temp/4}
+
     ].
 
 %% Experimental:
@@ -153,6 +159,17 @@ handle_uptime(_, _, _, _InstanceName) ->
                       , {otpv, erlang:system_info(otp_release)}
                       , {uname, os:cmd("uname -a")}
                       ]),
+    iolist_to_binary(Binary).
+
+handle_temp(_, _, _, _InstanceName) ->
+    lager:log(info, self(), "www: show temperature.", []),
+    F = fun() -> mnesia:all_keys(ruuvidata) end,
+    {atomic, Keys} = mnesia:transaction(F),
+    F2 = fun() -> [mnesia:read(ruuvitag, Key) || Key <- Keys] end,
+    {atomic, All} = mnesia:transaction(F2),
+    Binary = io_lib:format("Date time ~p, Temp: ~B",
+                           [[DT,T] || #ruuvidata{datetime=DT,
+                                                 temperature=T} <- All]),
     iolist_to_binary(Binary).
 
 handle_homepage(_, _, _, _InstanceName) ->
