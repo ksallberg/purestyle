@@ -31,8 +31,8 @@
 
 -export([ routes/0 ]).
 
--define(SUBDOMAIN, '*').
-%% -define(SUBDOMAIN, <<"www">>).
+%% -define(SUBDOMAIN, '*').
+-define(SUBDOMAIN, <<"www">>).
 
 routes() ->
     [ #route{protocol = html,
@@ -200,7 +200,6 @@ pick(Num, Key, Acc) ->
         [#ruuvidata{datetime = DT, temperature = T, humidity = H}] ->
             pick(Num - 1, mnesia:prev(ruuvidata, Key), [{DT, T, H}|Acc])
     end.
-
 
 handle_homepage(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/homepage.html"),
