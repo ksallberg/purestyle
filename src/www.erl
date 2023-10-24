@@ -27,6 +27,8 @@
 
 -include_lib("brunhilde/include/brunhilde.hrl").
 
+-include("common.hrl").
+
 -export([ routes/0 ]).
 
 %% -define(SUBDOMAIN, '*').
