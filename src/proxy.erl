@@ -65,7 +65,8 @@ init(InstanceName) ->
                          {disc_copies, NodeList}]),
     mnesia:create_table(ruuvidata,
                         [{attributes, record_info(fields, ruuvidata)},
-                         {disc_copies, NodeList}]),
+                         {disc_copies, NodeList},
+                         {type, ordered_set}]),
     io:format("Starting inets...~n", []),
     ssl:start(),
     inets:start().
