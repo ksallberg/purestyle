@@ -170,8 +170,8 @@ handle_temp(_, _, _, _InstanceName) ->
     F2 = fun() -> [mnesia:read(ruuvidata, Key) || Key <- Keys] end,
     {atomic, All} = mnesia:transaction(F2),
     Binary = io_lib:format("~p",
-                           [[{DT,T} || #ruuvidata{datetime=DT,
-                                                  temperature=T} <- All]]),
+                           [[{DT,T} || [#ruuvidata{datetime=DT,
+                                                   temperature=T]} <- All]]),
     iolist_to_binary(Binary).
 
 handle_homepage(_, _, _, _InstanceName) ->
