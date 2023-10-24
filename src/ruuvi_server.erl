@@ -65,17 +65,27 @@ parse_ruuvi([${|Rest], Date, Time) ->
      _, RSSI
     ] = string:lexemes(ToParse, ", "),
     #ruuvidata{datetime = {Date, Time},
-               data_format = list_to_integer(DataFormat),
-               humidity = list_to_float(Humidity),
-               temperature = list_to_float(Temperature),
-               pressure = list_to_float(Pressure),
-               acceleration = list_to_float(Acc),
-               acceleration_x = list_to_integer(AccX),
-               acceleration_y = list_to_integer(AccY),
-               acceleration_z = list_to_integer(AccZ),
-               tx_power = list_to_integer(TxPower),
-               battery = list_to_integer(Battery),
-               movement_counter = list_to_integer(MovementCounter),
+               data_format = maybe_list_to_int(DataFormat),
+               humidity = maybe_list_to_float(Humidity),
+               temperature = maybe_list_to_float(Temperature),
+               pressure = maybe_list_to_float(Pressure),
+               acceleration = maybe_list_to_float(Acc),
+               acceleration_x = maybe_list_to_int(AccX),
+               acceleration_y = maybe_list_to_int(AccY),
+               acceleration_z = maybe_list_to_int(AccZ),
+               tx_power = maybe_list_to_int(TxPower),
+               battery = maybe_list_to_int(Battery),
+               movement_counter = maybe_list_to_int(MovementCounter),
                measurement_sequence_number =
-                   list_to_integer(MeasurementSequenceNumber),
-               'rssi' = list_to_integer(RSSI)}.
+                   maybe_list_to_int(MeasurementSequenceNumber),
+               'rssi' = maybe_list_to_int(RSSI)}.
+
+maybe_list_to_float("None") ->
+    0.0;
+maybe_list_to_float(Otherwise) ->
+    list_to_float(Otherwise).
+
+maybe_list_to_int("None") ->
+    0;
+maybe_list_to_int(Otherwise) ->
+    list_to_integer(Otherwise).
