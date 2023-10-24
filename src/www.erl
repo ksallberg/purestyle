@@ -167,11 +167,11 @@ handle_temp(_, _, _, _InstanceName) ->
     lager:log(info, self(), "www: show temperature.", []),
     F = fun() -> mnesia:all_keys(ruuvidata) end,
     {atomic, Keys} = mnesia:transaction(F),
-    F2 = fun() -> [mnesia:read(ruuvitag, Key) || Key <- Keys] end,
+    F2 = fun() -> [mnesia:read(ruuvidata, Key) || Key <- Keys] end,
     {atomic, All} = mnesia:transaction(F2),
-    Binary = io_lib:format("Date time ~p, Temp: ~B",
-                           [[DT,T] || #ruuvidata{datetime=DT,
-                                                 temperature=T} <- All]),
+    Binary = io_lib:format("~p",
+                           [[{DT,T} || #ruuvidata{datetime=DT,
+                                                  temperature=T} <- All]]),
     iolist_to_binary(Binary).
 
 handle_homepage(_, _, _, _InstanceName) ->
