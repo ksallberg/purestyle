@@ -31,8 +31,8 @@
 
 -export([ routes/0 ]).
 
-%% -define(SUBDOMAIN, '*').
--define(SUBDOMAIN, <<"www">>).
+-define(SUBDOMAIN, '*').
+%% -define(SUBDOMAIN, <<"www">>).
 
 routes() ->
     [ #route{protocol = html,
@@ -165,14 +165,42 @@ handle_uptime(_, _, _, _InstanceName) ->
 
 handle_temp(_, _, _, _InstanceName) ->
     lager:log(info, self(), "www: show temperature.", []),
-    F = fun() -> mnesia:all_keys(ruuvidata) end,
-    {atomic, Keys} = mnesia:transaction(F),
-    F2 = fun() -> [mnesia:read(ruuvidata, Key) || Key <- Keys] end,
-    {atomic, All} = mnesia:transaction(F2),
-    Binary = io_lib:format("~p",
-                           [[{DT,T} || [#ruuvidata{datetime=DT,
-                                                   temperature=T}] <- All]]),
+
+    Last48 = fun() ->
+                     pick(96, mnesia:last(ruuvidata), [])
+             end,
+    {atomic, Values} = mnesia:transaction(Last48),
+    Binary = ["<html><body><table border='1'>",
+              "<tr><th>Date & time</th><th>Temperature</th>",
+              "<th>Humidity</th></tr>",
+              [["<tr><th>",
+                integer_to_list(Year), "-",
+                integer_to_list(Month), "-",
+                integer_to_list(Day), " ",
+                integer_to_list(Hour), ":",
+                integer_to_list(Min), ":",
+                integer_to_list(Sec), "</th>",
+                "<th>",
+                io_lib:format("~.2f", [Temperature]),
+                "</th><th>",
+                io_lib:format("~.2f", [Humidity]),
+                "</th></tr>"] ||
+                  {{{Year, Month, Day}, {Hour, Min, Sec}},
+                   Temperature,
+                   Humidity} <- Values],
+              "</table></body></html>"],
     iolist_to_binary(Binary).
+
+pick(0, _Key, Acc) ->
+    Acc;
+pick(Num, Key, Acc) ->
+    case mnesia:read(ruuvidata, Key) of
+        [] ->
+            Acc;
+        [#ruuvidata{datetime = DT, temperature = T, humidity = H}] ->
+            pick(Num - 1, mnesia:prev(ruuvidata, Key), [{DT, T, H}|Acc])
+    end.
+
 
 handle_homepage(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/homepage.html"),
