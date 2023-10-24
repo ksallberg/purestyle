@@ -17,7 +17,9 @@ start_link() ->
 
 init(_) ->
     Millisec = 1000,
-    Timeout = 60 * 5 * Millisec,
+    Seconds = 60,
+    Minutes = 30,
+    Timeout = Seconds * Minutes * Millisec,
     lager:log(info, self(), "Ruuvi monitor server started", []),
     {ok, TRef} = timer:send_interval(Timeout, ask_ruuvi),
     {ok, TRef}.
