@@ -89,17 +89,17 @@ routes() ->
              subdomain = ?SUBDOMAIN,
              callback = fun handle_rc2/4}
 
+    ,  #route{protocol = html,
+              verb = get,
+              address = <<"/temp">>,
+              subdomain = ?SUBDOMAIN,
+              callback = fun handle_temp/4}
+
     %% debug
     ,  #route{protocol = html,
               verb = get,
               address = <<"/uptime">>,
               callback = fun handle_uptime/4}
-
-    ,  #route{protocol = html,
-              verb = get,
-              address = <<"/temp">>,
-              callback = fun handle_temp/4}
-
     ].
 
 %% Experimental:
