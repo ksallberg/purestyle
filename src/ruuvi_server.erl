@@ -120,6 +120,5 @@ export_data() ->
                            ruuvidata)
     end,
     {atomic, Data} = mnesia:transaction(All),
-    io_lib:format("~.2f", [Temperature]),
     FormattedData = lists:map(fun ruuvi_to_str/1, Data),
     FormattedData.
