@@ -8,7 +8,9 @@
          handle_info/2,
          init/1,
          start_link/0,
-         terminate/2]).
+         terminate/2,
+         export_data/0
+        ]).
 
 -include("common.hrl").
 
@@ -91,3 +93,33 @@ maybe_list_to_int("None") ->
     0;
 maybe_list_to_int(Otherwise) ->
     list_to_integer(Otherwise).
+
+ruuvi_to_str(#ruuvidata{datetime = {Date, Time},
+                        data_format = _DataFormat,
+                        humidity = _Humidity,
+                        temperature = Temperature,
+                        pressure = _Pressure,
+                        tx_power = _TxPower,
+                        battery = _Battery,
+                        measurement_sequence_number =
+                            _MeasurementSequenceNumber,
+                        'rssi' = _RSSI}) ->
+    {Year, Month, Day} = Date,
+    {Hour, Min, Sec} = Time,
+    DateStr = io_lib:format("~B-~B-~B ~B:~B:~B", [Year, Month, Day,
+                                                  Hour, Min, Sec]),
+    TempStr = io_lib:format("~.2f", [Temperature]),
+    io:lib_format("~s,~s\n", [DateStr, TempStr]).
+
+export_data() ->
+    All = fun() ->
+              mnesia:foldr(fun(RuuviData, Acc) ->
+                                   [RuuviData|Acc]
+                           end,
+                           [],
+                           ruuvidata)
+    end,
+    {atomic, Data} = mnesia:transaction(All),
+    io_lib:format("~.2f", [Temperature]),
+    FormattedData = lists:map(fun ruuvi_to_str/1, Data),
+    FormattedData.
