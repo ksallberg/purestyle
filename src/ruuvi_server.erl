@@ -109,7 +109,7 @@ ruuvi_to_str(#ruuvidata{datetime = {Date, Time},
     DateStr = io_lib:format("~B-~B-~B ~B:~B:~B", [Year, Month, Day,
                                                   Hour, Min, Sec]),
     TempStr = io_lib:format("~.2f", [Temperature]),
-    io:lib_format("~s,~s\n", [DateStr, TempStr]).
+    io_lib:format("~s,~s\n", [DateStr, TempStr]).
 
 export_data() ->
     All = fun() ->
