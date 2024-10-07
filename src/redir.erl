@@ -41,7 +41,13 @@ routes() ->
              subdomain = <<"www">>,
              callback = fun handle_www/4}
 
-    %% play subdomain
+    , #route{protocol = html,
+             verb = get,
+             address = <<"/">>,
+             subdomain = '*',
+             callback = fun handle_www/4}
+
+      %% play subdomain
     , #route{protocol = html,
              verb = get,
              address = <<"/">>,
