@@ -34,8 +34,8 @@
 
 -include("common.hrl").
 
-%% -define(SUBMODULE, '*').
--define(SUBMODULE, <<"play">>).
+-define(SUBMODULE, '*').
+%% -define(SUBMODULE, <<"play">>).
 
 routes() ->
     %% File addresses
@@ -165,6 +165,24 @@ routes() ->
              subdomain = ?SUBMODULE,
              callback = fun handle_change_song/4}
 
+      %% API
+
+    , #route{protocol = html,
+             verb = post,
+             address = <<"/api/register">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_register_post/4}
+    , #route{protocol = html,
+             verb = get,
+             address = <<"/api/logout">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_logout/4}
+    , #route{protocol = html,
+             verb = post,
+             address = <<"/api/login">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_login_post/4}
+
     ].
 
 %% ---- GET handlers:
@@ -262,6 +280,16 @@ handle_logout(_, _, Headers, InstanceName) ->
       extra_headers => <<"Set-Cookie: username=\r\nLocation: /\r\n">>,
       return_code   => <<"303 See Other">>}.
 
+api_handle_logout(_, _, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
+        false -> ok;
+        Username ->  delete_from_active_users(Username, InstanceName)
+    end,
+    #{response      => jsx:encode(#{success => <<"Logout OK">>}),
+      extra_headers => <<"Set-Cookie: username=\r\nLocation: /\r\n">>,
+      return_code   => <<"200 OK">>}.
+
+
 expand_text(URL) ->
     case string:find(URL, "text:") of
         nomatch ->
@@ -358,11 +386,8 @@ handle_share_playlist(_Data, Parameters, Headers, InstanceName) ->
 
 %% ---- POST handlers
 
-handle_login_post(Data, _Parameters, _Headers, InstanceName) ->
-    PostParameters = http_parser:parameters(Data),
-    Username = extract_param(PostParameters, "username"),
-    Password = extract_param(PostParameters, "password"),
-    case check_login(Username, Password, InstanceName) of
+handle_login_post(Data, Parameters, Headers, InstanceName) ->
+    case do_login_post(Data, Parameters, Headers, InstanceName) of
         login_fail ->
             <<"Login failed...">>;
         {login_ok, Cookie} ->
@@ -370,6 +395,18 @@ handle_login_post(Data, _Parameters, _Headers, InstanceName) ->
               extra_headers => list_to_binary(Cookie
                                               ++ "Location: /playlists\r\n"),
               return_code   => <<"303 See Other">>}
+    end.
+
+api_handle_login_post(Data, Parameters, Headers, InstanceName) ->
+    case do_login_post(Data, Parameters, Headers, InstanceName) of
+        login_fail ->
+            jsx:encode(#{error => <<"Login failed">>});
+        {login_ok, Cookie} ->
+            Response =
+                jsx:encode(#{success => <<"Login OK">>}),
+            #{response      => Response,
+              extra_headers => list_to_binary(Cookie),
+              return_code   => <<"200 OK">>}
     end.
 
 handle_changepw_post(Data, _Parameters, _Headers, _InstanceName) ->
@@ -395,23 +432,31 @@ handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
       return_code   => <<"303 See Other">>}.
 
 handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
-    PostParameters = http_parser:parameters(Data),
-    Username = extract_param(PostParameters, "username"),
-    Password = extract_param(PostParameters, "password"),
-    Result = reg_user(Username, Password),
-    case Result of
-        user_registered ->
-            case check_login(Username, Password, InstanceName) of
-                login_fail ->
-                    <<"Registrering gick okej, men login gick inte bra...">>;
-                {login_ok, Cookie} ->
-                    #{response      => <<"">>,
-                      extra_headers =>
-                          list_to_binary(Cookie ++ "Location: /playlists\r\n"),
-                      return_code   => <<"303 See Other">>}
-            end;
+    case do_register_post(Data, _Parameters, _Headers, InstanceName) of
+        login_fail ->
+            <<"Registrering gick okej, men login gick inte bra...">>;
+        {login_ok, Cookie} ->
+            #{response      => <<"">>,
+              extra_headers =>
+                  list_to_binary(Cookie ++ "Location: /playlists\r\n"),
+              return_code   => <<"303 See Other">>};
         user_already_existing ->
             <<"Anvandaren upptagen">>
+    end.
+
+api_handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
+    case do_register_post(Data, _Parameters, _Headers, InstanceName) of
+        login_fail ->
+            jsx:encode(#{error => <<"Registration OK, login failed">>});
+        {login_ok, Cookie} ->
+            Response =
+                jsx:encode(#{success => <<"Login OK">>}),
+            #{response      => Response,
+              extra_headers =>
+                  list_to_binary(Cookie ++ "\r\n"),
+              return_code   => <<"200 OK">>};
+        user_already_existing ->
+            jsx:encode(#{error => <<"User already exists">>})
     end.
 
 handle_share_playlist_post(Data, _Parameters, Headers, InstanceName) ->
@@ -838,3 +883,23 @@ extract_param(Params, Name) ->
         {BinaryName, BinaryVal} ->
             binary_to_list(BinaryVal)
     end.
+
+%% -- COMMON for API / rendered HTML
+
+do_register_post(Data, _Parameters, _Headers, InstanceName) ->
+    PostParameters = http_parser:parameters(Data),
+    Username = extract_param(PostParameters, "username"),
+    Password = extract_param(PostParameters, "password"),
+    Result = reg_user(Username, Password),
+    case Result of
+        user_registered ->
+            check_login(Username, Password, InstanceName);
+        user_already_existing ->
+            user_already_existing
+    end.
+
+do_login_post(Data, _Parameters, _Headers, InstanceName) ->
+    PostParameters = http_parser:parameters(Data),
+    Username = extract_param(PostParameters, "username"),
+    Password = extract_param(PostParameters, "password"),
+    check_login(Username, Password, InstanceName).

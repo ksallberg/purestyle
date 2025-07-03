@@ -1,0 +1,56 @@
+[doc]
+Sanity check of play API.
+
+Precondition: Apply
+
+```
+diff --git a/src/play.erl b/src/play.erl
+index 159d61f..fb815ec 100644
+--- a/src/play.erl
++++ b/src/play.erl
+@@ -34,8 +34,8 @@
+ 
+ -include("common.hrl").
+ 
+-%% -define(SUBMODULE, '*').
+--define(SUBMODULE, <<"play">>).
++-define(SUBMODULE, '*').
++%% -define(SUBMODULE, <<"play">>).
+```
+[enddoc]
+
+[shell brunhilde]
+    !rm -rf ../Mnesia.nonode@nohost
+    ?SH-PROMPT:
+
+    !make -C ../ start
+    ???Listening at port: 8000
+
+[shell api_test]
+    # Register
+    !curl -d "username=leif&password=kurt" -c - http://localhost:8000/api/register
+
+    ???{"success":"Login OK"}
+    ?localhost.*FALSE.*/api/.*FALSE.*username\s*(.*)\n
+    [local cookie_username=$1]
+    !echo cookie_username
+
+    # Logout, cookie should be reset
+    !curl --cookie "username=$cookie_username" -c - http://localhost:8000/api/logout
+    ???{"success":"Logout OK"}
+    ?localhost\s*FALSE\s*/api/\s*FALSE\s*0\s*username\s*\n
+
+    # Login
+    !curl -d "username=leif&password=kurt" -c - http://localhost:8000/api/login
+    ???{"success":"Login OK"}
+
+    ?localhost.*FALSE.*/api/.*FALSE.*username\s*(.*)\n
+    [local cookie_username=$1]
+
+    !echo cookie_username
+    ?SH-PROMPT
+
+
+[cleanup]
+    !make -C ../ stop
+    ?SH-PROMPT:
