@@ -193,11 +193,11 @@ routes() ->
              address = <<"/api/playlists">>,
              subdomain = ?SUBMODULE,
              callback = fun api_handle_playlists/4}
-    %% , #route{protocol = html,
-    %%          verb = post,
-    %%          address = <<"/api/playlist">>,
-    %%          subdomain = ?SUBMODULE,
-    %%          callback = fun api_handle_playlist_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = <<"/api/playlist">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_playlist_post/4}
     , #route{protocol = html,
              verb = post,
              address = <<"/api/playlists">>,
@@ -369,9 +369,18 @@ api_handle_playlist(_Data, Parameters, Headers, InstanceName) ->
         false when not IsPublicPlaylist ->
             jsx:encode(#{error => <<"Access denied">>});
         _Username ->
+            Tracks = [#{source => Source,
+                        id => list_to_binary(Id),
+                        url => list_to_binary(Url),
+                        title => list_to_binary(Title)}
+                      || #track{source = Source,
+                                id = Id,
+                                url = Url,
+                                title = Title
+                               } <- Playlist#playlist.tracks],
             jsx:encode(#{id => list_to_binary(Playlist#playlist.id),
                          name => list_to_binary(Playlist#playlist.name),
-                         tracks => Playlist#playlist.tracks})
+                         tracks => Tracks})
     end.
 
 handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
@@ -536,6 +545,19 @@ handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
                   list_to_binary("Location: /playlist" ++
                                      "?list=" ++ Playlist ++ "\r\n"),
               return_code   => <<"303 See Other">>}
+    end.
+
+api_handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
+        false ->
+            jsx:encode(#{error => <<"Access denied">>});
+        _ ->
+            PostParameters = http_parser:parameters(Data),
+            Playlist = extract_param(PostParameters, "playlist"),
+            Songname0 = extract_param(PostParameters, "track_name"),
+            Songname = uri_string:unquote(Songname0),
+            add_track(Playlist, Songname),
+            jsx:encode(#{success => <<"Track added">>})
     end.
 
 handle_change_song(Data, _, Headers, InstanceName) ->

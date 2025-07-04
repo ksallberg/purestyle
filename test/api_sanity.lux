@@ -54,6 +54,7 @@ index 159d61f..fb815ec 100644
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists
     ???{"lists":[]}
 
+    # TODO: playlist id should be returned
     # POST playlists (create a playlist)
     !curl --cookie "username=$cookie_username" -d "playlist_name=pl1" http://localhost:8000/api/playlists
     ?{"success":"Playlist created"}
@@ -66,6 +67,17 @@ index 159d61f..fb815ec 100644
     # GET playlist (when empty)
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=$playlist_id
     ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[\]}
+
+    # TODO: item id should be returned
+    # POST populate a playlist
+    !curl --cookie "username=$cookie_username" -d "playlist=$playlist_id" -d "track_name=apa" http://localhost:8000/api/playlist?list=$playlist_id
+    ???{"success":"Track added"}
+
+    # GET playlist
+    !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=$playlist_id
+    ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[
+    ???"id":
+    ???"source":"other","title":"apa","url":"apa"}]}
 
 [cleanup]
     !make -C ../ stop
