@@ -306,7 +306,7 @@ api_handle_logout(_, _, Headers, InstanceName) ->
         false -> ok;
         Username ->  delete_from_active_users(Username, InstanceName)
     end,
-    #{response      => jsx:encode(#{success => <<"Logout OK">>}),
+    #{response      => jsx:encode(#{status => <<"success">>}),
       extra_headers => <<"Set-Cookie: username=\r\nLocation: /\r\n">>,
       return_code   => <<"200 OK">>}.
 
@@ -361,23 +361,26 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
             end
     end.
 
+json_format_track(#track{source = Source,
+                         id = Id,
+                         url = Url,
+                         title = Title
+                        }) ->
+    #{source => Source,
+      id => list_to_binary(Id),
+      url => list_to_binary(Url),
+      title => list_to_binary(Title)}.
+
 api_handle_playlist(_Data, Parameters, Headers, InstanceName) ->
     ListId = extract_param(Parameters, "list"),
     Playlist = playlist_get(ListId),
     IsPublicPlaylist = get_public_playlist(ListId),
     case is_logged_in(Headers, InstanceName) of
         false when not IsPublicPlaylist ->
-            jsx:encode(#{error => <<"Access denied">>});
+            access_denied();
         _Username ->
-            Tracks = [#{source => Source,
-                        id => list_to_binary(Id),
-                        url => list_to_binary(Url),
-                        title => list_to_binary(Title)}
-                      || #track{source = Source,
-                                id = Id,
-                                url = Url,
-                                title = Title
-                               } <- Playlist#playlist.tracks],
+            Tracks = [json_format_track(Track) ||
+                         Track <- Playlist#playlist.tracks],
             jsx:encode(#{id => list_to_binary(Playlist#playlist.id),
                          name => list_to_binary(Playlist#playlist.name),
                          tracks => Tracks})
@@ -402,7 +405,7 @@ handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
 api_handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
         false ->
-            jsx:encode(#{error => <<"Access denied">>});
+            access_denied();
         Username ->
             Lists = playlists_get(Username),
             ListsIds = [#{id => list_to_binary(PlId),
@@ -450,10 +453,10 @@ handle_login_post(Data, Parameters, Headers, InstanceName) ->
 api_handle_login_post(Data, Parameters, Headers, InstanceName) ->
     case do_login_post(Data, Parameters, Headers, InstanceName) of
         login_fail ->
-            jsx:encode(#{error => <<"Login failed">>});
+            jsx:encode(#{status => <<"error">>});
         {login_ok, Cookie} ->
             Response =
-                jsx:encode(#{success => <<"Login OK">>}),
+                jsx:encode(#{status => <<"success">>}),
             #{response      => Response,
               extra_headers => list_to_binary(Cookie ++ "\r\n"),
               return_code   => <<"200 OK">>}
@@ -485,8 +488,11 @@ api_handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
     Username = is_logged_in(Headers, InstanceName),
     PlaylistName = extract_param(PostParameters, "playlist_name"),
-    playlist_create(Username, PlaylistName),
-    jsx:encode(#{success => <<"Playlist created">>}).
+    PlaylistId = playlist_create(Username, PlaylistName),
+    jsx:encode(#{status => <<"success">>,
+                 id => list_to_binary(PlaylistId),
+                 name => list_to_binary(PlaylistName)
+                }).
 
 handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     case do_register_post(Data, _Parameters, _Headers, InstanceName) of
@@ -504,16 +510,18 @@ handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
 api_handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     case do_register_post(Data, _Parameters, _Headers, InstanceName) of
         login_fail ->
-            jsx:encode(#{error => <<"Registration OK, login failed">>});
+            jsx:encode(#{status => <<"error">>,
+                         msg => <<"Registration OK, login failed">>});
         {login_ok, Cookie} ->
             Response =
-                jsx:encode(#{success => <<"Login OK">>}),
+                jsx:encode(#{status => <<"success">>}),
             #{response      => Response,
               extra_headers =>
                   list_to_binary(Cookie ++ "\r\n"),
               return_code   => <<"200 OK">>};
         user_already_existing ->
-            jsx:encode(#{error => <<"User already exists">>})
+            jsx:encode(#{status => <<"error">>,
+                         msg => <<"User already exists">>})
     end.
 
 handle_share_playlist_post(Data, _Parameters, Headers, InstanceName) ->
@@ -550,14 +558,16 @@ handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
 api_handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
         false ->
-            jsx:encode(#{error => <<"Access denied">>});
+            access_denied();
         _ ->
             PostParameters = http_parser:parameters(Data),
             Playlist = extract_param(PostParameters, "playlist"),
             Songname0 = extract_param(PostParameters, "track_name"),
             Songname = uri_string:unquote(Songname0),
-            add_track(Playlist, Songname),
-            jsx:encode(#{success => <<"Track added">>})
+            Track = add_track(Playlist, Songname),
+            jsx:encode(#{status => <<"success">>,
+                         track => json_format_track(Track)
+                        })
     end.
 
 handle_change_song(Data, _, Headers, InstanceName) ->
@@ -687,7 +697,8 @@ playlist_create(Username, PlaylistName) ->
                         tracks = []},
     put_obj(NewList),
     %% Add this id to the user
-    add_playlist_to_user(PlaylistId, Username).
+    add_playlist_to_user(PlaylistId, Username),
+    PlaylistId.
 
 %% Get name from playlist id
 name_from_plid(Plid) ->
@@ -831,7 +842,8 @@ add_track(PlaylistId, URL) ->
                         url    = URL,
                         title  = get_title(URL)},
     ModList    = PlayList#playlist{tracks = PrevTracks ++ [NewTrack]},
-    put_obj(ModList).
+    put_obj(ModList),
+    NewTrack.
 
 leave_list(Username, ListId) ->
     {atomic, [User]} = get_user(Username),
@@ -979,3 +991,7 @@ do_login_post(Data, _Parameters, _Headers, InstanceName) ->
     Username = extract_param(PostParameters, "username"),
     Password = extract_param(PostParameters, "password"),
     check_login(Username, Password, InstanceName).
+
+access_denied() ->
+    jsx:encode(#{status => <<"error">>,
+                 msg => <<"Access denied">>}).

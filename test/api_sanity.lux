@@ -30,19 +30,19 @@ index 159d61f..fb815ec 100644
     # Register
     !curl -d "username=leif&password=kurt" -c - http://localhost:8000/api/register
 
-    ???{"success":"Login OK"}
+    ???{"status":"success"}
     ?localhost.*FALSE.*/api/.*FALSE.*username\s*(.*)\n
     [local cookie_username=$1]
     !echo cookie_username
 
     # Logout, cookie should be reset
     !curl --cookie "username=$cookie_username" -c - http://localhost:8000/api/logout
-    ???{"success":"Logout OK"}
+    ???{"status":"success"}
     ?localhost\s*FALSE\s*/api/\s*FALSE\s*0\s*username\s*\n
 
     # Login
     !curl -d "username=leif&password=kurt" -c - http://localhost:8000/api/login
-    ???{"success":"Login OK"}
+    ???{"status":"success"}
 
     ?localhost.*FALSE.*/api/.*FALSE.*username\s*(.*)\n
     [local cookie_username=$1]
@@ -54,30 +54,28 @@ index 159d61f..fb815ec 100644
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists
     ???{"lists":[]}
 
-    # TODO: playlist id should be returned
     # POST playlists (create a playlist)
     !curl --cookie "username=$cookie_username" -d "playlist_name=pl1" http://localhost:8000/api/playlists
-    ?{"success":"Playlist created"}
+    ?{"id"\:(.*),"name"\:"pl1","status"\:"success"}
+    [local playlist_id=$1]
 
     # GET playlists (after creating)
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists
-    ?{"lists":\[{"id":(.*),"name":"pl1"}\]}
-    [local playlist_id=$1]
+    ?{"lists":\[{"id"\:?$playlist_id,"name":"pl1"}\]}
+
 
     # GET playlist (when empty)
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=$playlist_id
     ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[\]}
 
-    # TODO: item id should be returned
     # POST populate a playlist
     !curl --cookie "username=$cookie_username" -d "playlist=$playlist_id" -d "track_name=apa" http://localhost:8000/api/playlist?list=$playlist_id
-    ???{"success":"Track added"}
+    ?{"status"\:"success","track"\:{"id"\:(.*),"source"\:"other","title"\:"apa","url"\:"apa"}
+    [local track_id=$1]
 
     # GET playlist
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=$playlist_id
-    ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[
-    ???"id":
-    ???"source":"other","title":"apa","url":"apa"}]}
+    ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[{"id"\:$track_id,"source":"other","title":"apa","url":"apa"}]}
 
 [cleanup]
     !make -C ../ stop
