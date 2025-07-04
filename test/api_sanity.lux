@@ -50,6 +50,22 @@ index 159d61f..fb815ec 100644
     !echo cookie_username
     ?SH-PROMPT
 
+    # GET playlists (before creating any)
+    !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists
+    ???{"lists":[]}
+
+    # POST playlists (create a playlist)
+    !curl --cookie "username=$cookie_username" -d "playlist_name=pl1" http://localhost:8000/api/playlists
+    ?{"success":"Playlist created"}
+
+    # GET playlists (after creating)
+    !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists
+    ?{"lists":\[{"id":(.*),"name":"pl1"}\]}
+    [local playlist_id=$1]
+
+    # GET playlist (when empty)
+    !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=$playlist_id
+    ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[\]}
 
 [cleanup]
     !make -C ../ stop

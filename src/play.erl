@@ -183,6 +183,27 @@ routes() ->
              subdomain = ?SUBMODULE,
              callback = fun api_handle_login_post/4}
 
+    , #route{protocol = html,
+             verb = get,
+             address = <<"/api/playlist">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_playlist/4}
+    , #route{protocol = html,
+             verb = get,
+             address = <<"/api/playlists">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_playlists/4}
+    %% , #route{protocol = html,
+    %%          verb = post,
+    %%          address = <<"/api/playlist">>,
+    %%          subdomain = ?SUBMODULE,
+    %%          callback = fun api_handle_playlist_post/4}
+    , #route{protocol = html,
+             verb = post,
+             address = <<"/api/playlists">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_playlists_post/4}
+
     ].
 
 %% ---- GET handlers:
@@ -340,10 +361,18 @@ handle_playlist(_Data, Parameters, Headers, InstanceName) ->
             end
     end.
 
-maybe_to_str(X) when is_binary(X) ->
-    binary_to_list(X);
-maybe_to_str(X) ->
-    X.
+api_handle_playlist(_Data, Parameters, Headers, InstanceName) ->
+    ListId = extract_param(Parameters, "list"),
+    Playlist = playlist_get(ListId),
+    IsPublicPlaylist = get_public_playlist(ListId),
+    case is_logged_in(Headers, InstanceName) of
+        false when not IsPublicPlaylist ->
+            jsx:encode(#{error => <<"Access denied">>});
+        _Username ->
+            jsx:encode(#{id => list_to_binary(Playlist#playlist.id),
+                         name => list_to_binary(Playlist#playlist.name),
+                         tracks => Playlist#playlist.tracks})
+    end.
 
 handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
     case is_logged_in(Headers, InstanceName) of
@@ -359,6 +388,18 @@ handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
             {ok, Binary} = Module:render([{content, Lists},
                                           {username, Username}]),
             iolist_to_binary(Binary)
+    end.
+
+api_handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
+        false ->
+            jsx:encode(#{error => <<"Access denied">>});
+        Username ->
+            Lists = playlists_get(Username),
+            ListsIds = [#{id => list_to_binary(PlId),
+                          name => list_to_binary(Name) }
+                        || {PlId, Name} <- Lists],
+            jsx:encode(#{lists => ListsIds})
     end.
 
 handle_register(_Data, _Parameters, _Headers, _InstanceName) ->
@@ -405,7 +446,7 @@ api_handle_login_post(Data, Parameters, Headers, InstanceName) ->
             Response =
                 jsx:encode(#{success => <<"Login OK">>}),
             #{response      => Response,
-              extra_headers => list_to_binary(Cookie),
+              extra_headers => list_to_binary(Cookie ++ "\r\n"),
               return_code   => <<"200 OK">>}
     end.
 
@@ -430,6 +471,13 @@ handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
     #{response      => <<"">>,
       extra_headers => <<"Location: /playlists\r\n">>,
       return_code   => <<"303 See Other">>}.
+
+api_handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
+    PostParameters = http_parser:parameters(Data),
+    Username = is_logged_in(Headers, InstanceName),
+    PlaylistName = extract_param(PostParameters, "playlist_name"),
+    playlist_create(Username, PlaylistName),
+    jsx:encode(#{success => <<"Playlist created">>}).
 
 handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     case do_register_post(Data, _Parameters, _Headers, InstanceName) of
@@ -883,6 +931,12 @@ extract_param(Params, Name) ->
         {BinaryName, BinaryVal} ->
             binary_to_list(BinaryVal)
     end.
+
+maybe_to_str(X) when is_binary(X) ->
+    binary_to_list(X);
+maybe_to_str(X) ->
+    X.
+
 
 %% -- COMMON for API / rendered HTML
 

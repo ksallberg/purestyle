@@ -15,9 +15,6 @@
 -record(user, {username :: string(),
                info     :: userinfo}).
 
--record(userinfo, {password  :: string(),
-                   playlists :: [playlist]}).
-
 -record(track, {source = other,
                 id     = "no_id",
                 url    = "no_url",
@@ -35,6 +32,9 @@
 -record(playlist, {id     :: string(),
                    name   :: string(),
                    tracks :: [#track{}]}).
+
+-record(userinfo, {password  :: string(),
+                   playlists :: [#playlist{}]}).
 
 -record(public_playlist, {id :: string(), retracted :: boolean()}).
 
