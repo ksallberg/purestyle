@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <link href="https://www.purestyle.se/style.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <h1>Play API docs</h1>
+    <h2>Register (POST)</h2>
+
+    curl example:
+    <p class="modal-content">curl -d "username=USER&password=PASS" -c - http://localhost:8000/api/register</p>
+
+    response example (Note, session cookie called username is set):
+    <p class="modal-content">{"status":"success"}</p>
+
+    response example (fail):
+    <p class="modal-content">{"status":"error","error":"User already exists"}</p>
+
+    <h2>Login (POST)</h2>
+
+    curl example:
+    <p class="modal-content">curl -d "username=USER&password=PASS" -c - http://localhost:8000/api/login</p>
+
+    response example (Note, session cookie called username is set):
+    <p class="modal-content">{"status":"success"}</p>
+
+    response example (fail):
+    <p class="modal-content">{"status":"error"}</p>
+
+    <h2>Logout (GET)</h2>
+
+    curl example (Note, session cookie is cleared):
+    <p class="modal-content">curl --cookie "username=$cookie_username" -c - http://localhost:8000/api/logout</p>
+
+    response example:
+    <p class="modal-content">{"status":"success"}</p>
+
+    <h2>Get playlists (GET)</h2>
+
+    curl example:
+    <p class="modal-content">curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists</p>
+
+    response example:
+    <p class="modal-content">{"lists":[{"id":"some-id","name":"playlist1"}]}</p>
+
+    <h2>Create playlist (POST)</h2>
+
+    curl example:
+    <p class="modal-content">curl --cookie "username=$cookie_username" -d "playlist_name=playlist1" http://localhost:8000/api/playlists</p>
+
+    response example:
+    <p class="modal-content">{"id":"some-id","name":"playlist1","status":"success"}</p>
+
+    response example (nog logged in):
+    <p class="modal-content">{"status":"error","message":"Access denied"}</p>
+
+    <h2>Get tracks of playlist (GET)</h2>
+
+    curl example:
+    <p class="modal-content">curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=PLAYLISTID</p>
+
+    response example:
+    <p class="modal-content">{"id":PLAYLISTID,"name":"playlist1","tracks":[{"id":TRACKID,"source":"other","title":"apa","url":"apa"}]}</p>
+
+    <h2>Add track to playlist (POST)</h2>
+
+    curl example:
+    <p class="modal-content">curl --cookie "username=$cookie_username" -d "playlist=PLAYLISTID" -d "track_name=apa" http://localhost:8000/api/playlist?list=PLAYLISTID</p>
+
+    response example:
+    <p class="modal-content">{"status"\:"success","track"\:{"id"\:(.*),"source"\:"other","title"\:"apa","url"\:"apa"}</p>
+
+    response example (nog logged in):
+    <p class="modal-content">{"status":"error","message":"Access denied"}</p>
+
+  </body>
+
+</html>

@@ -168,6 +168,11 @@ routes() ->
       %% API
 
     , #route{protocol = html,
+             verb = get,
+             address = <<"/api">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_api/4}
+    , #route{protocol = html,
              verb = post,
              address = <<"/api/register">>,
              subdomain = ?SUBMODULE,
@@ -310,6 +315,9 @@ api_handle_logout(_, _, Headers, InstanceName) ->
       extra_headers => <<"Set-Cookie: username=\r\nLocation: /\r\n">>,
       return_code   => <<"200 OK">>}.
 
+api_handle_api(_, _, _, _InstanceName) ->
+    {ok, Binary} = file:read_file("pages/apidoc.html"),
+    Binary.
 
 expand_text(URL) ->
     case string:find(URL, "text:") of

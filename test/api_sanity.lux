@@ -63,7 +63,6 @@ index 159d61f..fb815ec 100644
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists
     ?{"lists":\[{"id"\:?$playlist_id,"name":"pl1"}\]}
 
-
     # GET playlist (when empty)
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=$playlist_id
     ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[\]}
