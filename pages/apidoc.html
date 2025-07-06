@@ -8,7 +8,7 @@
     <h2>Register (POST)</h2>
 
     curl example:
-    <p class="modal-content">curl -d "username=USER&password=PASS" -c - http://localhost:8000/api/register</p>
+    <p class="modal-content">curl -d "username=USER&password=PASS" -c - https://play.purestyle.se/api/register</p>
 
     response example (Note, session cookie called username is set):
     <p class="modal-content">{"status":"success"}</p>
@@ -19,7 +19,7 @@
     <h2>Login (POST)</h2>
 
     curl example:
-    <p class="modal-content">curl -d "username=USER&password=PASS" -c - http://localhost:8000/api/login</p>
+    <p class="modal-content">curl -d "username=USER&password=PASS" -c - https://play.purestyle.se/api/login</p>
 
     response example (Note, session cookie called username is set):
     <p class="modal-content">{"status":"success"}</p>
@@ -30,7 +30,7 @@
     <h2>Logout (GET)</h2>
 
     curl example (Note, session cookie is cleared):
-    <p class="modal-content">curl --cookie "username=$cookie_username" -c - http://localhost:8000/api/logout</p>
+    <p class="modal-content">curl --cookie "username=$cookie_username" -c - https://play.purestyle.se/api/logout</p>
 
     response example:
     <p class="modal-content">{"status":"success"}</p>
@@ -38,7 +38,7 @@
     <h2>Get playlists (GET)</h2>
 
     curl example:
-    <p class="modal-content">curl --cookie "username=$cookie_username" http://localhost:8000/api/playlists</p>
+    <p class="modal-content">curl --cookie "username=$cookie_username" https://play.purestyle.se/api/playlists</p>
 
     response example:
     <p class="modal-content">{"lists":[{"id":"some-id","name":"playlist1"}]}</p>
@@ -46,7 +46,7 @@
     <h2>Create playlist (POST)</h2>
 
     curl example:
-    <p class="modal-content">curl --cookie "username=$cookie_username" -d "playlist_name=playlist1" http://localhost:8000/api/playlists</p>
+    <p class="modal-content">curl --cookie "username=$cookie_username" -d "playlist_name=playlist1" https://play.purestyle.se/api/playlists</p>
 
     response example:
     <p class="modal-content">{"id":"some-id","name":"playlist1","status":"success"}</p>
@@ -57,7 +57,7 @@
     <h2>Get tracks of playlist (GET)</h2>
 
     curl example:
-    <p class="modal-content">curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=PLAYLISTID</p>
+    <p class="modal-content">curl --cookie "username=$cookie_username" https://play.purestyle.se/api/playlist?list=PLAYLISTID</p>
 
     response example:
     <p class="modal-content">{"id":PLAYLISTID,"name":"playlist1","tracks":[{"id":TRACKID,"source":"other","title":"apa","url":"apa"}]}</p>
@@ -65,7 +65,7 @@
     <h2>Add track to playlist (POST)</h2>
 
     curl example:
-    <p class="modal-content">curl --cookie "username=$cookie_username" -d "playlist=PLAYLISTID" -d "track_name=apa" http://localhost:8000/api/playlist?list=PLAYLISTID</p>
+    <p class="modal-content">curl --cookie "username=$cookie_username" -d "playlist=PLAYLISTID" -d "track_name=apa" https://play.purestyle.se/api/playlist?list=PLAYLISTID</p>
 
     response example:
     <p class="modal-content">{"status"\:"success","track"\:{"id"\:(.*),"source"\:"other","title"\:"apa","url"\:"apa"}</p>
