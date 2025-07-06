@@ -68,7 +68,7 @@
     <p class="modal-content">curl --cookie "username=$cookie_username" -d "playlist=PLAYLISTID" -d "track_name=apa" https://play.purestyle.se/api/playlist?list=PLAYLISTID</p>
 
     response example:
-    <p class="modal-content">{"status"\:"success","track"\:{"id"\:(.*),"source"\:"other","title"\:"apa","url"\:"apa"}</p>
+    <p class="modal-content">{"status":"success","track":{"id":TRACKID,"source":"other","title":"apa","url":"apa"}</p>
 
     response example (nog logged in):
     <p class="modal-content">{"status":"error","message":"Access denied"}</p>
