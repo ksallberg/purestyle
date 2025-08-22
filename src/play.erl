@@ -466,7 +466,7 @@ api_handle_login_post(Data, Parameters, Headers, InstanceName) ->
             Response =
                 jsx:encode(#{status => <<"success">>}),
             #{response      => Response,
-              extra_headers => list_to_binary(Cookie ++ "\r\n"),
+              extra_headers => list_to_binary(cors() ++ Cookie ++ "\r\n"),
               return_code   => <<"200 OK">>}
     end.
 
@@ -525,7 +525,7 @@ api_handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
                 jsx:encode(#{status => <<"success">>}),
             #{response      => Response,
               extra_headers =>
-                  list_to_binary(Cookie ++ "\r\n"),
+                  list_to_binary(cors() ++ Cookie ++ "\r\n"),
               return_code   => <<"200 OK">>};
         user_already_existing ->
             jsx:encode(#{status => <<"error">>,
@@ -574,6 +574,7 @@ api_handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
             Songname = uri_string:unquote(Songname0),
             Track = add_track(Playlist, Songname),
             jsx:encode(#{status => <<"success">>,
+                         extra_headers => list_to_binary(cors()),
                          track => json_format_track(Track)
                         })
     end.
@@ -1003,3 +1004,6 @@ do_login_post(Data, _Parameters, _Headers, InstanceName) ->
 access_denied() ->
     jsx:encode(#{status => <<"error">>,
                  msg => <<"Access denied">>}).
+
+cors() ->
+    "Access-Control-Allow-Origin: http://localhost:4321\r\n".
