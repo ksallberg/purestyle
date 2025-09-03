@@ -610,6 +610,12 @@ handle_change_song(Data, _, Headers, InstanceName) ->
                          <<"new_name">> => Title})
     end.
 
+api_handle_cors_preflight_check(_Data, _Parameters, _Headers, _InstanceName) ->
+    #{response      => <<"">>,
+      extra_headers => list_to_binary(cors_preflight_check()),
+      return_code   => <<"204 No Content">>}.
+
+
 %% ---- helpers:
 
 db_name(InstanceName) ->
@@ -1026,5 +1032,8 @@ access_denied() ->
 cors() ->
     "Access-Control-Allow-Origin: http://localhost:4321\r\n".
 
-api_handle_cors_preflight_check(_Data, _Parameters, _Headers, _InstanceName) ->
-    "Access-Control-Allow-Origin: *\r\n".
+cors_preflight_check() ->
+    "Access-Control-Allow-Origin: *\r\n"
+    "Access-Control-Allow-Methods: POST, GET\r\n"
+    "Access-Control-Allow-Headers: X-Requested-With\r\n"
+    "Access-Control-Max-Age: 86400\r\n".
