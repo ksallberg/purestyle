@@ -38,8 +38,26 @@
 -define(SUBMODULE, <<"play">>).
 
 routes() ->
+    [
+    %% CORS
+      #route{protocol = html,
+             verb = options,
+             address = <<"/api/login">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_cors_preflight_check/4}
+    , #route{protocol = html,
+             verb = options,
+             address = <<"/api/register">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_cors_preflight_check/4}
+    , #route{protocol = html,
+             verb = options,
+             address = <<"/api/playlist">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_cors_preflight_check/4}
+
     %% File addresses
-    [ #route{protocol = file,
+    , #route{protocol = file,
              verb = get,
              address = <<"/favicon.ico">>,
              subdomain = ?SUBMODULE,
@@ -1007,3 +1025,6 @@ access_denied() ->
 
 cors() ->
     "Access-Control-Allow-Origin: http://localhost:4321\r\n".
+
+api_handle_cors_preflight_check(_Data, _Parameters, _Headers, _InstanceName) ->
+    "Access-Control-Allow-Origin: *\r\n".
