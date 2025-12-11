@@ -34,7 +34,7 @@
                            |  {ok, pid(), term()}
                            |  {error, any()}.
 start(_Type, _Args) ->
-    crypto:start(),
+    application:start(crypto),
     application:start(brunhilde),
     purestyle_sup:start_link().
 
