@@ -20,7 +20,7 @@ start_link() ->
 init(_) ->
     Millisec = 1000,
     Seconds = 60,
-    Minutes = 30,
+    Minutes = 120,
     Timeout = Seconds * Minutes * Millisec,
     lager:log(info, self(), "Ruuvi monitor server started", []),
     {ok, TRef} = timer:send_interval(Timeout, ask_ruuvi),
@@ -33,14 +33,24 @@ handle_cast(_Request, State) ->
     {noreply, State}.
 
 handle_info(ask_ruuvi, State) ->
-    Res = os:cmd("./get_ruuvi.py"),
-    {Date, Time} = erlang:localtime(),
-    Parsed = parse_ruuvi(Res, Date, Time),
+    Port = open_port({spawn, "./get_ruuvi.py"},
+                     [{line, 1000}, exit_status, stderr_to_stdout]),
 
-    Fun = fun() ->
-                  mnesia:write(Parsed)
-          end,
-    {atomic, ok} = mnesia:transaction(Fun),
+    case collect_port_data(Port, [], 10000) of  % 10 second timeout
+        {ok, Data} ->
+            {Date, Time} = erlang:localtime(),
+            Parsed = parse_ruuvi(Data, Date, Time),
+            Fun = fun() ->
+                          mnesia:write(Parsed)
+                  end,
+            {atomic, ok} = mnesia:transaction(Fun),
+            lager:log(info, self(), "Ruuvi data collected successfully", []);
+        {error, timeout} ->
+            lager:log(error, self(), "Timeout waiting for Ruuvi data", []);
+        {error, {exit_status, Status}} ->
+            lager:log(error, self(), "get_ruuvi.py exited with status: ~p",
+                      [Status])
+    end,
 
     {noreply, State}.
 
@@ -51,8 +61,26 @@ terminate(_Reason, TRef) ->
     {ok, cancel} = timer:cancel(TRef),
     ok.
 
+collect_port_data(Port, Acc, Timeout) ->
+    receive
+        {Port, {data, {eol, Line}}} ->
+            collect_port_data(Port, Acc ++ Line, Timeout);
+        {Port, {data, {noeol, Line}}} ->
+            collect_port_data(Port, Acc ++ Line, Timeout);
+        {Port, {exit_status, 0}} ->
+            % Port is already closed when OS process exits
+            {ok, Acc};
+        {Port, {exit_status, Status}} ->
+            % Port is already closed when OS process exits
+            {error, {exit_status, Status}}
+    after Timeout ->
+        % Only close port on timeout - process might still be running
+        port_close(Port),
+        {error, timeout}
+    end.
+
 parse_ruuvi([${|Rest], Date, Time) ->
-    {ToParse, _Discard0} = lists:split(length(Rest)-2, Rest),
+    {ToParse, _Discard0} = lists:split(length(Rest) - 2, Rest),
     ["'data_format':", DataFormat,
      "'humidity':", Humidity,
      "'temperature':", Temperature,
