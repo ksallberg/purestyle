@@ -329,7 +329,7 @@ api_handle_logout(_, _, Headers, InstanceName) ->
         false -> ok;
         Username ->  delete_from_active_users(Username, InstanceName)
     end,
-    #{response      => jsx:encode(#{status => <<"success">>}),
+    #{response      => json_encode(#{status => <<"success">>}),
       extra_headers => <<"Set-Cookie: username=\r\nLocation: /\r\n">>,
       return_code   => <<"200 OK">>}.
 
@@ -407,9 +407,9 @@ api_handle_playlist(_Data, Parameters, Headers, InstanceName) ->
         _Username ->
             Tracks = [json_format_track(Track) ||
                          Track <- Playlist#playlist.tracks],
-            jsx:encode(#{id => list_to_binary(Playlist#playlist.id),
-                         name => list_to_binary(Playlist#playlist.name),
-                         tracks => Tracks})
+            json_encode(#{id => list_to_binary(Playlist#playlist.id),
+                          name => list_to_binary(Playlist#playlist.name),
+                          tracks => Tracks})
     end.
 
 handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
@@ -437,7 +437,7 @@ api_handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
             ListsIds = [#{id => list_to_binary(PlId),
                           name => list_to_binary(Name) }
                         || {PlId, Name} <- Lists],
-            jsx:encode(#{lists => ListsIds})
+            json_encode(#{lists => ListsIds})
     end.
 
 handle_register(_Data, _Parameters, _Headers, _InstanceName) ->
@@ -479,10 +479,9 @@ handle_login_post(Data, Parameters, Headers, InstanceName) ->
 api_handle_login_post(Data, Parameters, Headers, InstanceName) ->
     case do_login_post(Data, Parameters, Headers, InstanceName) of
         login_fail ->
-            jsx:encode(#{status => <<"error">>});
+            json_encode(#{status => <<"error">>});
         {login_ok, Cookie} ->
-            Response =
-                jsx:encode(#{status => <<"success">>}),
+            Response = json_encode(#{status => <<"success">>}),
             #{response      => Response,
               extra_headers => list_to_binary(cors() ++ Cookie ++ "\r\n"),
               return_code   => <<"200 OK">>}
@@ -515,10 +514,10 @@ api_handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
     Username = is_logged_in(Headers, InstanceName),
     PlaylistName = extract_param(PostParameters, "playlist_name"),
     PlaylistId = playlist_create(Username, PlaylistName),
-    jsx:encode(#{status => <<"success">>,
-                 id => list_to_binary(PlaylistId),
-                 name => list_to_binary(PlaylistName)
-                }).
+    json_encode(#{status => <<"success">>,
+                  id => list_to_binary(PlaylistId),
+                  name => list_to_binary(PlaylistName)
+                 }).
 
 handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     case do_register_post(Data, _Parameters, _Headers, InstanceName) of
@@ -536,18 +535,17 @@ handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
 api_handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     case do_register_post(Data, _Parameters, _Headers, InstanceName) of
         login_fail ->
-            jsx:encode(#{status => <<"error">>,
-                         msg => <<"Registration OK, login failed">>});
+            json_encode(#{status => <<"error">>,
+                          msg => <<"Registration OK, login failed">>});
         {login_ok, Cookie} ->
-            Response =
-                jsx:encode(#{status => <<"success">>}),
+            Response = json_encode(#{status => <<"success">>}),
             #{response      => Response,
               extra_headers =>
                   list_to_binary(cors() ++ Cookie ++ "\r\n"),
               return_code   => <<"200 OK">>};
         user_already_existing ->
-            jsx:encode(#{status => <<"error">>,
-                         msg => <<"User already exists">>})
+            json_encode(#{status => <<"error">>,
+                          msg => <<"User already exists">>})
     end.
 
 handle_share_playlist_post(Data, _Parameters, Headers, InstanceName) ->
@@ -591,23 +589,23 @@ api_handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
             Songname0 = extract_param(PostParameters, "track_name"),
             Songname = uri_string:unquote(Songname0),
             Track = add_track(Playlist, Songname),
-            jsx:encode(#{status => <<"success">>,
-                         extra_headers => list_to_binary(cors()),
-                         track => json_format_track(Track)
-                        })
+            json_encode(#{status => <<"success">>,
+                          extra_headers => list_to_binary(cors()),
+                          track => json_format_track(Track)
+                         })
     end.
 
 handle_change_song(Data, _, Headers, InstanceName) ->
     #{<<"id">> := Id,
       <<"title">> := Title,
-      <<"listid">> := ListId} = jsx:decode(Data, [return_maps]),
+      <<"listid">> := ListId} = json:decode(Data),
     case is_logged_in(Headers, InstanceName) of
         false ->
             render_not_logged_in();
         _Username ->
             update_song(?b2l(ListId), ?b2l(Id), ?b2l(Title)),
-            jsx:encode(#{<<"ok">> => <<"complete">>,
-                         <<"new_name">> => Title})
+            json_encode(#{<<"ok">> => <<"complete">>,
+                          <<"new_name">> => Title})
     end.
 
 api_handle_cors_preflight_check(_Data, _Parameters, _Headers, _InstanceName) ->
@@ -837,7 +835,7 @@ youtube_title(Link) ->
         "%20&part=snippet",
     {ok, {_HTTPVer, _Headers, Response}}
         = httpc:request(get, {QueryLink, []}, [], [{body_format, binary}]),
-    JsonReply = jsx:decode(Response, [return_maps]),
+    JsonReply = json:decode(Response),
     [Items] = maps:get(<<"items">>, JsonReply),
     Snippet = maps:get(<<"snippet">>, Items),
     Title = maps:get(<<"title">>, Snippet),
@@ -1026,8 +1024,7 @@ do_login_post(Data, _Parameters, _Headers, InstanceName) ->
     check_login(Username, Password, InstanceName).
 
 access_denied() ->
-    jsx:encode(#{status => <<"error">>,
-                 msg => <<"Access denied">>}).
+    json_encode(#{status => <<"error">>, msg => <<"Access denied">>}).
 
 cors() ->
     "Access-Control-Allow-Origin: http://localhost:4321\r\n".
@@ -1035,5 +1032,10 @@ cors() ->
 cors_preflight_check() ->
     "Access-Control-Allow-Origin: *\r\n"
     "Access-Control-Allow-Methods: POST, GET\r\n"
-    "Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept\r\n"
+    "Access-Control-Allow-Headers: Origin, "
+      "X-Requested-With, Content-Type, Accept\r\n"
     "Access-Control-Max-Age: 86400\r\n".
+
+
+json_encode(Term) ->
+    iolist_to_binary(json:encode(Term)).

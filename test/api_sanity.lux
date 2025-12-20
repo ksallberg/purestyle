@@ -25,6 +25,8 @@ index 159d61f..fb815ec 100644
 
     !make -C ../ start
     ???Listening at port: 8000
+    ???Starting inets...
+    [sleep 1]
 
 [shell api_test]
     # Register
@@ -69,12 +71,13 @@ index 159d61f..fb815ec 100644
 
     # POST populate a playlist
     !curl --cookie "username=$cookie_username" -d "playlist=$playlist_id" -d "track_name=apa" http://localhost:8000/api/playlist?list=$playlist_id
-    ?{"status"\:"success","track"\:{"id"\:(.*),"source"\:"other","title"\:"apa","url"\:"apa"}
+    ?{"status"\:"success",
+    ?"track"\:{"id"\:(.*),"title"\:"apa","source"\:"other","url"\:"apa"}
     [local track_id=$1]
 
     # GET playlist
     !curl --cookie "username=$cookie_username" http://localhost:8000/api/playlist?list=$playlist_id
-    ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[{"id"\:$track_id,"source":"other","title":"apa","url":"apa"}]}
+    ?{"id"\:$playlist_id,"name"\:"pl1","tracks"\:\[{"id"\:$track_id,"title":"apa","source":"other","url":"apa"}]}
 
 [cleanup]
     !make -C ../ stop
