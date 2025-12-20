@@ -37,7 +37,6 @@
 -include("common.hrl").
 
 start() ->
-    lager:start(),
     io:format("starting apps.\n", []),
     application:start(purestyle).
 

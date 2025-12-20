@@ -22,7 +22,7 @@ init(_) ->
     Seconds = 60,
     Minutes = 120,
     Timeout = Seconds * Minutes * Millisec,
-    lager:log(info, self(), "Ruuvi monitor server started", []),
+    logger:notice("Ruuvi monitor server started", []),
     {ok, TRef} = timer:send_interval(Timeout, ask_ruuvi),
     {ok, TRef}.
 
@@ -44,12 +44,11 @@ handle_info(ask_ruuvi, State) ->
                           mnesia:write(Parsed)
                   end,
             {atomic, ok} = mnesia:transaction(Fun),
-            lager:log(info, self(), "Ruuvi data collected successfully", []);
+            logger:notice("Ruuvi data collected successfully", []);
         {error, timeout} ->
-            lager:log(error, self(), "Timeout waiting for Ruuvi data", []);
+            logger:error("Timeout waiting for Ruuvi data", []);
         {error, {exit_status, Status}} ->
-            lager:log(error, self(), "get_ruuvi.py exited with status: ~p",
-                      [Status])
+            logger:error("get_ruuvi.py exited with status: ~p", [Status])
     end,
 
     {noreply, State}.

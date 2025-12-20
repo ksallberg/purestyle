@@ -144,7 +144,7 @@ dtl_helper(PageName) ->
     iolist_to_binary(Binary).
 
 handle_uptime(_, _, _, _InstanceName) ->
-    lager:log(info, self(), "www: show uptime.", []),
+    logger:notice("www: show uptime.", []),
     ErMem    = erlang:memory(),
     {_, Tot} = lists:keyfind(total, 1, ErMem),
     ProxTxt  = integer_to_list(length(erlang:processes())),
@@ -164,7 +164,7 @@ handle_uptime(_, _, _, _InstanceName) ->
     iolist_to_binary(Binary).
 
 handle_temp(_, _, _, _InstanceName) ->
-    lager:log(info, self(), "www: show temperature.", []),
+    logger:notice("www: show temperature.", []),
 
     Last48 = fun() ->
                      pick(96, mnesia:last(ruuvidata), [])
