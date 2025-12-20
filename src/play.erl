@@ -42,17 +42,27 @@ routes() ->
     %% CORS
       #route{protocol = html,
              verb = options,
-             address = <<"/api/login">>,
-             subdomain = ?SUBMODULE,
-             callback = fun api_handle_cors_preflight_check/4}
-    , #route{protocol = html,
-             verb = options,
              address = <<"/api/register">>,
              subdomain = ?SUBMODULE,
              callback = fun api_handle_cors_preflight_check/4}
     , #route{protocol = html,
              verb = options,
+             address = <<"/api/login">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_cors_preflight_check/4}
+    , #route{protocol = html,
+             verb = options,
+             address = <<"/api/logout">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_cors_preflight_check/4}
+    , #route{protocol = html,
+             verb = options,
              address = <<"/api/playlist">>,
+             subdomain = ?SUBMODULE,
+             callback = fun api_handle_cors_preflight_check/4}
+    , #route{protocol = html,
+             verb = options,
+             address = <<"/api/playlists">>,
              subdomain = ?SUBMODULE,
              callback = fun api_handle_cors_preflight_check/4}
 
@@ -330,7 +340,8 @@ api_handle_logout(_, _, Headers, InstanceName) ->
         Username ->  delete_from_active_users(Username, InstanceName)
     end,
     #{response      => json_encode(#{status => <<"success">>}),
-      extra_headers => <<"Set-Cookie: username=\r\nLocation: /\r\n">>,
+      extra_headers => list_to_binary(
+                         "Set-Cookie: username=\r\nLocation: /\r\n" ++ cors()),
       return_code   => <<"200 OK">>}.
 
 api_handle_api(_, _, _, _InstanceName) ->
@@ -407,9 +418,11 @@ api_handle_playlist(_Data, Parameters, Headers, InstanceName) ->
         _Username ->
             Tracks = [json_format_track(Track) ||
                          Track <- Playlist#playlist.tracks],
-            json_encode(#{id => list_to_binary(Playlist#playlist.id),
-                          name => list_to_binary(Playlist#playlist.name),
-                          tracks => Tracks})
+            Response =
+                json_encode(#{id => list_to_binary(Playlist#playlist.id),
+                              name => list_to_binary(Playlist#playlist.name),
+                              tracks => Tracks}),
+            add_cors_to_response(Response)
     end.
 
 handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
@@ -437,7 +450,8 @@ api_handle_playlists(_Data, _Parameters, Headers, InstanceName) ->
             ListsIds = [#{id => list_to_binary(PlId),
                           name => list_to_binary(Name) }
                         || {PlId, Name} <- Lists],
-            json_encode(#{lists => ListsIds})
+            add_cors_to_response(
+              json_encode(#{lists => ListsIds}))
     end.
 
 handle_register(_Data, _Parameters, _Headers, _InstanceName) ->
@@ -479,12 +493,10 @@ handle_login_post(Data, Parameters, Headers, InstanceName) ->
 api_handle_login_post(Data, Parameters, Headers, InstanceName) ->
     case do_login_post(Data, Parameters, Headers, InstanceName) of
         login_fail ->
-            json_encode(#{status => <<"error">>});
+            add_cors_to_response(json_encode(#{status => <<"error">>}));
         {login_ok, Cookie} ->
             Response = json_encode(#{status => <<"success">>}),
-            #{response      => Response,
-              extra_headers => list_to_binary(cors() ++ Cookie ++ "\r\n"),
-              return_code   => <<"200 OK">>}
+            add_cors_to_response(Response, Cookie)
     end.
 
 handle_changepw_post(Data, _Parameters, _Headers, _InstanceName) ->
@@ -514,10 +526,11 @@ api_handle_playlists_post(Data, _Parameters, Headers, InstanceName) ->
     Username = is_logged_in(Headers, InstanceName),
     PlaylistName = extract_param(PostParameters, "playlist_name"),
     PlaylistId = playlist_create(Username, PlaylistName),
-    json_encode(#{status => <<"success">>,
-                  id => list_to_binary(PlaylistId),
-                  name => list_to_binary(PlaylistName)
-                 }).
+    Response = json_encode(#{status => <<"success">>,
+                             id => list_to_binary(PlaylistId),
+                             name => list_to_binary(PlaylistName)
+                            }),
+    add_cors_to_response(Response).
 
 handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     case do_register_post(Data, _Parameters, _Headers, InstanceName) of
@@ -535,17 +548,16 @@ handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
 api_handle_register_post(Data, _Parameters, _Headers, InstanceName) ->
     case do_register_post(Data, _Parameters, _Headers, InstanceName) of
         login_fail ->
-            json_encode(#{status => <<"error">>,
-                          msg => <<"Registration OK, login failed">>});
+            add_cors_to_response(
+              json_encode(#{status => <<"error">>,
+                            msg => <<"Registration OK, login failed">>}));
         {login_ok, Cookie} ->
             Response = json_encode(#{status => <<"success">>}),
-            #{response      => Response,
-              extra_headers =>
-                  list_to_binary(cors() ++ Cookie ++ "\r\n"),
-              return_code   => <<"200 OK">>};
+            add_cors_to_response(Response, Cookie);
         user_already_existing ->
-            json_encode(#{status => <<"error">>,
-                          msg => <<"User already exists">>})
+            add_cors_to_response(
+              json_encode(#{status => <<"error">>,
+                            msg => <<"User already exists">>}))
     end.
 
 handle_share_playlist_post(Data, _Parameters, Headers, InstanceName) ->
@@ -1036,6 +1048,13 @@ cors_preflight_check() ->
       "X-Requested-With, Content-Type, Accept\r\n"
     "Access-Control-Max-Age: 86400\r\n".
 
+add_cors_to_response(Response) ->
+    add_cors_to_response(Response, "").
+
+add_cors_to_response(Response, Cookie) ->
+    #{response      => Response,
+      extra_headers => list_to_binary(cors() ++ Cookie ++ "\r\n"),
+      return_code   => <<"200 OK">>}.
 
 json_encode(Term) ->
     iolist_to_binary(json:encode(Term)).
