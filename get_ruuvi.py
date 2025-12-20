@@ -1,12 +1,17 @@
 #!/usr/bin/python3
+import signal
 from ruuvitag_sensor.ruuvitag import RuuviTag
 
-sensor = RuuviTag("F9:09:24:57:1E:87")
+def timeout_handler(signum, frame):
+    raise TimeoutError("Sensor read timed out")
 
-# update state from the device
-state = sensor.update()
+signal.signal(signal.SIGALRM, timeout_handler)
+signal.alarm(10)  # 10 seconds timeout
 
-# get latest state (does not get it from the device)
-state = sensor.state
-
-print(state)
+try:
+    sensor = RuuviTag("F9:09:24:57:1E:87")
+    state = sensor.update()
+    signal.alarm(0)  # cancel alarm if successful
+    print(state)
+except TimeoutError as e:
+    print(e)
