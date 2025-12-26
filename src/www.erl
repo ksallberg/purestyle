@@ -35,69 +35,57 @@
 -define(SUBDOMAIN, <<"www">>).
 
 routes() ->
-    [ #route{protocol = html,
-             verb = get,
+    [ #route{verb = get,
              address = <<"/">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_homepage/4}
-    , #route{protocol = file,
-             verb = get,
+    , #route{verb = get,
              address = <<"/pstyle.png">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_logo/4}
-    , #route{protocol = file,
-             verb = get,
+    , #route{verb = get,
              address = <<"/style.css">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_css/4}
-    , #route{protocol = file,
-             verb = get,
+    , #route{verb = get,
              address = <<"/favicon.ico">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_icon/4}
-    , #route{protocol = file,
-             verb = get,
+    , #route{verb = get,
              address = <<"/waves.js">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_js/4}
-    , #route{protocol = file,
-             verb = get,
+    , #route{verb = get,
              address = <<"/waves.html">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_waves/4}
-    , #route{protocol = html,
-             verb = get,
+    , #route{verb = get,
              address = <<"/uptime">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_uptime/4}
 
-    , #route{protocol = html,
-             verb = get,
+    , #route{verb = get,
              address = <<"/ramen.html">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_ramen/4}
 
-    , #route{protocol = html,
-             verb = get,
+    , #route{verb = get,
              address = <<"/rc1.html">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_rc1/4}
 
-    , #route{protocol = html,
-             verb = get,
+    , #route{verb = get,
              address = <<"/rc2.html">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_rc2/4}
 
-    ,  #route{protocol = html,
-              verb = get,
-              address = <<"/temp">>,
-              subdomain = ?SUBDOMAIN,
-              callback = fun handle_temp/4}
+    , #route{verb = get,
+             address = <<"/temp">>,
+             subdomain = ?SUBDOMAIN,
+             callback = fun handle_temp/4}
 
     %% debug
-    ,  #route{protocol = html,
-              verb = get,
+    ,  #route{verb = get,
               address = <<"/uptime">>,
               callback = fun handle_uptime/4}
     ].

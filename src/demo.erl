@@ -31,13 +31,11 @@
 
 routes() ->
     %% File addresses
-    [ #route{protocol = file,
-             verb = get,
+    [ #route{verb = get,
              address = <<"/pstyle.png">>,
              subdomain = <<"demo">>,
              callback = fun handle_logo/4}
-    , #route{protocol = file,
-             verb = get,
+    , #route{verb = get,
              address = <<"/">>,
              subdomain = <<"demo">>,
              callback = fun handle_page/4}

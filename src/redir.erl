@@ -35,27 +35,23 @@ init(_InstanceName) ->
     ok.
 
 routes() ->
-    [ #route{protocol = html,
-             verb = get,
+    [ #route{verb = get,
              address = <<"/">>,
              subdomain = <<"www">>,
              callback = fun handle_www/4}
 
-    , #route{protocol = html,
-             verb = get,
+    , #route{verb = get,
              address = <<"/">>,
              subdomain = '*',
              callback = fun handle_www/4}
 
       %% play subdomain
-    , #route{protocol = html,
-             verb = get,
+    , #route{verb = get,
              address = <<"/">>,
              subdomain = <<"play">>,
              callback = fun handle_play/4}
 
-    , #route{protocol = html,
-             verb = get,
+    , #route{verb = get,
              address = <<"/">>,
              subdomain = <<"demo">>,
              callback = fun handle_demo/4}
