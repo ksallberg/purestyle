@@ -50,11 +50,6 @@ routes() ->
              address = <<"/">>,
              subdomain = <<"play">>,
              callback = fun handle_play/4}
-
-    , #route{verb = get,
-             address = <<"/">>,
-             subdomain = <<"demo">>,
-             callback = fun handle_demo/4}
     ].
 
 handle_www(_Data, _Parameters, _Headers, _InstanceName) ->
@@ -65,9 +60,4 @@ handle_www(_Data, _Parameters, _Headers, _InstanceName) ->
 handle_play(_Data, _Parameters, _Headers, _InstanceName) ->
     #{response      => <<"">>,
       extra_headers => <<"Location: https://play.purestyle.se\r\n">>,
-      return_code   => <<"301 Moved Permanently">>}.
-
-handle_demo(_Data, _Parameters, _Headers, _InstanceName) ->
-    #{response      => <<"">>,
-      extra_headers => <<"Location: https://demo.purestyle.se\r\n">>,
       return_code   => <<"301 Moved Permanently">>}.

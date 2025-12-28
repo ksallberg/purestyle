@@ -39,45 +39,22 @@ routes() ->
              address = <<"/">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_homepage/4}
-    , #route{verb = get,
-             address = <<"/pstyle.png">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_logo/4}
-    , #route{verb = get,
-             address = <<"/style.css">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_css/4}
-    , #route{verb = get,
-             address = <<"/favicon.ico">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_icon/4}
-    , #route{verb = get,
-             address = <<"/waves.js">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_js/4}
-    , #route{verb = get,
-             address = <<"/waves.html">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_waves/4}
-    , #route{verb = get,
-             address = <<"/uptime">>,
-             subdomain = ?SUBDOMAIN,
-             callback = fun handle_uptime/4}
 
     , #route{verb = get,
              address = <<"/ramen.html">>,
              subdomain = ?SUBDOMAIN,
              callback = fun handle_ramen/4}
 
-    , #route{verb = get,
-             address = <<"/rc1.html">>,
+    , #route{type = regex,
+             verb = get,
+             address = element(2 ,re:compile(<<"^/(\\w+)\\.([a-z]+)">>)),
              subdomain = ?SUBDOMAIN,
-             callback = fun handle_rc1/4}
+             callback = fun handle_static/5}
 
     , #route{verb = get,
-             address = <<"/rc2.html">>,
+             address = <<"/uptime">>,
              subdomain = ?SUBDOMAIN,
-             callback = fun handle_rc2/4}
+             callback = fun handle_uptime/4}
 
     , #route{verb = get,
              address = <<"/temp">>,
@@ -92,36 +69,17 @@ routes() ->
 
 %% Experimental:
 
-handle_logo(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/pstyle.png"),
-    Binary.
-
-handle_css(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/style.css"),
-    Binary.
-
-handle_icon(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/favicon.ico"),
-    Binary.
-
-handle_js(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/waves.js"),
-    Binary.
-
-handle_waves(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/waves.html"),
-    Binary.
+handle_static(_, _, _, _InstanceName, MatchGroups) ->
+    [_All, Filename, Ending] = MatchGroups,
+    case file:read_file("pages/" ++ Filename ++ "." ++ Ending) of
+        {ok, Binary} ->
+            Binary;
+        {error, _Reason} ->
+            <<"404">>
+    end.
 
 handle_ramen(_, _, _, _InstanceName) ->
     dtl_helper("pages/ramen.dtl").
-
-handle_rc1(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/rc1.html"),
-    Binary.
-
-handle_rc2(_, _, _, _InstanceName) ->
-    {ok, Binary} = file:read_file("pages/rc2.html"),
-    Binary.
 
 dtl_helper(PageName) ->
     {ok, Module} = erlydtl:compile_file(PageName,

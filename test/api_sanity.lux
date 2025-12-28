@@ -25,7 +25,7 @@ index 159d61f..fb815ec 100644
 
     !make -C ../ start
     ???Listening at port: 8000
-    ???Starting inets...
+    ???Starting ssl...
     [sleep 1]
 
 [shell api_test]

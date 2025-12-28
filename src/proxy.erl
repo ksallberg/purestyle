@@ -66,15 +66,11 @@ init(InstanceName) ->
                         [{attributes, record_info(fields, ruuvidata)},
                          {disc_copies, NodeList},
                          {type, ordered_set}]),
-    io:format("Starting inets...~n", []),
-    ssl:start(),
-    inets:start().
+    io:format("Starting ssl...~n", []),
+    ssl:start().
 
 routes() ->
-    play:routes()
-        ++ www:routes()
-        ++ demo:routes()
-        ++ [{'*', fun handle_wildcard/4}].
+    play:routes() ++ www:routes() ++ [{'*', fun handle_wildcard/4}].
 
 handle_wildcard(_Data, _Parameters, _Headers, _InstanceName) ->
     <<"404: Hello there!">>.
