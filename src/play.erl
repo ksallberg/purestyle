@@ -34,8 +34,8 @@
 
 -include("common.hrl").
 
--define(SUBMODULE, '*').
-%% -define(SUBMODULE, <<"play">>).
+%% -define(SUBMODULE, '*').
+-define(SUBMODULE, <<"play">>).
 
 routes() ->
     [
