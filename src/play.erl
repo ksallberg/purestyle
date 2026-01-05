@@ -34,8 +34,8 @@
 
 -include("common.hrl").
 
-%% -define(SUBMODULE, '*').
--define(SUBMODULE, <<"play">>).
+-define(SUBMODULE, '*').
+%% -define(SUBMODULE, <<"play">>).
 
 routes() ->
     [
@@ -62,6 +62,13 @@ routes() ->
              callback = fun api_handle_cors_preflight_check/4}
 
     %% File addresses
+    , #route{type = regex,
+             verb = get,
+             address =
+                 element(2 ,re:compile(<<"^/pics/([\\w-]+)\\.([a-z]+)">>)),
+             subdomain = ?SUBMODULE,
+             callback = fun handle_pics/5}
+
     , #route{verb = get,
              address = <<"/favicon.ico">>,
              subdomain = ?SUBMODULE,
@@ -160,6 +167,11 @@ routes() ->
              callback = fun handle_playlist_post/4}
 
     , #route{verb = post,
+             address = <<"/playlist_file_post">>,
+             subdomain = ?SUBMODULE,
+             callback = fun handle_playlist_file_post/4}
+
+    , #route{verb = post,
              address = <<"/change_song">>,
              subdomain = ?SUBMODULE,
              callback = fun handle_change_song/4}
@@ -203,6 +215,15 @@ routes() ->
     ].
 
 %% ---- GET handlers:
+
+handle_pics(_, _, _, _InstanceName, MatchGroups) ->
+    [_All, Filename, Ending] = MatchGroups,
+    case file:read_file("pics/" ++ Filename ++ "." ++ Ending) of
+        {ok, Binary} ->
+            Binary;
+        {error, _Reason} ->
+            <<"404">>
+    end.
 
 handle_logo(_, _, _, _InstanceName) ->
     {ok, Binary} = file:read_file("pages/pstyle.png"),
@@ -568,6 +589,64 @@ api_handle_playlist_post(Data, _Parameters, Headers, InstanceName) ->
                           extra_headers => list_to_binary(cors()),
                           track => json_format_track(Track)
                          })
+    end.
+
+handle_playlist_file_post(Data, _Parameters, Headers, InstanceName) ->
+    case is_logged_in(Headers, InstanceName) of
+        false ->
+            render_not_logged_in();
+        _ ->
+            Multipart = http_parser:parse_multipart(Data, Headers),
+            [ {_PlayListHeaders, PlayListBody},
+              {FileNameHeaders, FileBody}
+             ] = Multipart,
+
+            FileName = uuid:uuid_to_string(uuid:get_v4()),
+            FileType = proplists:get_value(<<"Content-Type">>, FileNameHeaders),
+
+            <<"image/", FileEnding/binary>> = FileType,
+
+            FilePathNoEnding = "pics/" ++ FileName ++ ".",
+            FilePath = FilePathNoEnding ++ binary_to_list(FileEnding),
+
+            Exec = fun() ->
+                           file:write_file(FilePath, FileBody)
+                   end,
+
+            NewFilePath =
+                case FileEnding of
+                    <<"heif">> ->
+                        Exec(),
+                        Cmd = "convert " ++ FilePath ++
+                            " -resize 1024 -strip -colors 256 " ++
+                            FilePathNoEnding ++ "png && rm " ++ FilePath,
+                        os:cmd(Cmd),
+                        FilePathNoEnding ++ "png";
+                    <<"jpeg">> ->
+                        Exec(),
+                        FilePath;
+                    <<"png">> ->
+                        Exec(),
+                        FilePath;
+                    _ ->
+                        error
+                end,
+
+            Playlist = binary_to_list(PlayListBody),
+
+            case NewFilePath of
+                error ->
+                    ok;
+                _ ->
+                    URL = NewFilePath,
+                    add_track(Playlist, URL)
+            end,
+
+            #{response      => <<"">>,
+              extra_headers =>
+                  list_to_binary("Location: /playlist" ++
+                                     "?list=" ++ Playlist ++ "\r\n"),
+              return_code   => <<"303 See Other">>}
     end.
 
 handle_change_song(Data, _, Headers, InstanceName) ->
