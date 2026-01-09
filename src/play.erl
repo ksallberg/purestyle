@@ -614,14 +614,15 @@ handle_playlist_file_post(Data, _Parameters, Headers, InstanceName) ->
                    end,
 
             Resize = fun() ->
-                             Cmd = "mogrify -resize 1024 -strip "
+                             Cmd = "mogrify -auto-orient -resize 1024 -strip "
                                  "-colors 256 " ++ FilePath,
                              os:cmd(Cmd)
                      end,
 
             HeifConvert = fun() ->
                                   Cmd = "convert " ++ FilePath ++
-                                      " -resize 1024 -strip -colors 256 " ++
+                                      " -auto-orient -resize 1024 -strip "
+                                      "-colors 256 " ++
                                       FilePathNoEnding ++ "png && rm " ++
                                       FilePath,
                                   os:cmd(Cmd)
