@@ -613,24 +613,36 @@ handle_playlist_file_post(Data, _Parameters, Headers, InstanceName) ->
                            file:write_file(FilePath, FileBody)
                    end,
 
-            NewFilePath =
-                case FileEnding of
-                    <<"heif">> ->
-                        Exec(),
-                        Cmd = "convert " ++ FilePath ++
-                            " -resize 1024 -strip -colors 256 " ++
-                            FilePathNoEnding ++ "png && rm " ++ FilePath,
-                        os:cmd(Cmd),
-                        FilePathNoEnding ++ "png";
-                    <<"jpeg">> ->
-                        Exec(),
-                        FilePath;
-                    <<"png">> ->
-                        Exec(),
-                        FilePath;
-                    _ ->
-                        error
-                end,
+            Resize = fun() ->
+                             Cmd = "mogrify -resize 1024 -strip "
+                                 "-colors 256 " ++ FilePath,
+                             os:cmd(Cmd)
+                     end,
+
+            HeifConvert = fun() ->
+                                  Cmd = "convert " ++ FilePath ++
+                                      " -resize 1024 -strip -colors 256 " ++
+                                      FilePathNoEnding ++ "png && rm " ++
+                                      FilePath,
+                                  os:cmd(Cmd)
+                          end,
+
+            NewFilePath = case FileEnding of
+                              <<"heif">> ->
+                                  Exec(),
+                                  spawn(HeifConvert),
+                                  FilePathNoEnding ++ "png";
+                              <<"jpeg">> ->
+                                  Exec(),
+                                  spawn(Resize),
+                                  FilePath;
+                              <<"png">> ->
+                                  Exec(),
+                                  spawn(Resize),
+                                  FilePath;
+                              _ ->
+                                  error
+                          end,
 
             Playlist = binary_to_list(PlayListBody),
 
