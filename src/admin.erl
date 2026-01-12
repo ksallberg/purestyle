@@ -29,7 +29,8 @@
 
 -export([get_users/0,
          get_user/1,
-         delete_user/1
+         delete_user/1,
+         delete_sql_injection_users/0
         ]).
 
 get_users() ->
@@ -56,3 +57,19 @@ delete_user(Username) ->
         end,
     {atomic, Answer} = mnesia:transaction(F),
     Answer.
+
+delete_users(Usernames) ->
+    F = fun() ->
+                DelFun = fun(Username) ->
+                                 mnesia:delete(user, Username, write)
+                         end,
+                lists:foreach(DelFun, Usernames)
+        end,
+    {atomic, Answer} = mnesia:transaction(F),
+    Answer.
+
+%% delete all users with a '%' in the name
+delete_sql_injection_users() ->
+    delete_users(
+      lists:filter(fun(X) -> lists:member($%, X) end,
+                   admin:get_users())).
