@@ -11,7 +11,7 @@ img {
   right: 0;
 }
 
-input {
+input[type=submit] {
     color: #FFFFFF;
     background-color: #215E61;
     width: 300px;
