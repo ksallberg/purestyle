@@ -4,17 +4,6 @@
 -record(usercookie, {username :: string(),
                      times = 0}).
 
-%% 1) All users bucket
-%%
-%% -------------------
-%% | username | info |
-%% -------------------
-%% | someuser | a    |
-%% | user2    | b    |
-%% -------------------
--record(user, {username :: string(),
-               info     :: userinfo}).
-
 -record(track, {source = other,
                 id     = "no_id",
                 url    = "no_url",
@@ -35,6 +24,18 @@
 
 -record(userinfo, {password  :: string(),
                    playlists :: [#playlist{}]}).
+
+%% 1) All users bucket
+%%
+%% -------------------
+%% | username | info |
+%% -------------------
+%% | someuser | a    |
+%% | user2    | b    |
+%% -------------------
+-record(user, {username :: string(),
+               info     :: #userinfo{}}).
+
 
 -record(public_playlist, {id :: string(), retracted :: boolean()}).
 

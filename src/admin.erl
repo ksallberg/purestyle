@@ -28,7 +28,9 @@
 -include_lib("purestyle/include/common.hrl").
 
 -export([get_users/0,
-         get_user/1]).
+         get_user/1,
+         delete_user/1
+        ]).
 
 get_users() ->
     F = fun() ->
@@ -47,3 +49,10 @@ get_user(Username) ->
         end,
     {atomic, [User]} = mnesia:transaction(F),
     User.
+
+delete_user(Username) ->
+    F = fun() ->
+            mnesia:delete(user, Username, write)
+        end,
+    {atomic, Answer} = mnesia:transaction(F),
+    Answer.
