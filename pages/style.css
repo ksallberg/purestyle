@@ -12,8 +12,12 @@ img {
 }
 
 input {
-  color: #000000;
-  background-color: #ffffff;
+    color: #FFFFFF;
+    background-color: #215E61;
+    width: 300px;
+    border-color: #215E61;
+    border-radius: 10px;
+    padding: 10px 8px;
 }
 
 html {
