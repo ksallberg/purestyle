@@ -1101,7 +1101,7 @@ cors() ->
     "Access-Control-Allow-Origin: http://localhost:4321\r\n".
 
 cors_preflight_check() ->
-    "Access-Control-Allow-Origin: *\r\n"
+    "Access-Control-Allow-Origin: http://localhost:4321\r\n"
     "Access-Control-Allow-Methods: POST, GET\r\n"
     "Access-Control-Allow-Headers: Origin, "
       "X-Requested-With, Content-Type, Accept\r\n"
@@ -1112,7 +1112,7 @@ add_cors_to_response(Response) ->
 
 add_cors_to_response(Response, Cookie) ->
     #{response      => Response,
-      extra_headers => list_to_binary(cors() ++ Cookie ++ "\r\n"),
+      extra_headers => list_to_binary("Access-Control-Expose-Headers: X-username\r\n" ++ cors() ++ Cookie ++ "\r\n"),
       return_code   => <<"200 OK">>}.
 
 json_encode(Term) ->
