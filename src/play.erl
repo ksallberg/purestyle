@@ -1077,12 +1077,17 @@ do_register_post(Data, _Parameters, _Headers, InstanceName) ->
     PostParameters = http_parser:parameters(Data),
     Username = extract_param(PostParameters, "username"),
     Password = extract_param(PostParameters, "password"),
-    Result = reg_user(Username, Password),
     IsPercentageInUserName = lists:member($%, Username),
-    case Result of
-        %% Just to stop SQL injection bots from creating many users
-        _ when IsPercentageInUserName ->
+    case IsPercentageInUserName of
+        true ->
             user_already_existing;
+        false ->
+            do_register_post1(Username, Password, InstanceName)
+    end.
+
+do_register_post1(Username, Password, InstanceName) ->
+    Result = reg_user(Username, Password),
+    case Result of
         user_registered ->
             check_login(Username, Password, InstanceName);
         user_already_existing ->
