@@ -1114,7 +1114,7 @@ add_cors_to_response(Response) ->
 
 add_cors_to_response(Response, Cookie) ->
     #{response      => Response,
-      extra_headers => list_to_binary("Access-Control-Expose-Headers: X-username\r\n" ++ cors() ++ Cookie ++ "\r\n"),
+      extra_headers => list_to_binary("Access-Control-Expose-Headers: X-Set-Cookie\r\n" ++ cors() ++ Cookie ++ "\r\n"),
       return_code   => <<"200 OK">>}.
 
 json_encode(Term) ->
