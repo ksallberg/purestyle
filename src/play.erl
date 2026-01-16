@@ -1105,7 +1105,7 @@ cors_preflight_check() ->
     "Access-Control-Allow-Methods: POST, GET\r\n"
     "Access-Control-Allow-Headers: Origin, "
       "X-Requested-With, Content-Type, Accept\r\n"
-    "Access-Control-Allow-Credentials\r\n"
+    "Access-Control-Allow-Credentials: true\r\n"
     "Access-Control-Max-Age: 86400\r\n".
 
 add_cors_to_response(Response) ->
