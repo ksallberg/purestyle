@@ -755,7 +755,7 @@ check_login(Username, PlainPassword, InstanceName) ->
                     add_to_active_users(Username, InstanceName),
                     HtmlEncode = encrypt(Username),
                     C = "Set-Cookie: username=" ++ HtmlEncode ++
-                        "; SameSite=None\r\n",
+                        "; Secure; SameSite=None\r\n",
                     {login_ok, C}
             end
     end.
