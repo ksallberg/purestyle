@@ -1098,7 +1098,8 @@ access_denied() ->
     json_encode(#{status => <<"error">>, msg => <<"Access denied">>}).
 
 cors() ->
-    "Access-Control-Allow-Origin: http://localhost:4321\r\n".
+    "Access-Control-Allow-Origin: http://localhost:4321\r\n"
+        "Access-Control-Allow-Credentials: true\r\n".
 
 cors_preflight_check() ->
     "Access-Control-Allow-Origin: http://localhost:4321\r\n"
