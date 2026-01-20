@@ -77,7 +77,6 @@ delete_sql_injection_users() ->
 
 make_playlist_public(ListID) ->
     F = fun() ->
-                mnesia:write(public_playlist,
-                             #public_playlist{id = ListID, retracted = false})
+                mnesia:write(#public_playlist{id = ListID, retracted = false})
         end,
     mnesia:transaction(F).
