@@ -717,8 +717,8 @@ get_public_playlist(Playlist) ->
             mnesia:read(public_playlist, Playlist)
         end,
     case mnesia:transaction(F) of
-        {atomic, []}   -> false;
-        {atomic, [_UserInfo]} -> true
+        {atomic, [{_Id, false}]} -> true;
+        {atomic, _}   -> false
     end.
 
 put_obj(Obj) ->

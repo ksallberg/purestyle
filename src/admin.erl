@@ -30,7 +30,8 @@
 -export([get_users/0,
          get_user/1,
          delete_user/1,
-         delete_sql_injection_users/0
+         delete_sql_injection_users/0,
+         make_playlist_public/1
         ]).
 
 get_users() ->
@@ -73,3 +74,10 @@ delete_sql_injection_users() ->
     delete_users(
       lists:filter(fun(X) -> lists:member($%, X) end,
                    admin:get_users())).
+
+make_playlist_public(ListID) ->
+    F = fun() ->
+                mnesia:write(public_playlist,
+                             #public_playlist{id = ListID, retracted = false})
+        end,
+    mnesia:transaction(F).
