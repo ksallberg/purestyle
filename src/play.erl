@@ -717,7 +717,7 @@ get_public_playlist(Playlist) ->
             mnesia:read(public_playlist, Playlist)
         end,
     case mnesia:transaction(F) of
-        {atomic, [{_Id, false}]} -> true;
+        {atomic, [#public_playlist{retracted = false}]} -> true;
         {atomic, _}   -> false
     end.
 
