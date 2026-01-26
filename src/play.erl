@@ -602,7 +602,7 @@ handle_playlist_file_post(Data, _Parameters, Headers, InstanceName) ->
              ] = Multipart,
 
             FileName = uuid:uuid_to_string(uuid:get_v4()),
-            FileType = proplists:get_value(<<"Content-Type">>, FileNameHeaders),
+            FileType = proplists:get_value(<<"content-type">>, FileNameHeaders),
 
             <<"image/", FileEnding/binary>> = FileType,
 
@@ -970,7 +970,7 @@ delete_song(ListId, TrackId) ->
     put_obj(NewList).
 
 is_logged_in(Headers, InstanceName) ->
-    case [Cookies || {<<"Cookie">>, Cookies} <- Headers] of
+    case [Cookies || {<<"cookie">>, Cookies} <- Headers] of
         [] ->
             false;
         [CookieBinary] ->
