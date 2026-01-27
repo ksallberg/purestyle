@@ -67,7 +67,9 @@ init(InstanceName) ->
                          {disc_copies, NodeList},
                          {type, ordered_set}]),
     io:format("Starting ssl...~n", []),
-    ssl:start().
+    ssl:start(),
+    %% For httpc
+    inets:start().
 
 routes() ->
     play:routes() ++ www:routes() ++ [{'*', fun handle_wildcard/4}].
