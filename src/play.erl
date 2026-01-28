@@ -34,8 +34,8 @@
 
 -include("common.hrl").
 
-%% -define(SUBMODULE, '*').
--define(SUBMODULE, <<"play">>).
+-define(SUBMODULE, '*').
+%% -define(SUBMODULE, <<"play">>).
 
 routes() ->
     [
@@ -852,14 +852,11 @@ get_title(Link) ->
     end.
 
 soundcloud_title(Link) ->
-    APIKey = get_soundcloudkey(),
-    QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
-                "&client_id=" ++ APIKey,
+    QueryLink = "https://soundcloud.com/oembed?format=json&url=" ++ Link,
     {ok, {_HTTPVer, _Headers, Response}}
         = httpc:request(get, {QueryLink, []}, [], []),
-    [_, TitleEtc] = re:split(Response, "title\":\""),
-    [Title | _]   = re:split(?b2l(TitleEtc), "\","),
-    ?b2l(Title).
+    Json = json:decode(list_to_binary(Response)),
+    binary_to_list(maps:get(<<"title">>, Json)).
 
 %% other used to be "no_id", but that was not very good since
 %% it is used as a key in the db. When changing the "song name"
@@ -884,13 +881,13 @@ youtube_id(Link) ->
     ?b2l(VID).
 
 soundcloud_id(Link) ->
-    APIKey    = get_soundcloudkey(),
-    QueryLink = "https://api.soundcloud.com/resolve.json?url=" ++ Link ++
-                "&client_id=" ++ APIKey,
+    QueryLink = "https://soundcloud.com/oembed?format=json&url=" ++ Link,
     {ok, {_HTTPVer, _Headers, Response}}
         = httpc:request(get, {QueryLink, []}, [], []),
-    [_, IdEtc | _] = re:split(Response, "id\":"),
-    [Id | _]       = re:split(?b2l(IdEtc), ","),
+    Json = json:decode(list_to_binary(Response)),
+    Html = binary_to_list(maps:get(<<"html">>, Json)),
+    [_, IdEtc | _] = re:split(Html, "tracks%2F"),
+    [Id | _]       = re:split(?b2l(IdEtc), "&show"),
     ?b2l(Id).
 
 %% Take a link, extract the title that youtube associates with
@@ -1046,10 +1043,6 @@ get_appsecret() ->
 
 get_cryptkey() ->
     {ok, [#{cryptkey := X}]} = file:consult("keys.txt"),
-    X.
-
-get_soundcloudkey() ->
-    {ok, [#{soundcloud := X}]} = file:consult("keys.txt"),
     X.
 
 get_youtubekey() ->
