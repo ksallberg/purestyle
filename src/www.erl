@@ -40,7 +40,7 @@ start() ->
     io:format("starting apps.\n", []),
     application:ensure_started(purestyle).
 
-init(InstanceName) ->
+init(_InstanceName) ->
     ok.
 
 -define(SUBDOMAIN, '*').
