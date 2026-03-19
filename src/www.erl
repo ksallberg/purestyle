@@ -25,14 +25,26 @@
 
 -module(www).
 
+-behaviour(http_handler).
+
 -include_lib("brunhilde/include/brunhilde.hrl").
 
 -include("common.hrl").
 
--export([ routes/0 ]).
+-export([ start/0
+        , init/1
+        , routes/0
+        ]).
 
-%% -define(SUBDOMAIN, '*').
--define(SUBDOMAIN, <<"www">>).
+start() ->
+    io:format("starting apps.\n", []),
+    application:ensure_started(purestyle).
+
+init(InstanceName) ->
+    ok.
+
+-define(SUBDOMAIN, '*').
+%% -define(SUBDOMAIN, <<"www">>).
 
 routes() ->
     [ #route{verb = get,
@@ -65,7 +77,10 @@ routes() ->
     ,  #route{verb = get,
               address = <<"/uptime">>,
               callback = fun handle_uptime/4}
-    ].
+    ] ++ [{'*', fun handle_wildcard/4}].
+
+handle_wildcard(_Data, _Parameters, _Headers, _InstanceName) ->
+    <<"404: Hello there!">>.
 
 %% Experimental:
 

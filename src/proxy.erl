@@ -38,7 +38,7 @@
 
 start() ->
     io:format("starting apps.\n", []),
-    application:start(purestyle).
+    application:ensure_started(purestyle).
 
 init(InstanceName) ->
     %% If several instances of purestyle play are running, only start ETS once.
@@ -72,7 +72,7 @@ init(InstanceName) ->
     inets:start().
 
 routes() ->
-    play:routes() ++ www:routes() ++ [{'*', fun handle_wildcard/4}].
+    play:routes() ++ [{'*', fun handle_wildcard/4}].
 
 handle_wildcard(_Data, _Parameters, _Headers, _InstanceName) ->
     <<"404: Hello there!">>.
